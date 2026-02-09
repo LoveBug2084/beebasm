@@ -1,0 +1,7 @@
+random.asm:21: error: Unrecognised token.
+
+LDZ #1
+^
+
+Call stack:
+macro2.fail.6502:9

@@ -1,0 +1,4 @@
+vcformatoff.fail.6502:3: error: Unrecognised token.
+
+EH?
+^

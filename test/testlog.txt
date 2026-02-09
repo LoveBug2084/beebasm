@@ -1,0 +1,4038 @@
+======================================================================
+TEST: ./1-values/badbin1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'badbin1.fail.6502']
+badbin1.fail.6502:2: error: Bad binary expression.
+
+A=%
+   ^
+======================================================================
+TEST: ./1-values/badbin2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'badbin2.fail.6502']
+badbin2.fail.6502:2: error: Bad binary expression.
+
+assert(%100000000000000000000000000000000=4294967296)
+                                         ^
+======================================================================
+TEST: ./1-values/baddec1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'baddec1.fail.6502']
+baddec1.fail.6502:2: error: Bad expression.
+
+A=.label
+   ^
+======================================================================
+TEST: ./1-values/badhex1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'badhex1.fail.6502']
+badhex1.fail.6502:2: error: Bad hex.
+
+A=&
+   ^
+======================================================================
+TEST: ./1-values/badhex2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'badhex2.fail.6502']
+badhex2.fail.6502:2: error: Bad hex.
+
+assert(&100000000=4294967296)
+                 ^
+======================================================================
+TEST: ./1-values/cmdlinedefinebin.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V=%1_1011', '-i', 'cmdlinedefinebin.6502']
+Processed file 'cmdlinedefinebin.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinedec.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V=1_2.3_4', '-i', 'cmdlinedefinedec.6502']
+Processed file 'cmdlinedefinedec.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinedec.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V=1_2.3_', '-i', 'cmdlinedefinedec.fail.6502']
+Invalid -D expression: V=1_2.3_
+======================================================================
+TEST: ./1-values/cmdlinedefinedefault.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V', '-i', 'cmdlinedefinedefault.6502']
+Processed file 'cmdlinedefinedefault.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinehex1.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V=&1_b', '-i', 'cmdlinedefinehex1.6502']
+Processed file 'cmdlinedefinehex1.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinehex2.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V=$1_b', '-i', 'cmdlinedefinehex2.6502']
+Processed file 'cmdlinedefinehex2.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinehex3.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V=0x1_b', '-i', 'cmdlinedefinehex3.6502']
+Processed file 'cmdlinedefinehex3.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinehex4.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V=0X1_b', '-i', 'cmdlinedefinehex4.6502']
+Processed file 'cmdlinedefinehex4.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinemissing.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V=', '-i', 'cmdlinedefinemissing.fail.6502']
+Invalid -D expression: V=
+======================================================================
+TEST: ./1-values/cmdlinedefinenegative.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-D', 'V=-1_2.3_4', '-i', 'cmdlinedefinenegative.6502']
+Processed file 'cmdlinedefinenegative.6502' ok
+======================================================================
+TEST: ./1-values/underscorebin1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'underscorebin1.fail.6502']
+underscorebin1.fail.6502:2: error: Bad binary expression.
+
+A=%_1
+   ^
+======================================================================
+TEST: ./1-values/underscorebin2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'underscorebin2.fail.6502']
+underscorebin2.fail.6502:2: error: Bad binary expression.
+
+A=%1__1
+     ^
+======================================================================
+TEST: ./1-values/underscorebin3.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'underscorebin3.fail.6502']
+underscorebin3.fail.6502:2: error: Bad binary expression.
+
+A=%1_
+     ^
+======================================================================
+TEST: ./1-values/underscoredec1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'underscoredec1.fail.6502']
+underscoredec1.fail.6502:2: error: Bad expression.
+
+A=1._1
+    ^
+======================================================================
+TEST: ./1-values/underscoredec2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'underscoredec2.fail.6502']
+underscoredec2.fail.6502:2: error: Bad expression.
+
+A=1__1
+    ^
+======================================================================
+TEST: ./1-values/underscoredec3.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'underscoredec3.fail.6502']
+underscoredec3.fail.6502:2: error: Bad expression.
+
+A=1_
+    ^
+======================================================================
+TEST: ./1-values/underscorehex1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'underscorehex1.fail.6502']
+underscorehex1.fail.6502:2: error: Bad hex.
+
+A=&_1
+   ^
+======================================================================
+TEST: ./1-values/underscorehex2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'underscorehex2.fail.6502']
+underscorehex2.fail.6502:2: error: Bad hex.
+
+A=&a__b
+     ^
+======================================================================
+TEST: ./1-values/underscorehex3.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'underscorehex3.fail.6502']
+underscorehex3.fail.6502:2: error: Bad hex.
+
+A=&1_
+     ^
+======================================================================
+TEST: ./1-values/values.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'values.6502']
+Processed file 'values.6502' ok
+======================================================================
+TEST: ./2-expressions/brackets.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'brackets.6502']
+Processed file 'brackets.6502' ok
+======================================================================
+TEST: ./2-expressions/intrangehi.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'intrangehi.fail.6502']
+intrangehi.fail.6502:2: error: Number out of range for a 32-bit integer.
+
+print int(4294967296)
+                     ^
+======================================================================
+TEST: ./2-expressions/intrangelo.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'intrangelo.fail.6502']
+intrangelo.fail.6502:2: error: Number out of range for a 32-bit integer.
+
+print int(-2147483649)
+                      ^
+======================================================================
+TEST: ./2-expressions/issue36.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'issue36.6502']
+     0000   80
+Processed file 'issue36.6502' ok
+warning: no SAVE command in source file.
+======================================================================
+TEST: ./2-expressions/macroParamEval.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'macroParamEval.6502']
+Macro SHOW:
+5 5 
+End macro SHOW
+Processed file 'macroParamEval.6502' ok
+======================================================================
+TEST: ./2-expressions/macroUndefined.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'macroUndefined.6502']
+Macro LOAD:
+     2000   AD 04 20   LDA &2004
+End macro LOAD
+     2003   60         RTS
+.data
+     2004   02
+Processed file 'macroUndefined.6502' ok
+warning: no SAVE command in source file.
+======================================================================
+TEST: ./2-expressions/notexponent.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'notexponent.6502']
+Processed file 'notexponent.6502' ok
+======================================================================
+TEST: ./2-expressions/operators.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'operators.6502']
+Processed file 'operators.6502' ok
+======================================================================
+TEST: ./2-expressions/operators1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'operators1.fail.6502']
+operators1.fail.6502:2: error: Assertion failed.
+
+assert(2>2)
+      ^
+======================================================================
+TEST: ./2-expressions/operators2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'operators2.fail.6502']
+operators2.fail.6502:2: error: Assertion failed.
+
+assert(2<2)
+      ^
+======================================================================
+TEST: ./2-expressions/stringfunctions.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'stringfunctions.6502']
+.start
+     2000   60         RTS
+.end
+Saving file 'test'
+Processed file 'stringfunctions.6502' ok
+======================================================================
+TEST: ./2-expressions/symbolsglobal.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-d', '-i', 'symbolsglobal.6502']
+Including file symbols.inc.6502
+.start
+     0064   01
+.forloop
+     0065   02
+Macro LOOP:
+.macro
+     0066   03
+.macrofor
+     0067   06
+End macro LOOP
+     0068   01
+.forloop
+     0069   02
+Macro LOOP:
+.macro
+     006A   03
+.macrofor
+     006B   0B
+.macrofor
+     006C   0C
+End macro LOOP
+.end
+.endreally
+Processed file 'symbols.inc.6502' ok
+Processed file 'symbolsglobal.6502' ok
+[{'start':100L,'endreally':109L}]
+warning: no SAVE command in source file.
+Comparing beebasm output to symbolsglobal.gold.txt succeeded
+======================================================================
+TEST: ./2-expressions/symbolslocal.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-dd', '-i', 'symbolslocal.6502']
+Including file symbols.inc.6502
+.start
+     0064   01
+.forloop
+     0065   02
+Macro LOOP:
+.macro
+     0066   03
+.macrofor
+     0067   06
+End macro LOOP
+     0068   01
+.forloop
+     0069   02
+Macro LOOP:
+.macro
+     006A   03
+.macrofor
+     006B   0B
+.macrofor
+     006C   0C
+End macro LOOP
+.end
+.endreally
+Processed file 'symbols.inc.6502' ok
+Processed file 'symbolslocal.6502' ok
+[{'.start':100L,'.start._I_1.forloop':101L,'.start._I_1._1.macro':102L,'.start._I_1._1.macro._J_1.macrofor':103L,'.start._I_2.forloop':105L,'.start._I_2._1.macro':106L,'.start._I_2._1.macro._J_1.macrofor':107L,'.start._I_2._1._J_2.macrofor':108L,'.start.end':109L,'.endreally':109L}]
+warning: no SAVE command in source file.
+Comparing beebasm output to symbolslocal.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/assertfalse.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'assertfalse.fail.6502']
+assertfalse.fail.6502:2: error: Assertion failed.
+
+assert(0)
+      ^
+======================================================================
+TEST: ./3-directives/assertundef.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'assertundef.6502']
+.start
+Saving file 'test'
+Processed file 'assertundef.6502' ok
+======================================================================
+TEST: ./3-directives/autolinenumdemo.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'autolinenumdemo.6502']
+.start
+     2000   60         RTS
+.end
+Saving file 'test'
+Processed file 'autolinenumdemo.6502' ok
+Comparing output ssd to autolinenumdemo.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/basicrhstoken.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'basicrhstoken.6502']
+Processed file 'basicrhstoken.6502' ok
+Comparing output ssd to basicrhstoken.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/finalnext.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'finalnext.6502']
+     0000   EA         NOP
+     0001   EA         NOP
+     0002   EA         NOP
+     0003   EA         NOP
+     0004   EA         NOP
+     0005   EA         NOP
+     0006   EA         NOP
+     0007   EA         NOP
+     0008   EA         NOP
+     0009   EA         NOP
+Processed file 'finalnext.6502' ok
+warning: no SAVE command in source file.
+======================================================================
+TEST: ./3-directives/invalidbasic2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'invalidbasic2.fail.6502']
+.start
+     2000   60         RTS
+.end
+Saving file 'test'
+invalidbasic2.fail.6502:9: error: invalidbasic2.bas:1: Line too long after tokenizing
+
+putbasic "invalidbasic2.bas", "ib2"
+                                   ^
+======================================================================
+TEST: ./3-directives/putbasicnonexistentdemo.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'putbasicnonexistentdemo.fail.6502']
+.start
+     2000   60         RTS
+.end
+Saving file 'test'
+putbasicnonexistentdemo.fail.6502:9: error: Error opening file.
+
+putbasic "nonexistent", "ne"
+                            ^
+======================================================================
+TEST: ./3-directives/clear/clear.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'clear.6502']
+.start
+     2000   A9 43      LDA #&43
+     2002   4C EE FF   JMP &FFEE
+     2000   A9 54      LDA #&54
+     2002   4C EE FF   JMP &FFEE
+.end
+Saving file 'test'
+Processed file 'clear.6502' ok
+Comparing output ssd to clear.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/clear/clearoffbyone1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'clearoffbyone1.fail.6502']
+clearoffbyone1.fail.6502:13: error: Trying to assemble over existing code.
+
+LDA #'T'
+        ^
+======================================================================
+TEST: ./3-directives/clear/clearoffbyone2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'clearoffbyone2.fail.6502']
+clearoffbyone2.fail.6502:14: error: Trying to assemble over existing code.
+
+JMP &FFEE
+         ^
+======================================================================
+TEST: ./3-directives/clear/clearsyntax1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'clearsyntax1.fail.6502']
+clearsyntax1.fail.6502:2: error: Expression not found.
+
+CLEAR
+     ^
+======================================================================
+TEST: ./3-directives/clear/clearsyntax2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'clearsyntax2.fail.6502']
+clearsyntax2.fail.6502:2: error: Expression not found.
+
+CLEAR &2000
+           ^
+======================================================================
+TEST: ./3-directives/clear/clearsyntax3.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'clearsyntax3.fail.6502']
+clearsyntax3.fail.6502:2: error: Expression not found.
+
+CLEAR &2000 ,
+             ^
+======================================================================
+TEST: ./3-directives/clear/clearsyntax4.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'clearsyntax4.fail.6502']
+clearsyntax4.fail.6502:2: error: Bad expression.
+
+CLEAR &2000 , &2000 ,
+                    ^
+======================================================================
+TEST: ./3-directives/cmdline/badparam.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-bogosity', '-i', 'badparam.fail.6502']
+Bad parameter: -bogosity
+Type beebasm --help for options
+Comparing beebasm output to badparam.fail.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/cmdline/boot.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-boot', 'code', '-do', 'test.ssd', '-i', 'boot.6502']
+.start
+     2000   A0 00      LDY #&00
+.loop
+     2002   B9 0E 20   LDA &200E,Y
+     2005   C8         INY
+     2006   20 E3 FF   JSR &FFE3
+     2009   C9 0D      CMP #&0D
+     200B   D0 F5      BNE &2002
+     200D   60         RTS
+.text
+     200E   48 65 6C ...
+     2014   0D
+.end
+Saving file 'code'
+Processed file 'boot.6502' ok
+Comparing output ssd to boot.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/cmdline/cycle.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-cycle', '17', '-do', 'test.ssd', '-i', 'cycle.6502']
+.start
+     2000   A0 00      LDY #&00
+.loop
+     2002   B9 0E 20   LDA &200E,Y
+     2005   C8         INY
+     2006   20 E3 FF   JSR &FFE3
+     2009   C9 0D      CMP #&0D
+     200B   D0 F5      BNE &2002
+     200D   60         RTS
+.text
+     200E   48 65 6C ...
+     2014   0D
+.end
+Saving file 'code'
+Processed file 'cycle.6502' ok
+Comparing output ssd to cycle.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/cmdline/distinctopcodes.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-w', '-i', 'distinctopcodes.fail.6502']
+distinctopcodes.fail.6502:6: error: Unrecognised token.
+
+STAfoo
+^
+Comparing beebasm output to distinctopcodes.fail.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/cmdline/helplong.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '--help', '-i', 'helplong.6502']
+beebasm 1.11
+
+Possible options:
+ -i <file>      Specify source filename
+ -o <file>      Specify output filename (when not specified by SAVE command)
+ -di <file>     Specify a disc image file to be added to
+ -do <file>     Specify a disc image file to output
+ -boot <file>   Specify a filename to be run by !BOOT on a new disc image
+ -labels <file> Specify a filename to export any labels dumped with -d or -dd to
+ -opt <opt>     Specify the *OPT 4,n for the generated disc image
+ -title <title> Specify the title for the generated disc image
+ -cycle <n>     Specify the cycle for the generated disc image
+ -v             Verbose output
+ -d             Dump all global symbols after assembly
+ -dd            Dump all global and local symbols after assembly
+ -w             Require whitespace between opcodes and labels
+ -vc            Use Visual C++-style error messages
+ -D <sym>=<val> Define numeric symbol prior to assembly
+ -S <sym>=<str> Define string symbol prior to assembly
+ --help         See this help again
+======================================================================
+TEST: ./3-directives/cmdline/helpmiddling.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-help', '-i', 'helpmiddling.6502']
+beebasm 1.11
+
+Possible options:
+ -i <file>      Specify source filename
+ -o <file>      Specify output filename (when not specified by SAVE command)
+ -di <file>     Specify a disc image file to be added to
+ -do <file>     Specify a disc image file to output
+ -boot <file>   Specify a filename to be run by !BOOT on a new disc image
+ -labels <file> Specify a filename to export any labels dumped with -d or -dd to
+ -opt <opt>     Specify the *OPT 4,n for the generated disc image
+ -title <title> Specify the title for the generated disc image
+ -cycle <n>     Specify the cycle for the generated disc image
+ -v             Verbose output
+ -d             Dump all global symbols after assembly
+ -dd            Dump all global and local symbols after assembly
+ -w             Require whitespace between opcodes and labels
+ -vc            Use Visual C++-style error messages
+ -D <sym>=<val> Define numeric symbol prior to assembly
+ -S <sym>=<str> Define string symbol prior to assembly
+ --help         See this help again
+======================================================================
+TEST: ./3-directives/cmdline/helpshort.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-h', '-i', 'helpshort.6502']
+beebasm 1.11
+
+Possible options:
+ -i <file>      Specify source filename
+ -o <file>      Specify output filename (when not specified by SAVE command)
+ -di <file>     Specify a disc image file to be added to
+ -do <file>     Specify a disc image file to output
+ -boot <file>   Specify a filename to be run by !BOOT on a new disc image
+ -labels <file> Specify a filename to export any labels dumped with -d or -dd to
+ -opt <opt>     Specify the *OPT 4,n for the generated disc image
+ -title <title> Specify the title for the generated disc image
+ -cycle <n>     Specify the cycle for the generated disc image
+ -v             Verbose output
+ -d             Dump all global symbols after assembly
+ -dd            Dump all global and local symbols after assembly
+ -w             Require whitespace between opcodes and labels
+ -vc            Use Visual C++-style error messages
+ -D <sym>=<val> Define numeric symbol prior to assembly
+ -S <sym>=<str> Define string symbol prior to assembly
+ --help         See this help again
+======================================================================
+TEST: ./3-directives/cmdline/opt.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-opt', '2', '-do', 'test.ssd', '-i', 'opt.6502']
+.start
+     2000   A0 00      LDY #&00
+.loop
+     2002   B9 0E 20   LDA &200E,Y
+     2005   C8         INY
+     2006   20 E3 FF   JSR &FFE3
+     2009   C9 0D      CMP #&0D
+     200B   D0 F5      BNE &2002
+     200D   60         RTS
+.text
+     200E   48 65 6C ...
+     2014   0D
+.end
+Saving file '!BOOT'
+Processed file 'opt.6502' ok
+Comparing output ssd to opt.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/cmdline/stringsymbol.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-S', 'TEXT=Hello!', '-do', 'test.ssd', '-i', 'stringsymbol.6502']
+.start
+     2000   A0 00      LDY #&00
+.loop
+     2002   B9 0E 20   LDA &200E,Y
+     2005   C8         INY
+     2006   20 E3 FF   JSR &FFE3
+     2009   C9 0D      CMP #&0D
+     200B   D0 F5      BNE &2002
+     200D   60         RTS
+.text
+     200E   48 65 6C ...
+     2014   0D
+.end
+Saving file 'code'
+Processed file 'stringsymbol.6502' ok
+Comparing output ssd to stringsymbol.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/cmdline/title.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-title', 'Hello there', '-do', 'test.ssd', '-i', 'title.6502']
+.start
+     2000   A0 00      LDY #&00
+.loop
+     2002   B9 0E 20   LDA &200E,Y
+     2005   C8         INY
+     2006   20 E3 FF   JSR &FFE3
+     2009   C9 0D      CMP #&0D
+     200B   D0 F5      BNE &2002
+     200D   60         RTS
+.text
+     200E   48 65 6C ...
+     2014   0D
+.end
+Saving file 'code'
+Processed file 'title.6502' ok
+Comparing output ssd to title.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/cmdline/vcformat.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-vc', '-i', 'vcformat.fail.6502']
+vcformat.fail.6502(3): error: Unrecognised token.
+
+EH?
+^
+Comparing beebasm output to vcformat.fail.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/cmdline/vcformatoff.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'vcformatoff.fail.6502']
+vcformatoff.fail.6502:3: error: Unrecognised token.
+
+EH?
+^
+Comparing beebasm output to vcformatoff.fail.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/copyblock/copyblock.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'copyblock.6502']
+.start
+     2000   A0 00      LDY #&00
+.loop
+     2002   B1 70      LDA (&70),Y
+     2004   91 72      STA (&72),Y
+     2006   88         DEY
+     2007   D0 F9      BNE &2002
+.loopend
+     2009
+.end
+Saving file 'test'
+Processed file 'copyblock.6502' ok
+Comparing output ssd to copyblock.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/copyblock/copyblockjustfails.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'copyblockjustfails.fail.6502']
+copyblockjustfails.fail.6502:16: error: Out of memory.
+
+COPYBLOCK start,loopend,loopend
+                               ^
+======================================================================
+TEST: ./3-directives/copyblock/copyblockjustfits.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'copyblockjustfits.6502']
+.start
+     FFEE   A0 00      LDY #&00
+.loop
+     FFF0   B1 70      LDA (&70),Y
+     FFF2   91 72      STA (&72),Y
+     FFF4   88         DEY
+     FFF5   D0 F9      BNE &FFF0
+.loopend
+     FFF7
+.end
+Saving file 'test'
+Processed file 'copyblockjustfits.6502' ok
+Comparing output ssd to copyblockjustfits.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/copyblock/copyblockreuse.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'copyblockreuse.6502']
+.start
+     2000   A0 00      LDY #&00
+.loop
+     2002   B1 70      LDA (&70),Y
+     2004   91 72      STA (&72),Y
+     2006   88         DEY
+     2007   D0 F9      BNE &2002
+.loopend
+     2009
+.end
+     2000   A2 00      LDX #&00
+Saving file 'test'
+Processed file 'copyblockreuse.6502' ok
+Comparing output ssd to copyblockreuse.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/copyblock/copyblockreusedest.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'copyblockreusedest.fail.6502']
+copyblockreusedest.fail.6502:18: error: Trying to assemble over existing code.
+
+LDA #&00
+        ^
+======================================================================
+TEST: ./3-directives/copyblock/issue75.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'issue75.6502']
+     1200   A9 00      LDA #&00
+     7900   EA         NOP
+Processed file 'issue75.6502' ok
+warning: no SAVE command in source file.
+======================================================================
+TEST: ./3-directives/incbin/incbin.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'incbin.6502']
+.start
+     2000   58 58 
+     2002   54 68 65 ... INCBIN "incbin.bin"
+     31CF   58 58 
+.end
+Saving file 'test'
+Processed file 'incbin.6502' ok
+Comparing output ssd to incbin.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/incbin/incbinjustfails.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'incbinjustfails.fail.6502']
+incbinjustfails.fail.6502:8: error: Out of memory.
+
+INCBIN "incbin.bin"
+                   ^
+======================================================================
+TEST: ./3-directives/incbin/incbinjustfits.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'incbinjustfits.6502']
+.start
+     EE31   58 58 
+     EE33   54 68 65 ... INCBIN "incbin.bin"
+.end
+Saving file 'test'
+Processed file 'incbinjustfits.6502' ok
+Comparing output ssd to incbinjustfits.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/incbin/incbinnoname.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'incbinnoname.fail.6502']
+incbinnoname.fail.6502:8: error: Expression not found.
+
+INCBIN
+      ^
+======================================================================
+TEST: ./3-directives/macro/opcodemacro.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-w', '-do', 'test.ssd', '-i', 'opcodemacro.6502']
+.start
+Macro DEC16:
+     0000   A5 70      LDA &70
+     0002   D0 02      BNE &0006
+     0004   C6 71      DEC &71
+.skip
+     0006   C6 70      DEC &70
+End macro DEC16
+     0008   60         RTS
+.end
+Saving file 'code'
+Processed file 'opcodemacro.6502' ok
+Comparing output ssd to opcodemacro.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/macro/opcodemacro.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'opcodemacro.fail.6502']
+opcodemacro.fail.6502:2: error: Macro name cannot start with an assembler mnemonic.  Use the -w command-line option to allow this.
+
+MACRO DEC16 a
+      ^
+Comparing beebasm output to opcodemacro.fail.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/mapchar/mapchar.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'mapchar.6502']
+.start
+     2000   53 50 48 ...
+     2024   0A
+     2025   74 68 65 ...
+     2050   0A
+.end
+Saving file 'test'
+Processed file 'mapchar.6502' ok
+Comparing output ssd to mapchar.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/mapchar/mapcharfour.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'mapcharfour.fail.6502']
+mapcharfour.fail.6502:5: error: Bad expression.
+
+MAPCHAR 'A','B','C','D'
+                   ^
+======================================================================
+TEST: ./3-directives/mapchar/mapcharone.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'mapcharone.fail.6502']
+mapcharone.fail.6502:5: error: Expression not found.
+
+MAPCHAR 'A'
+           ^
+======================================================================
+TEST: ./3-directives/putbasic/abbreviations.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'abbreviations.6502']
+Processed file 'abbreviations.6502' ok
+Comparing output ssd to abbreviations.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putbasic/bitsandbobs.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'bitsandbobs.6502']
+Processed file 'bitsandbobs.6502' ok
+Comparing output ssd to bitsandbobs.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putbasic/issue-101.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'issue-101.6502']
+Processed file 'issue-101.6502' ok
+Comparing output ssd to issue-101.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putbasic/issue-45.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'issue-45.6502']
+Processed file 'issue-45.6502' ok
+Comparing output ssd to issue-45.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putbasic/issue-62.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'issue-62.6502']
+Processed file 'issue-62.6502' ok
+Comparing output ssd to issue-62.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putbasic/issue-63.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'issue-63.6502']
+Processed file 'issue-63.6502' ok
+Comparing output ssd to issue-63.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putbasic/issue-64.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'issue-64.6502']
+Processed file 'issue-64.6502' ok
+Comparing output ssd to issue-64.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putbasic/issue-65.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'issue-65.6502']
+Processed file 'issue-65.6502' ok
+Comparing output ssd to issue-65.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putbasic/pound.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'pound.6502']
+Processed file 'pound.6502' ok
+Comparing output ssd to pound.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putfiletext/putfile.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'putfile.6502']
+.start
+.end
+Saving file 'test'
+Processed file 'putfile.6502' ok
+Comparing output ssd to putfile.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putfiletext/putfilenonexistentdemo.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'putfilenonexistentdemo.fail.6502']
+.start
+     2000   60         RTS
+.end
+Saving file 'test'
+putfilenonexistentdemo.fail.6502:7: error: Error opening file.
+
+putfile "nonexistent", "ne", 0, 0
+                                 ^
+======================================================================
+TEST: ./3-directives/putfiletext/putsyntax1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'putsyntax1.fail.6502']
+putsyntax1.fail.6502:5: error: Expression not found.
+
+PUTFILE
+       ^
+======================================================================
+TEST: ./3-directives/putfiletext/putsyntax2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'putsyntax2.fail.6502']
+putsyntax2.fail.6502:5: error: Expression not found.
+
+PUTFILE "test"
+              ^
+======================================================================
+TEST: ./3-directives/putfiletext/putsyntax3.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'putsyntax3.fail.6502']
+putsyntax3.fail.6502:5: error: Expression not found.
+
+PUTFILE "PUT", "PUT"
+                    ^
+======================================================================
+TEST: ./3-directives/putfiletext/putsyntax4.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'putsyntax4.fail.6502']
+putsyntax4.fail.6502:5: error: Type mismatch.
+
+PUTFILE &DECA
+        ^
+======================================================================
+TEST: ./3-directives/putfiletext/putsyntax5.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'putsyntax5.fail.6502']
+putsyntax5.fail.6502:5: error: Bad expression.
+
+PUTFILE "PUT", "PUT", &BADE, &FADE, 0
+                                  ^
+======================================================================
+TEST: ./3-directives/putfiletext/puttext.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'puttext.6502']
+.start
+.end
+Saving file 'test'
+Processed file 'puttext.6502' ok
+Comparing output ssd to puttext.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/putfiletext/putundef.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'putundef.6502']
+.start
+.end
+     2000   EA         NOP
+.exec
+Saving file 'test'
+Processed file 'putundef.6502' ok
+Comparing output ssd to putundef.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/save/anyused.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'anyused.6502']
+     FFFF   00         BRK
+Processed file 'anyused.6502' ok
+warning: no SAVE command in source file.
+Comparing beebasm output to anyused.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/save/savename.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-o', 'test', '-do', 'test.ssd', '-i', 'savename.6502']
+.start
+.f1
+     2000   A9 43      LDA #&43
+     2002   4C EE FF   JMP &FFEE
+.f2
+     2005   A9 54      LDA #&54
+     2007   4C EE FF   JMP &FFEE
+.f3
+     200A   A9 52      LDA #&52
+     200C   4C EE FF   JMP &FFEE
+.end
+Saving file 'test1'
+Saving file 'test2'
+Saving file 'test3'
+Processed file 'savename.6502' ok
+Comparing output ssd to savename.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/save/savenameempty.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-o', 'test', '-do', 'test.ssd', '-i', 'savenameempty.6502']
+.start
+     2000   A9 43      LDA #&43
+     2002   4C EE FF   JMP &FFEE
+.end
+Saving file 'test'
+Processed file 'savenameempty.6502' ok
+Comparing output ssd to savenameempty.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/save/savenoend.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'savenoend.fail.6502']
+savenoend.fail.6502:10: error: Expression not found.
+
+SAVE "test", start
+                  ^
+======================================================================
+TEST: ./3-directives/save/savenoname.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'savenoname.fail.6502']
+savenoname.fail.6502:10: error: Cannot specify SAVE without a filename if no default output filename has been specified.
+
+SAVE start, end
+     ^
+======================================================================
+TEST: ./3-directives/save/savenoname1.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-o', 'test', '-do', 'test.ssd', '-i', 'savenoname1.6502']
+.start
+     2000   A9 43      LDA #&43
+     2002   4C EE FF   JMP &FFEE
+.end
+Saving file 'test'
+Processed file 'savenoname1.6502' ok
+Comparing output ssd to savenoname1.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/save/savenoname2.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-o', 'test', '-do', 'test.ssd', '-i', 'savenoname2.6502']
+.start
+     2000   A9 43      LDA #&43
+     2002   4C EE FF   JMP &FFEE
+     2005   60         RTS
+.end
+Saving file 'test'
+Processed file 'savenoname2.6502' ok
+Comparing output ssd to savenoname2.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/save/savenoname3.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-o', 'test', '-do', 'test.ssd', '-i', 'savenoname3.6502']
+.start
+     2000   A9 43      LDA #&43
+     2002   4C EE FF   JMP &FFEE
+     2005   60         RTS
+.end
+Saving file 'test'
+Processed file 'savenoname3.6502' ok
+Comparing output ssd to savenoname3.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/save/savenostart.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'savenostart.fail.6502']
+savenostart.fail.6502:10: error: Expression not found.
+
+SAVE "test"
+           ^
+======================================================================
+TEST: ./3-directives/save/saveundefexec.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'saveundefexec.6502']
+.start
+     2000   EA         NOP
+     2001   A9 43      LDA #&43
+     2003   4C EE FF   JMP &FFEE
+.end
+Saving file 'test'
+.exec
+Processed file 'saveundefexec.6502' ok
+Comparing output ssd to saveundefexec.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/skip/skip.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'skip.6502']
+.start
+     2000   00 00
+.block
+     2002
+     2002   06 00
+.block
+     2004
+     200A   0C 00
+.block
+     200C
+     2018   12 00
+.block
+     201A
+     202C   18 00
+.block
+     202E
+     2046   1E 00
+.block
+     2048
+     2066   24 00
+.block
+     2068
+     208C   2A 00
+.block
+     208E
+     20B8   30 00
+.block
+     20BA
+     20EA   36 00
+.block
+     20EC
+     2122   3C 00
+.block
+     2124
+     2160   42 00
+.block
+     2162
+     21A4   48 00
+.block
+     21A6
+     21EE   4E 00
+.block
+     21F0
+     223E   54 00
+.block
+     2240
+     2294   5A 00
+.block
+     2296
+     22F0   60 00
+.block
+     22F2
+     2352   66 00
+.block
+     2354
+     23BA   6C 00
+.block
+     23BC
+     2428   72 00
+.block
+     242A
+     249C   78 00
+.block
+     249E
+     2516   7E 00
+.block
+     2518
+     2596   84 00
+.block
+     2598
+     261C   8A 00
+.block
+     261E
+     26A8   90 00
+.block
+     26AA
+     273A   96 00
+.block
+     273C
+     27D2   9C 00
+.block
+     27D4
+     2870   A2 00
+.block
+     2872
+     2914   A8 00
+.block
+     2916
+     29BE   AE 00
+.block
+     29C0
+     2A6E   B4 00
+.block
+     2A70
+     2B24   BA 00
+.block
+     2B26
+     2BE0   C0 00
+.block
+     2BE2
+     2CA2   C6 00
+.block
+     2CA4
+     2D6A   CC 00
+.block
+     2D6C
+     2E38   D2 00
+.block
+     2E3A
+     2F0C   D8 00
+.block
+     2F0E
+     2FE6   DE 00
+.block
+     2FE8
+     30C6   E4 00
+.block
+     30C8
+     31AC   EA 00
+.block
+     31AE
+     3298   F0 00
+.block
+     329A
+     338A   F6 00
+.block
+     338C
+     3482   FC 00
+.block
+     3484
+     3580   02 01
+.block
+     3582
+     3684   08 01
+.block
+     3686
+     378E   0E 01
+.block
+     3790
+     389E   14 01
+.block
+     38A0
+     39B4   1A 01
+.block
+     39B6
+     3AD0   20 01
+.block
+     3AD2
+     3BF2   26 01
+.block
+     3BF4
+     3D1A   2C 01
+.block
+     3D1C
+.end
+Saving file 'test'
+Processed file 'skip.6502' ok
+Comparing output ssd to skip.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/skip/skipextra.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skipextra.fail.6502']
+skipextra.fail.6502:2: error: Unexpected comma encountered.
+
+SKIP 5,
+      ^
+======================================================================
+TEST: ./3-directives/skip/skipmuch.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skipmuch.6502']
+     0000
+Processed file 'skipmuch.6502' ok
+warning: no SAVE command in source file.
+======================================================================
+TEST: ./3-directives/skip/skipnegative.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skipnegative.fail.6502']
+skipnegative.fail.6502:2: error: Constant cannot be negative.
+
+SKIP -1
+    ^
+======================================================================
+TEST: ./3-directives/skip/skipnoexpr.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skipnoexpr.fail.6502']
+skipnoexpr.fail.6502:2: error: Expression not found.
+
+SKIP
+    ^
+======================================================================
+TEST: ./3-directives/skip/skiptoomuch.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skiptoomuch.fail.6502']
+skiptoomuch.fail.6502:2: error: Out of memory.
+
+SKIP &10001
+           ^
+======================================================================
+TEST: ./3-directives/skipto/skipto.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'skipto.6502']
+.start
+     2000   00 00
+.block
+     2002   06 00
+.block
+     200A   0C 00
+.block
+     2018   12 00
+.block
+     202C   18 00
+.block
+     2046   1E 00
+.block
+     2066   24 00
+.block
+     208C   2A 00
+.block
+     20B8   30 00
+.block
+     20EA   36 00
+.block
+     2122   3C 00
+.block
+     2160   42 00
+.block
+     21A4   48 00
+.block
+     21EE   4E 00
+.block
+     223E   54 00
+.block
+     2294   5A 00
+.block
+     22F0   60 00
+.block
+     2352   66 00
+.block
+     23BA   6C 00
+.block
+     2428   72 00
+.block
+     249C   78 00
+.block
+     2516   7E 00
+.block
+     2596   84 00
+.block
+     261C   8A 00
+.block
+     26A8   90 00
+.block
+     273A   96 00
+.block
+     27D2   9C 00
+.block
+     2870   A2 00
+.block
+     2914   A8 00
+.block
+     29BE   AE 00
+.block
+     2A6E   B4 00
+.block
+     2B24   BA 00
+.block
+     2BE0   C0 00
+.block
+     2CA2   C6 00
+.block
+     2D6A   CC 00
+.block
+     2E38   D2 00
+.block
+     2F0C   D8 00
+.block
+     2FE6   DE 00
+.block
+     30C6   E4 00
+.block
+     31AC   EA 00
+.block
+     3298   F0 00
+.block
+     338A   F6 00
+.block
+     3482   FC 00
+.block
+     3580   02 01
+.block
+     3684   08 01
+.block
+     378E   0E 01
+.block
+     389E   14 01
+.block
+     39B4   1A 01
+.block
+     3AD0   20 01
+.block
+     3BF2   26 01
+.block
+     3D1A   2C 01
+.block
+.end
+Saving file 'test'
+Processed file 'skipto.6502' ok
+Comparing output ssd to skipto.gold.ssd succeeded
+======================================================================
+TEST: ./3-directives/skipto/skiptoback.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skiptoback.fail.6502']
+skiptoback.fail.6502:3: error: Attempted to skip backwards to an address.
+
+SKIPTO &1FFF
+       ^
+======================================================================
+TEST: ./3-directives/skipto/skiptoextra.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skiptoextra.fail.6502']
+skiptoextra.fail.6502:2: error: Bad expression.
+
+SKIPTO 5,
+        ^
+======================================================================
+TEST: ./3-directives/skipto/skiptomuch.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skiptomuch.6502']
+Processed file 'skiptomuch.6502' ok
+warning: no SAVE command in source file.
+======================================================================
+TEST: ./3-directives/skipto/skiptonoexpr.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skiptonoexpr.fail.6502']
+skiptonoexpr.fail.6502:2: error: Expression not found.
+
+SKIPTO
+      ^
+======================================================================
+TEST: ./3-directives/skipto/skiptorange1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skiptorange1.fail.6502']
+skiptorange1.fail.6502:2: error: Out of range.
+
+SKIPTO -1
+       ^
+======================================================================
+TEST: ./3-directives/skipto/skiptorange2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'skiptorange2.fail.6502']
+skiptorange2.fail.6502:2: error: Out of range.
+
+SKIPTO &10001
+       ^
+======================================================================
+TEST: ./3-directives/sourceline/last.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'last.fail.6502']
+last.fail.6502:1: error: SOURCELINE must be the final statement on a line.
+
+SOURCELINE 1,"first.6502":PRINT"HELLO"
+                         ^
+======================================================================
+TEST: ./3-directives/sourceline/linefile.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'linefile.fail.6502']
+other.asm:5: error: Unrecognised token.
+
+LDZ #2
+^
+Comparing beebasm output to linefile.fail.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/sourceline/lineonly.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'lineonly.fail.6502']
+lineonly.fail.6502:5: error: Unrecognised token.
+
+LDZ #2
+^
+Comparing beebasm output to lineonly.fail.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/sourceline/macro.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'macro.fail.6502']
+macro.fail.6502:3: error: Unrecognised token.
+
+LDZ #1
+^
+
+Call stack:
+macro.fail.6502:9
+Comparing beebasm output to macro.fail.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/sourceline/macro2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'macro2.fail.6502']
+random.asm:21: error: Unrecognised token.
+
+LDZ #1
+^
+
+Call stack:
+macro2.fail.6502:9
+Comparing beebasm output to macro2.fail.gold.txt succeeded
+======================================================================
+TEST: ./3-directives/template/usetemplateboot.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-di', 'template.ssd', '-do', 'test.ssd', '-i', 'usetemplateboot.6502']
+.start
+     8000   60         RTS
+.end
+Saving file 'tester'
+Processed file 'usetemplateboot.6502' ok
+Comparing output ssd to usetemplateboot.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/all6502.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'all6502.6502']
+.start
+     2000   00         BRK
+     2001   01 12      ORA (&12,X)
+     2003   05 12      ORA &12
+     2005   06 12      ASL &12
+     2007   08         PHP
+     2008   09 12      ORA #&12
+     200A   0A         ASL A
+     200B   0D 34 12   ORA &1234
+     200E   0E 34 12   ASL &1234
+     2011   10 00      BPL &2013
+     2013   11 12      ORA (&12),Y
+     2015   15 12      ORA &12,X
+     2017   16 12      ASL &12,X
+     2019   18         CLC
+     201A   19 34 12   ORA &1234,Y
+     201D   1D 34 12   ORA &1234,X
+     2020   1E 34 12   ASL &1234,X
+     2023   20 34 12   JSR &1234
+     2026   21 12      AND (&12,X)
+     2028   24 12      BIT &12
+     202A   25 12      AND &12
+     202C   26 12      ROL &12
+     202E   28         PLP
+     202F   29 12      AND #&12
+     2031   2A         ROL A
+     2032   2C 34 12   BIT &1234
+     2035   2D 34 12   AND &1234
+     2038   2E 34 12   ROL &1234
+     203B   30 00      BMI &203D
+     203D   31 12      AND (&12),Y
+     203F   35 12      AND &12,X
+     2041   36 12      ROL &12,X
+     2043   38         SEC
+     2044   39 34 12   AND &1234,Y
+     2047   3D 34 12   AND &1234,X
+     204A   3E 34 12   ROL &1234,X
+     204D   40         RTI
+     204E   41 12      EOR (&12,X)
+     2050   45 12      EOR &12
+     2052   46 12      LSR &12
+     2054   48         PHA
+     2055   49 12      EOR #&12
+     2057   4A         LSR A
+     2058   4C 34 12   JMP &1234
+     205B   4D 34 12   EOR &1234
+     205E   4E 34 12   LSR &1234
+     2061   50 00      BVC &2063
+     2063   51 12      EOR (&12),Y
+     2065   55 12      EOR &12,X
+     2067   56 12      LSR &12,X
+     2069   58         CLI
+     206A   59 34 12   EOR &1234,Y
+     206D   5D 34 12   EOR &1234,X
+     2070   5E 34 12   LSR &1234,X
+     2073   60         RTS
+     2074   61 12      ADC (&12,X)
+     2076   65 12      ADC &12
+     2078   66 12      ROR &12
+     207A   68         PLA
+     207B   69 12      ADC #&12
+     207D   6A         ROR A
+     207E   6C 34 12   JMP (&1234)
+     2081   6D 34 12   ADC &1234
+     2084   6E 34 12   ROR &1234
+     2087   70 00      BVS &2089
+     2089   71 12      ADC (&12),Y
+     208B   75 12      ADC &12,X
+     208D   76 12      ROR &12,X
+     208F   78         SEI
+     2090   79 34 12   ADC &1234,Y
+     2093   7D 34 12   ADC &1234,X
+     2096   7E 34 12   ROR &1234,X
+     2099   81 12      STA (&12,X)
+     209B   84 12      STY &12
+     209D   85 12      STA &12
+     209F   86 12      STX &12
+     20A1   88         DEY
+     20A2   8A         TXA
+     20A3   8C 34 12   STY &1234
+     20A6   8D 34 12   STA &1234
+     20A9   8E 34 12   STX &1234
+     20AC   90 00      BCC &20AE
+     20AE   91 12      STA (&12),Y
+     20B0   94 12      STY &12,X
+     20B2   95 12      STA &12,X
+     20B4   96 12      STX &12,Y
+     20B6   98         TYA
+     20B7   99 34 12   STA &1234,Y
+     20BA   9A         TXS
+     20BB   9D 34 12   STA &1234,X
+     20BE   A0 12      LDY #&12
+     20C0   A1 12      LDA (&12,X)
+     20C2   A2 12      LDX #&12
+     20C4   A4 12      LDY &12
+     20C6   A5 12      LDA &12
+     20C8   A6 12      LDX &12
+     20CA   A8         TAY
+     20CB   A9 12      LDA #&12
+     20CD   AA         TAX
+     20CE   AC 34 12   LDY &1234
+     20D1   AD 34 12   LDA &1234
+     20D4   AE 34 12   LDX &1234
+     20D7   B0 00      BCS &20D9
+     20D9   B1 12      LDA (&12),Y
+     20DB   B4 12      LDY &12,X
+     20DD   B5 12      LDA &12,X
+     20DF   B6 12      LDX &12,Y
+     20E1   B8         CLV
+     20E2   B9 34 12   LDA &1234,Y
+     20E5   BA         TSX
+     20E6   BC 34 12   LDY &1234,X
+     20E9   BD 34 12   LDA &1234,X
+     20EC   BE 34 12   LDX &1234,Y
+     20EF   C0 12      CPY #&12
+     20F1   C1 12      CMP (&12,X)
+     20F3   C4 12      CPY &12
+     20F5   C5 12      CMP &12
+     20F7   C6 12      DEC &12
+     20F9   C8         INY
+     20FA   C9 12      CMP #&12
+     20FC   CA         DEX
+     20FD   CC 34 12   CPY &1234
+     2100   CD 34 12   CMP &1234
+     2103   CE 34 12   DEC &1234
+     2106   D0 00      BNE &2108
+     2108   D1 12      CMP (&12),Y
+     210A   D5 12      CMP &12,X
+     210C   D6 12      DEC &12,X
+     210E   D8         CLD
+     210F   D9 34 12   CMP &1234,Y
+     2112   DD 34 12   CMP &1234,X
+     2115   DE 34 12   DEC &1234,X
+     2118   E0 12      CPX #&12
+     211A   E1 12      SBC (&12,X)
+     211C   E4 12      CPX &12
+     211E   E5 12      SBC &12
+     2120   E6 12      INC &12
+     2122   E8         INX
+     2123   E9 12      SBC #&12
+     2125   EA         NOP
+     2126   EC 34 12   CPX &1234
+     2129   ED 34 12   SBC &1234
+     212C   EE 34 12   INC &1234
+     212F   F0 00      BEQ &2131
+     2131   F1 12      SBC (&12),Y
+     2133   F5 12      SBC &12,X
+     2135   F6 12      INC &12,X
+     2137   F8         SED
+     2138   F9 34 12   SBC &1234,Y
+     213B   FD 34 12   SBC &1234,X
+     213E   FE 34 12   INC &1234,X
+.end
+Saving file 'test'
+Processed file 'all6502.6502' ok
+Comparing output ssd to all6502.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/all65C02.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'all65C02.6502']
+.start
+     2000   00         BRK
+     2001   01 12      ORA (&12,X)
+     2003   04 12      TSB &12
+     2005   05 12      ORA &12
+     2007   06 12      ASL &12
+     2009   08         PHP
+     200A   09 12      ORA #&12
+     200C   0A         ASL A
+     200D   0C 34 12   TSB &1234
+     2010   0D 34 12   ORA &1234
+     2013   0E 34 12   ASL &1234
+     2016   10 00      BPL &2018
+     2018   11 12      ORA (&12),Y
+     201A   12 12      ORA (&12)
+     201C   14 12      TRB &12
+     201E   15 12      ORA &12,X
+     2020   16 12      ASL &12,X
+     2022   18         CLC
+     2023   19 34 12   ORA &1234,Y
+     2026   1A         INC A
+     2027   1C 34 12   TRB &1234
+     202A   1D 34 12   ORA &1234,X
+     202D   1E 34 12   ASL &1234,X
+     2030   20 34 12   JSR &1234
+     2033   21 12      AND (&12,X)
+     2035   24 12      BIT &12
+     2037   25 12      AND &12
+     2039   26 12      ROL &12
+     203B   28         PLP
+     203C   29 12      AND #&12
+     203E   2A         ROL A
+     203F   2C 34 12   BIT &1234
+     2042   2D 34 12   AND &1234
+     2045   2E 34 12   ROL &1234
+     2048   30 00      BMI &204A
+     204A   31 12      AND (&12),Y
+     204C   32 12      AND (&12)
+     204E   34 12      BIT &12,X
+     2050   35 12      AND &12,X
+     2052   36 12      ROL &12,X
+     2054   38         SEC
+     2055   39 34 12   AND &1234,Y
+     2058   3A         DEC A
+     2059   3C 34 12   BIT &1234,X
+     205C   3D 34 12   AND &1234,X
+     205F   3E 34 12   ROL &1234,X
+     2062   40         RTI
+     2063   41 12      EOR (&12,X)
+     2065   45 12      EOR &12
+     2067   46 12      LSR &12
+     2069   48         PHA
+     206A   49 12      EOR #&12
+     206C   4A         LSR A
+     206D   4C 34 12   JMP &1234
+     2070   4D 34 12   EOR &1234
+     2073   4E 34 12   LSR &1234
+     2076   50 00      BVC &2078
+     2078   51 12      EOR (&12),Y
+     207A   52 12      EOR (&12)
+     207C   55 12      EOR &12,X
+     207E   56 12      LSR &12,X
+     2080   58         CLI
+     2081   59 34 12   EOR &1234,Y
+     2084   5A         PHY
+     2085   5D 34 12   EOR &1234,X
+     2088   5E 34 12   LSR &1234,X
+     208B   60         RTS
+     208C   61 12      ADC (&12,X)
+     208E   64 12      STZ &12
+     2090   65 12      ADC &12
+     2092   66 12      ROR &12
+     2094   68         PLA
+     2095   69 12      ADC #&12
+     2097   6A         ROR A
+     2098   6C 34 12   JMP (&1234)
+     209B   6D 34 12   ADC &1234
+     209E   6E 34 12   ROR &1234
+     20A1   70 00      BVS &20A3
+     20A3   71 12      ADC (&12),Y
+     20A5   72 12      ADC (&12)
+     20A7   74 12      STZ &12,X
+     20A9   75 12      ADC &12,X
+     20AB   76 12      ROR &12,X
+     20AD   78         SEI
+     20AE   79 34 12   ADC &1234,Y
+     20B1   7A         PLY
+     20B2   7C 34 12   JMP (&1234,X)
+     20B5   7D 34 12   ADC &1234,X
+     20B8   7E 34 12   ROR &1234,X
+     20BB   80 00      BRA &20BD
+     20BD   81 12      STA (&12,X)
+     20BF   84 12      STY &12
+     20C1   85 12      STA &12
+     20C3   86 12      STX &12
+     20C5   88         DEY
+     20C6   89 12      BIT #&12
+     20C8   8A         TXA
+     20C9   8C 34 12   STY &1234
+     20CC   8D 34 12   STA &1234
+     20CF   8E 34 12   STX &1234
+     20D2   90 00      BCC &20D4
+     20D4   91 12      STA (&12),Y
+     20D6   92 12      STA (&12)
+     20D8   94 12      STY &12,X
+     20DA   95 12      STA &12,X
+     20DC   96 12      STX &12,Y
+     20DE   98         TYA
+     20DF   99 34 12   STA &1234,Y
+     20E2   9A         TXS
+     20E3   9C 34 12   STZ &1234
+     20E6   9D 34 12   STA &1234,X
+     20E9   9E 34 12   STZ &1234,X
+     20EC   A0 12      LDY #&12
+     20EE   A1 12      LDA (&12,X)
+     20F0   A2 12      LDX #&12
+     20F2   A4 12      LDY &12
+     20F4   A5 12      LDA &12
+     20F6   A6 12      LDX &12
+     20F8   A8         TAY
+     20F9   A9 12      LDA #&12
+     20FB   AA         TAX
+     20FC   AC 34 12   LDY &1234
+     20FF   AD 34 12   LDA &1234
+     2102   AE 34 12   LDX &1234
+     2105   B0 00      BCS &2107
+     2107   B1 12      LDA (&12),Y
+     2109   B2 12      LDA (&12)
+     210B   B4 12      LDY &12,X
+     210D   B5 12      LDA &12,X
+     210F   B6 12      LDX &12,Y
+     2111   B8         CLV
+     2112   B9 34 12   LDA &1234,Y
+     2115   BA         TSX
+     2116   BC 34 12   LDY &1234,X
+     2119   BD 34 12   LDA &1234,X
+     211C   BE 34 12   LDX &1234,Y
+     211F   C0 12      CPY #&12
+     2121   C1 12      CMP (&12,X)
+     2123   C4 12      CPY &12
+     2125   C5 12      CMP &12
+     2127   C6 12      DEC &12
+     2129   C8         INY
+     212A   C9 12      CMP #&12
+     212C   CA         DEX
+     212D   CC 34 12   CPY &1234
+     2130   CD 34 12   CMP &1234
+     2133   CE 34 12   DEC &1234
+     2136   D0 00      BNE &2138
+     2138   D1 12      CMP (&12),Y
+     213A   D2 12      CMP (&12)
+     213C   D5 12      CMP &12,X
+     213E   D6 12      DEC &12,X
+     2140   D8         CLD
+     2141   D9 34 12   CMP &1234,Y
+     2144   DA         PHX
+     2145   DD 34 12   CMP &1234,X
+     2148   DE 34 12   DEC &1234,X
+     214B   E0 12      CPX #&12
+     214D   E1 12      SBC (&12,X)
+     214F   E4 12      CPX &12
+     2151   E5 12      SBC &12
+     2153   E6 12      INC &12
+     2155   E8         INX
+     2156   E9 12      SBC #&12
+     2158   EA         NOP
+     2159   EC 34 12   CPX &1234
+     215C   ED 34 12   SBC &1234
+     215F   EE 34 12   INC &1234
+     2162   F0 00      BEQ &2164
+     2164   F1 12      SBC (&12),Y
+     2166   F2 12      SBC (&12)
+     2168   F5 12      SBC &12,X
+     216A   F6 12      INC &12,X
+     216C   F8         SED
+     216D   F9 34 12   SBC &1234,Y
+     2170   FA         PLX
+     2171   FD 34 12   SBC &1234,X
+     2174   FE 34 12   INC &1234,X
+.end
+Saving file 'test'
+Processed file 'all65C02.6502' ok
+Comparing output ssd to all65C02.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/expressionrecovery.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'expressionrecovery.6502']
+.start
+     2000   04
+     2001   20
+     2002   05
+     2003   06
+.undef1
+     2004   04 00
+     2006   20 00
+     2008   0C 20
+     200A   00 02
+.undef2
+     200C   0C 20 00 00
+     2010   20 00 00 00
+     2014   00 00 02 00
+     2018   FF FF FF FF
+.undef3
+.end
+Saving file 'test'
+Processed file 'expressionrecovery.6502' ok
+Comparing output ssd to expressionrecovery.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/local-forward-branch-1.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'local-forward-branch-1.6502']
+.start
+.ok
+     2000   A9 41      LDA #&41
+     2002   A9 41      LDA #&41
+     2004   A9 41      LDA #&41
+     2006   A9 41      LDA #&41
+     2008   A9 41      LDA #&41
+     200A   A9 41      LDA #&41
+     200C   A9 41      LDA #&41
+     200E   A9 41      LDA #&41
+     2010   A9 41      LDA #&41
+     2012   A9 41      LDA #&41
+     2014   A9 41      LDA #&41
+     2016   A9 41      LDA #&41
+     2018   A9 41      LDA #&41
+     201A   A9 41      LDA #&41
+     201C   A9 41      LDA #&41
+     201E   A9 41      LDA #&41
+     2020   A9 41      LDA #&41
+     2022   A9 41      LDA #&41
+     2024   A9 41      LDA #&41
+     2026   A9 41      LDA #&41
+     2028   A9 41      LDA #&41
+     202A   A9 41      LDA #&41
+     202C   A9 41      LDA #&41
+     202E   A9 41      LDA #&41
+     2030   A9 41      LDA #&41
+     2032   A9 41      LDA #&41
+     2034   A9 41      LDA #&41
+     2036   A9 41      LDA #&41
+     2038   A9 41      LDA #&41
+     203A   A9 41      LDA #&41
+     203C   A9 41      LDA #&41
+     203E   A9 41      LDA #&41
+     2040   A9 41      LDA #&41
+     2042   A9 41      LDA #&41
+     2044   A9 41      LDA #&41
+     2046   A9 41      LDA #&41
+     2048   A9 41      LDA #&41
+     204A   A9 41      LDA #&41
+     204C   A9 41      LDA #&41
+     204E   A9 41      LDA #&41
+     2050   A9 41      LDA #&41
+     2052   A9 41      LDA #&41
+     2054   A9 41      LDA #&41
+     2056   A9 41      LDA #&41
+     2058   A9 41      LDA #&41
+     205A   A9 41      LDA #&41
+     205C   A9 41      LDA #&41
+     205E   A9 41      LDA #&41
+     2060   A9 41      LDA #&41
+     2062   A9 41      LDA #&41
+     2064   A9 41      LDA #&41
+     2066   A9 41      LDA #&41
+     2068   A9 41      LDA #&41
+     206A   A9 41      LDA #&41
+     206C   A9 41      LDA #&41
+     206E   A9 41      LDA #&41
+     2070   A9 41      LDA #&41
+     2072   A9 41      LDA #&41
+     2074   A9 41      LDA #&41
+     2076   A9 41      LDA #&41
+     2078   A9 41      LDA #&41
+     207A   A9 41      LDA #&41
+     207C   A9 41      LDA #&41
+     207E   A9 41      LDA #&41
+     2080   A9 41      LDA #&41
+     2082   C9 41      CMP #&41
+     2084   F0 03      BEQ &2089
+     2086   4C 8A 20   JMP &208A
+.ok
+     2089   60         RTS
+.boom
+     208A   A9 07      LDA #&07
+     208C   20 EE FF   JSR &FFEE
+     208F   4C 8A 20   JMP &208A
+.end
+Saving file 'test'
+Processed file 'local-forward-branch-1.6502' ok
+Comparing output ssd to local-forward-branch-1.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/local-forward-branch-2.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'local-forward-branch-2.6502']
+.start
+.ok
+     2000   A9 41      LDA #&41
+     2002   A9 41      LDA #&41
+     2004   A9 41      LDA #&41
+     2006   A9 41      LDA #&41
+     2008   A9 41      LDA #&41
+     200A   A9 41      LDA #&41
+     200C   A9 41      LDA #&41
+     200E   A9 41      LDA #&41
+     2010   A9 41      LDA #&41
+     2012   A9 41      LDA #&41
+     2014   A9 41      LDA #&41
+     2016   A9 41      LDA #&41
+     2018   A9 41      LDA #&41
+     201A   A9 41      LDA #&41
+     201C   A9 41      LDA #&41
+     201E   A9 41      LDA #&41
+     2020   A9 41      LDA #&41
+     2022   A9 41      LDA #&41
+     2024   A9 41      LDA #&41
+     2026   A9 41      LDA #&41
+     2028   A9 41      LDA #&41
+     202A   A9 41      LDA #&41
+     202C   A9 41      LDA #&41
+     202E   A9 41      LDA #&41
+     2030   A9 41      LDA #&41
+     2032   A9 41      LDA #&41
+     2034   A9 41      LDA #&41
+     2036   A9 41      LDA #&41
+     2038   A9 41      LDA #&41
+     203A   A9 41      LDA #&41
+     203C   A9 41      LDA #&41
+     203E   A9 41      LDA #&41
+     2040   A9 41      LDA #&41
+     2042   A9 41      LDA #&41
+     2044   A9 41      LDA #&41
+     2046   A9 41      LDA #&41
+     2048   A9 41      LDA #&41
+     204A   A9 41      LDA #&41
+     204C   A9 41      LDA #&41
+     204E   A9 41      LDA #&41
+     2050   A9 41      LDA #&41
+     2052   A9 41      LDA #&41
+     2054   A9 41      LDA #&41
+     2056   A9 41      LDA #&41
+     2058   A9 41      LDA #&41
+     205A   A9 41      LDA #&41
+     205C   A9 41      LDA #&41
+     205E   A9 41      LDA #&41
+     2060   A9 41      LDA #&41
+     2062   A9 41      LDA #&41
+     2064   A9 41      LDA #&41
+     2066   A9 41      LDA #&41
+     2068   A9 41      LDA #&41
+     206A   A9 41      LDA #&41
+     206C   A9 41      LDA #&41
+     206E   A9 41      LDA #&41
+     2070   A9 41      LDA #&41
+     2072   A9 41      LDA #&41
+     2074   A9 41      LDA #&41
+     2076   A9 41      LDA #&41
+     2078   A9 41      LDA #&41
+     207A   A9 41      LDA #&41
+     207C   A9 41      LDA #&41
+     207E   A9 41      LDA #&41
+     2080   A9 41      LDA #&41
+     2082   C9 41      CMP #&41
+Macro do_branch_if_eq:
+     2084   F0 03      BEQ &2089
+End macro do_branch_if_eq
+     2086   4C 8A 20   JMP &208A
+.ok
+     2089   60         RTS
+.boom
+     208A   A9 07      LDA #&07
+     208C   20 EE FF   JSR &FFEE
+     208F   4C 8A 20   JMP &208A
+.end
+Saving file 'test'
+Processed file 'local-forward-branch-2.6502' ok
+Comparing output ssd to local-forward-branch-2.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/local-forward-branch-3.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'local-forward-branch-3.6502']
+.start
+Macro foo:
+     2000   A5 70      LDA &70
+End macro foo
+.end
+Saving file 'test'
+Processed file 'local-forward-branch-3.6502' ok
+Comparing output ssd to local-forward-branch-3.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/local-forward-branch-4.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'local-forward-branch-4.6502']
+.start
+Macro load_a_and_maybe_x:
+     2000   A9 2A      LDA #&2A
+End macro load_a_and_maybe_x
+Macro load_a_and_maybe_x:
+     2002   A9 41      LDA #&41
+     2004   A2 41      LDX #&41
+End macro load_a_and_maybe_x
+.end
+Saving file 'test'
+Processed file 'local-forward-branch-4.6502' ok
+Comparing output ssd to local-forward-branch-4.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/local-forward-branch-5.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'local-forward-branch-5.6502']
+.start
+     2000   A9 41      LDA #&41
+.baz
+Macro foo:
+Macro bar:
+     2002   FF 1F
+End macro bar
+End macro foo
+Macro foo:
+Macro bar:
+     2004   01 20
+End macro bar
+End macro foo
+     2006   A2 2A      LDX #&2A
+Macro foo:
+Macro bar:
+     2008   09 20
+End macro bar
+End macro foo
+.end
+Saving file 'test'
+Processed file 'local-forward-branch-5.6502' ok
+Comparing output ssd to local-forward-branch-5.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/scopejumpdemo1.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'scopejumpdemo1.6502']
+.start
+     2000   A2 FF      LDX #&FF
+.loop
+     2002   CA         DEX
+     2003   D0 FD      BNE &2002
+.loop128
+     2005   A2 80      LDX #&80
+.loop
+     2007   CA         DEX
+     2008   D0 FD      BNE &2007
+     200A   4C 05 20   JMP &2005
+.end
+Saving file 'test'
+Processed file 'scopejumpdemo1.6502' ok
+Comparing output ssd to scopejumpdemo1.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/scopejumpdemo2.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'scopejumpdemo2.6502']
+.start
+     2000   A9 41      LDA #&41
+     2002   85 70      STA &70
+     2004   20 0F 20   JSR &200F
+     2007   84 71      STY &71
+     2009   20 1F 20   JSR &201F
+     200C   A0 03      LDY #&03
+     200E   60         RTS
+Including file scopejumpdemo2.inc.6502
+.foo
+     200F   A5 70      LDA &70
+     2011   C9 2A      CMP #&2A
+     2013   90 05      BCC &201A
+     2015   A2 02      LDX #&02
+     2017   4C 1C 20   JMP &201C
+.lt_42
+     201A   A2 04      LDX #&04
+.ldy_3_and_rts
+     201C   A0 03      LDY #&03
+     201E   60         RTS
+.bar
+     201F   A5 71      LDA &71
+     2021   C9 2A      CMP #&2A
+     2023   90 05      BCC &202A
+     2025   A2 07      LDX #&07
+     2027   4C 1C 20   JMP &201C
+.lt_42
+     202A   A2 09      LDX #&09
+     202C   4C 1C 20   JMP &201C
+Processed file 'scopejumpdemo2.inc.6502' ok
+.end
+Saving file 'test'
+Processed file 'scopejumpdemo2.6502' ok
+Comparing output ssd to scopejumpdemo2.gold.ssd succeeded
+======================================================================
+TEST: ./4-assembler/scopejumpdemo2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'scopejumpdemo2.fail.6502']
+.start
+     2000   A9 41      LDA #&41
+     2002   85 70      STA &70
+     2004   20 12 20   JSR &2012
+     2007   84 71      STY &71
+     2009   20 22 20   JSR &2022
+scopejumpdemo2.fail.6502:10: error: Symbol not defined.
+
+ JMP ldy_3_and_rts \ this won't assemble, even though it exists inside
+     ^
+======================================================================
+TEST: ./5-errors/assertdemo.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'assertdemo.fail.6502']
+.start
+assertdemo.fail.6502:4: error: Assertion failed.
+
+ assert (addr_offset + 3) <= 255
+        ^
+======================================================================
+TEST: ./5-errors/callstackdemo.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'callstackdemo.fail.6502']
+callstackdemo.fail.6502:5: error: Immediate constants cannot be greater than 255.
+
+adc #n
+     ^
+
+Call stack:
+callstackdemo.fail.6502:10
+callstackdemo.fail.6502:16
+Comparing beebasm output to callstackdemo.fail.gold.txt succeeded
+======================================================================
+TEST: ./5-errors/errorlinenumber1.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'errorlinenumber1.fail.6502']
+errorlinenumber1.fail.6502:10: error: Indirect mode not allowed for this instruction.
+
+ldx (&70),y
+    ^
+
+Call stack:
+errorlinenumber1.fail.6502:13
+Comparing beebasm output to errorlinenumber1.fail.gold.txt succeeded
+======================================================================
+TEST: ./5-errors/errorlinenumber2.fail.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-i', 'errorlinenumber2.fail.6502']
+errorlinenumber2.fail.6502:9: error: Indirect mode not allowed for this instruction.
+
+ldx (&70),y
+    ^
+Comparing beebasm output to errorlinenumber2.fail.gold.txt succeeded
+======================================================================
+TEST: ./5-errors/filelinecallstackdemo.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-q', '-do', 'test.ssd', '-i', 'filelinecallstackdemo.6502']
+Current location:filelinecallstackdemo.6502:16
+Current call stack:filelinecallstackdemo.6502:11
+filelinecallstackdemo.6502:6
+filelinecallstackdemo.6502:19 (end)
+Comparing beebasm output to filelinecallstackdemo.gold.txt succeeded
+Comparing output ssd to filelinecallstackdemo.gold.ssd succeeded
+======================================================================
+TEST: ./6-projects/demo.6502
+======================================================================
+['/mnt/5e411d76-373d-41cf-ae8b-276b6052eef6/projects/beebasm/beebasm', '-v', '-do', 'test.ssd', '-i', 'demo.6502']
+Including file ../../demo.6502
+.xpos
+     0000
+.ypos
+     0001
+.colour
+     0002
+.write
+     0003
+.vsync
+     0005
+.angle
+     0006
+.speed
+     0008
+.counter
+     000A
+.temp
+     000B
+.behindflag
+     000C
+.start
+     1100   78         SEI
+     1101   A2 FF      LDX #&FF
+     1103   9A         TXS
+     1104   8E 44 FE   STX &FE44
+     1107   8E 45 FE   STX &FE45
+     110A   A9 7F      LDA #&7F
+     110C   8D 4E FE   STA &FE4E
+     110F   8D 43 FE   STA &FE43
+     1112   A9 C2      LDA #&C2
+     1114   8D 4E FE   STA &FE4E
+     1117   A9 0F      LDA #&0F
+     1119   8D 42 FE   STA &FE42
+     111C   A9 03      LDA #&03
+     111E   8D 40 FE   STA &FE40
+     1121   A9 00      LDA #&00
+     1123   8D 4B FE   STA &FE4B
+     1126   A9 A6      LDA #&A6
+     1128   8D 04 02   STA &0204
+     112B   A9 12      LDA #&12
+     112D   8D 05 02   STA &0205
+     1130   A2 40      LDX #&40
+     1132   A9 00      LDA #&00
+     1134   A8         TAY
+.clearloop
+     1135   99 00 40   STA &4000,Y
+     1138   C8         INY
+     1139   D0 FA      BNE &1135
+     113B   EE 37 11   INC &1137
+     113E   CA         DEX
+     113F   D0 F4      BNE &1135
+     1141   A2 0D      LDX #&0D
+.crtcloop
+     1143   8E 00 FE   STX &FE00
+     1146   BD D7 12   LDA &12D7,X
+     1149   8D 01 FE   STA &FE01
+     114C   CA         DEX
+     114D   10 F4      BPL &1143
+     114F   A9 F4      LDA #&F4
+     1151   8D 20 FE   STA &FE20
+     1154   A2 0F      LDX #&0F
+.palloop
+     1156   BD E5 12   LDA &12E5,X
+     1159   8D 21 FE   STA &FE21
+     115C   09 80      ORA #&80
+     115E   8D 21 FE   STA &FE21
+     1161   CA         DEX
+     1162   10 F2      BPL &1156
+     1164   A9 00      LDA #&00
+     1166   85 06      STA &06
+     1168   85 07      STA &07
+     116A   85 05      STA &05
+     116C   85 08      STA &08
+     116E   A9 01      LDA #&01
+     1170   85 09      STA &09
+     1172   58         CLI
+.initialwait
+     1173   A5 05      LDA &05
+     1175   F0 FC      BEQ &1173
+     1177   A9 00      LDA #&00
+     1179   85 05      STA &05
+.mainloop
+     117B   A2 00      LDX #&00
+.plotdotloop
+     117D   86 0A      STX &0A
+     117F   BD 00 18   LDA &1800,X
+     1182   85 01      STA &01
+     1184   18         CLC
+     1185   BD 00 17   LDA &1700,X
+     1188   65 07      ADC &07
+     118A   A8         TAY
+     118B   18         CLC
+     118C   69 40      ADC #&40
+     118E   85 0C      STA &0C
+     1190   B9 00 14   LDA &1400,Y
+     1193   85 02      STA &02
+     1195   38         SEC
+     1196   B9 00 13   LDA &1300,Y
+     1199   85 0B      STA &0B
+     119B   FD 00 19   SBC &1900,X
+     119E   B0 04      BCS &11A4
+     11A0   49 FF      EOR #&FF
+     11A2   69 01      ADC #&01
+.noneg
+     11A4   C0 80      CPY #&80
+     11A6   A8         TAY
+     11A7   B0 1C      BCS &11C5
+     11A9   18         CLC
+     11AA   BD 00 19   LDA &1900,X
+     11AD   65 0B      ADC &0B
+     11AF   AA         TAX
+     11B0   B0 0A      BCS &11BC
+     11B2   38         SEC
+     11B3   BD 00 15   LDA &1500,X
+     11B6   F9 00 15   SBC &1500,Y
+     11B9   4C DE 11   JMP &11DE
+.morethan256
+     11BC   BD 00 16   LDA &1600,X
+     11BF   F9 00 15   SBC &1500,Y
+     11C2   4C DE 11   JMP &11DE
+.negativesine
+     11C5   18         CLC
+     11C6   BD 00 19   LDA &1900,X
+     11C9   65 0B      ADC &0B
+     11CB   AA         TAX
+     11CC   B0 0A      BCS &11D8
+     11CE   38         SEC
+     11CF   B9 00 15   LDA &1500,Y
+     11D2   FD 00 15   SBC &1500,X
+     11D5   4C DE 11   JMP &11DE
+.morethan256b
+     11D8   B9 00 15   LDA &1500,Y
+     11DB   FD 00 16   SBC &1600,X
+.donemult
+     11DE   18         CLC
+     11DF   69 40      ADC #&40
+     11E1   85 00      STA &00
+     11E3   A5 01      LDA &01
+     11E5   4A         LSR A
+     11E6   4A         LSR A
+     11E7   29 FE      AND #&FE
+     11E9   AA         TAX
+     11EA   A5 00      LDA &00
+     11EC   29 FE      AND #&FE
+     11EE   0A         ASL A
+     11EF   0A         ASL A
+     11F0   85 03      STA &03
+     11F2   A4 0A      LDY &0A
+     11F4   99 00 1A   STA &1A00,Y
+     11F7   8A         TXA
+     11F8   69 40      ADC #&40
+     11FA   85 04      STA &04
+     11FC   99 00 1B   STA &1B00,Y
+     11FF   A5 01      LDA &01
+     1201   29 07      AND #&07
+     1203   99 00 1C   STA &1C00,Y
+     1206   A8         TAY
+     1207   A5 00      LDA &00
+     1209   4A         LSR A
+     120A   A5 02      LDA &02
+     120C   2A         ROL A
+     120D   AA         TAX
+     120E   BD C7 12   LDA &12C7,X
+     1211   11 03      ORA (&03),Y
+     1213   91 03      STA (&03),Y
+     1215   24 0C      BIT &0C
+     1217   30 10      BMI &1229
+     1219   88         DEY
+     121A   10 06      BPL &1222
+     121C   C6 04      DEC &04
+     121E   C6 04      DEC &04
+     1220   A0 07      LDY #&07
+.samescreenrow
+     1222   BD C7 12   LDA &12C7,X
+     1225   11 03      ORA (&03),Y
+     1227   91 03      STA (&03),Y
+.behind
+     1229   A6 0A      LDX &0A
+     122B   E8         INX
+     122C   E0 A0      CPX #&A0
+     122E   F0 03      BEQ &1233
+     1230   4C 7D 11   JMP &117D
+.waitforvsync
+.waitingforvsync
+     1233   A5 05      LDA &05
+     1235   F0 FC      BEQ &1233
+     1237   C9 02      CMP #&02
+     1239   B0 68      BCS &12A3
+     123B   A9 00      LDA #&00
+     123D   85 05      STA &05
+     123F   AA         TAX
+.eraseloop
+     1240   BC 00 1A   LDY &1A00,X
+     1243   84 03      STY &03
+     1245   BC 00 1B   LDY &1B00,X
+     1248   84 04      STY &04
+     124A   BC 00 1C   LDY &1C00,X
+     124D   91 03      STA (&03),Y
+     124F   88         DEY
+     1250   10 06      BPL &1258
+     1252   C6 04      DEC &04
+     1254   C6 04      DEC &04
+     1256   A0 07      LDY #&07
+.erasesamerow
+     1258   91 03      STA (&03),Y
+     125A   E8         INX
+     125B   E0 A0      CPX #&A0
+     125D   D0 E1      BNE &1240
+     125F   18         CLC
+     1260   A5 06      LDA &06
+     1262   65 08      ADC &08
+     1264   85 06      STA &06
+     1266   A5 07      LDA &07
+     1268   65 09      ADC &09
+     126A   85 07      STA &07
+     126C   A9 42      LDA #&42
+     126E   8D 4F FE   STA &FE4F
+     1271   AD 4F FE   LDA &FE4F
+     1274   10 0B      BPL &1281
+     1276   18         CLC
+     1277   A5 08      LDA &08
+     1279   69 10      ADC #&10
+     127B   85 08      STA &08
+     127D   90 02      BCC &1281
+     127F   E6 09      INC &09
+.notx
+     1281   A9 61      LDA #&61
+     1283   8D 4F FE   STA &FE4F
+     1286   AD 4F FE   LDA &FE4F
+     1289   10 0B      BPL &1296
+     128B   38         SEC
+     128C   A5 08      LDA &08
+     128E   E9 10      SBC #&10
+     1290   85 08      STA &08
+     1292   B0 02      BCS &1296
+     1294   C6 09      DEC &09
+.notz
+     1296   A9 70      LDA #&70
+     1298   8D 4F FE   STA &FE4F
+     129B   AD 4F FE   LDA &FE4F
+     129E   30 03      BMI &12A3
+     12A0   4C 7B 11   JMP &117B
+.exit
+     12A3   6C FC FF   JMP (&FFFC)
+.irq
+     12A6   AD 4D FE   LDA &FE4D
+     12A9   29 02      AND #&02
+     12AB   D0 0A      BNE &12B7
+.irqtimer
+     12AD   A9 40      LDA #&40
+     12AF   8D 4D FE   STA &FE4D
+     12B2   E6 05      INC &05
+     12B4   A5 FC      LDA &FC
+     12B6   40         RTI
+.irqvsync
+     12B7   8D 4D FE   STA &FE4D
+     12BA   A9 00      LDA #&00
+     12BC   8D 44 FE   STA &FE44
+     12BF   A9 34      LDA #&34
+     12C1   8D 45 FE   STA &FE45
+     12C4   A5 FC      LDA &FC
+     12C6   40         RTI
+.colours
+     12C7   00
+     12C8   00
+     12C9   02
+     12CA   01
+     12CB   08
+     12CC   04
+     12CD   0A
+     12CE   05
+     12CF   20
+     12D0   10
+     12D1   22
+     12D2   11
+     12D3   28
+     12D4   14
+     12D5   2A
+     12D6   15
+.crtcregs
+     12D7   7F
+     12D8   40
+     12D9   5B
+     12DA   28
+     12DB   26
+     12DC   00
+     12DD   20
+     12DE   22
+     12DF   00
+     12E0   07
+     12E1   20
+     12E2   08
+     12E3   08
+     12E4   00
+.paldata
+     12E5   07
+     12E6   13
+     12E7   26
+     12E8   32
+     12E9   45
+     12EA   51
+     12EB   64
+     12EC   70
+.sintable
+     1300   00
+     1301   06
+     1302   0C
+     1303   12
+     1304   18
+     1305   1F
+     1306   25
+     1307   2B
+     1308   31
+     1309   37
+     130A   3D
+     130B   44
+     130C   4A
+     130D   4F
+     130E   55
+     130F   5B
+     1310   61
+     1311   67
+     1312   6D
+     1313   72
+     1314   78
+     1315   7D
+     1316   83
+     1317   88
+     1318   8D
+     1319   92
+     131A   97
+     131B   9C
+     131C   A1
+     131D   A6
+     131E   AB
+     131F   AF
+     1320   B4
+     1321   B8
+     1322   BC
+     1323   C1
+     1324   C5
+     1325   C9
+     1326   CC
+     1327   D0
+     1328   D4
+     1329   D7
+     132A   DA
+     132B   DD
+     132C   E0
+     132D   E3
+     132E   E6
+     132F   E9
+     1330   EB
+     1331   ED
+     1332   F0
+     1333   F2
+     1334   F4
+     1335   F5
+     1336   F7
+     1337   F8
+     1338   FA
+     1339   FB
+     133A   FC
+     133B   FD
+     133C   FD
+     133D   FE
+     133E   FE
+     133F   FE
+     1340   FF
+     1341   FE
+     1342   FE
+     1343   FE
+     1344   FD
+     1345   FD
+     1346   FC
+     1347   FB
+     1348   FA
+     1349   F8
+     134A   F7
+     134B   F5
+     134C   F4
+     134D   F2
+     134E   F0
+     134F   ED
+     1350   EB
+     1351   E9
+     1352   E6
+     1353   E3
+     1354   E0
+     1355   DD
+     1356   DA
+     1357   D7
+     1358   D4
+     1359   D0
+     135A   CC
+     135B   C9
+     135C   C5
+     135D   C1
+     135E   BC
+     135F   B8
+     1360   B4
+     1361   AF
+     1362   AB
+     1363   A6
+     1364   A1
+     1365   9C
+     1366   97
+     1367   92
+     1368   8D
+     1369   88
+     136A   83
+     136B   7D
+     136C   78
+     136D   72
+     136E   6D
+     136F   67
+     1370   61
+     1371   5B
+     1372   55
+     1373   4F
+     1374   4A
+     1375   44
+     1376   3D
+     1377   37
+     1378   31
+     1379   2B
+     137A   25
+     137B   1F
+     137C   18
+     137D   12
+     137E   0C
+     137F   06
+     1380   00
+     1381   06
+     1382   0C
+     1383   12
+     1384   18
+     1385   1F
+     1386   25
+     1387   2B
+     1388   31
+     1389   37
+     138A   3D
+     138B   44
+     138C   4A
+     138D   4F
+     138E   55
+     138F   5B
+     1390   61
+     1391   67
+     1392   6D
+     1393   72
+     1394   78
+     1395   7D
+     1396   83
+     1397   88
+     1398   8D
+     1399   92
+     139A   97
+     139B   9C
+     139C   A1
+     139D   A6
+     139E   AB
+     139F   AF
+     13A0   B4
+     13A1   B8
+     13A2   BC
+     13A3   C1
+     13A4   C5
+     13A5   C9
+     13A6   CC
+     13A7   D0
+     13A8   D4
+     13A9   D7
+     13AA   DA
+     13AB   DD
+     13AC   E0
+     13AD   E3
+     13AE   E6
+     13AF   E9
+     13B0   EB
+     13B1   ED
+     13B2   F0
+     13B3   F2
+     13B4   F4
+     13B5   F5
+     13B6   F7
+     13B7   F8
+     13B8   FA
+     13B9   FB
+     13BA   FC
+     13BB   FD
+     13BC   FD
+     13BD   FE
+     13BE   FE
+     13BF   FE
+     13C0   FF
+     13C1   FE
+     13C2   FE
+     13C3   FE
+     13C4   FD
+     13C5   FD
+     13C6   FC
+     13C7   FB
+     13C8   FA
+     13C9   F8
+     13CA   F7
+     13CB   F5
+     13CC   F4
+     13CD   F2
+     13CE   F0
+     13CF   ED
+     13D0   EB
+     13D1   E9
+     13D2   E6
+     13D3   E3
+     13D4   E0
+     13D5   DD
+     13D6   DA
+     13D7   D7
+     13D8   D4
+     13D9   D0
+     13DA   CC
+     13DB   C9
+     13DC   C5
+     13DD   C1
+     13DE   BC
+     13DF   B8
+     13E0   B4
+     13E1   AF
+     13E2   AB
+     13E3   A6
+     13E4   A1
+     13E5   9C
+     13E6   97
+     13E7   92
+     13E8   8D
+     13E9   88
+     13EA   83
+     13EB   7D
+     13EC   78
+     13ED   72
+     13EE   6D
+     13EF   67
+     13F0   61
+     13F1   5B
+     13F2   55
+     13F3   4F
+     13F4   4A
+     13F5   44
+     13F6   3D
+     13F7   37
+     13F8   31
+     13F9   2B
+     13FA   25
+     13FB   1F
+     13FC   18
+     13FD   12
+     13FE   0C
+     13FF   06
+.coltable
+     1400   04
+     1401   04
+     1402   04
+     1403   04
+     1404   04
+     1405   04
+     1406   05
+     1407   05
+     1408   05
+     1409   05
+     140A   05
+     140B   05
+     140C   05
+     140D   05
+     140E   05
+     140F   05
+     1410   05
+     1411   05
+     1412   05
+     1413   06
+     1414   06
+     1415   06
+     1416   06
+     1417   06
+     1418   06
+     1419   06
+     141A   06
+     141B   06
+     141C   06
+     141D   06
+     141E   06
+     141F   06
+     1420   06
+     1421   07
+     1422   07
+     1423   07
+     1424   07
+     1425   07
+     1426   07
+     1427   07
+     1428   07
+     1429   07
+     142A   07
+     142B   07
+     142C   07
+     142D   07
+     142E   07
+     142F   07
+     1430   07
+     1431   07
+     1432   07
+     1433   07
+     1434   07
+     1435   07
+     1436   07
+     1437   07
+     1438   07
+     1439   07
+     143A   07
+     143B   07
+     143C   07
+     143D   07
+     143E   07
+     143F   07
+     1440   07
+     1441   07
+     1442   07
+     1443   07
+     1444   07
+     1445   07
+     1446   07
+     1447   07
+     1448   07
+     1449   07
+     144A   07
+     144B   07
+     144C   07
+     144D   07
+     144E   07
+     144F   07
+     1450   07
+     1451   07
+     1452   07
+     1453   07
+     1454   07
+     1455   07
+     1456   07
+     1457   07
+     1458   07
+     1459   07
+     145A   07
+     145B   07
+     145C   07
+     145D   07
+     145E   07
+     145F   07
+     1460   06
+     1461   06
+     1462   06
+     1463   06
+     1464   06
+     1465   06
+     1466   06
+     1467   06
+     1468   06
+     1469   06
+     146A   06
+     146B   06
+     146C   06
+     146D   06
+     146E   05
+     146F   05
+     1470   05
+     1471   05
+     1472   05
+     1473   05
+     1474   05
+     1475   05
+     1476   05
+     1477   05
+     1478   05
+     1479   05
+     147A   05
+     147B   04
+     147C   04
+     147D   04
+     147E   04
+     147F   04
+     1480   04
+     1481   04
+     1482   04
+     1483   04
+     1484   04
+     1485   04
+     1486   03
+     1487   03
+     1488   03
+     1489   03
+     148A   03
+     148B   03
+     148C   03
+     148D   03
+     148E   03
+     148F   03
+     1490   03
+     1491   03
+     1492   03
+     1493   02
+     1494   02
+     1495   02
+     1496   02
+     1497   02
+     1498   02
+     1499   02
+     149A   02
+     149B   02
+     149C   02
+     149D   02
+     149E   02
+     149F   02
+     14A0   02
+     14A1   01
+     14A2   01
+     14A3   01
+     14A4   01
+     14A5   01
+     14A6   01
+     14A7   01
+     14A8   01
+     14A9   01
+     14AA   01
+     14AB   01
+     14AC   01
+     14AD   01
+     14AE   01
+     14AF   01
+     14B0   01
+     14B1   01
+     14B2   01
+     14B3   01
+     14B4   01
+     14B5   01
+     14B6   01
+     14B7   01
+     14B8   01
+     14B9   01
+     14BA   01
+     14BB   01
+     14BC   01
+     14BD   01
+     14BE   01
+     14BF   01
+     14C0   01
+     14C1   01
+     14C2   01
+     14C3   01
+     14C4   01
+     14C5   01
+     14C6   01
+     14C7   01
+     14C8   01
+     14C9   01
+     14CA   01
+     14CB   01
+     14CC   01
+     14CD   01
+     14CE   01
+     14CF   01
+     14D0   01
+     14D1   01
+     14D2   01
+     14D3   01
+     14D4   01
+     14D5   01
+     14D6   01
+     14D7   01
+     14D8   01
+     14D9   01
+     14DA   01
+     14DB   01
+     14DC   01
+     14DD   01
+     14DE   01
+     14DF   01
+     14E0   02
+     14E1   02
+     14E2   02
+     14E3   02
+     14E4   02
+     14E5   02
+     14E6   02
+     14E7   02
+     14E8   02
+     14E9   02
+     14EA   02
+     14EB   02
+     14EC   02
+     14ED   02
+     14EE   03
+     14EF   03
+     14F0   03
+     14F1   03
+     14F2   03
+     14F3   03
+     14F4   03
+     14F5   03
+     14F6   03
+     14F7   03
+     14F8   03
+     14F9   03
+     14FA   03
+     14FB   04
+     14FC   04
+     14FD   04
+     14FE   04
+     14FF   04
+.multtab1
+     1500   00
+     1501   00
+     1502   00
+     1503   00
+     1504   00
+     1505   00
+     1506   00
+     1507   00
+     1508   00
+     1509   00
+     150A   00
+     150B   00
+     150C   00
+     150D   00
+     150E   00
+     150F   00
+     1510   00
+     1511   00
+     1512   00
+     1513   00
+     1514   00
+     1515   00
+     1516   00
+     1517   00
+     1518   00
+     1519   00
+     151A   00
+     151B   00
+     151C   00
+     151D   00
+     151E   00
+     151F   00
+     1520   01
+     1521   01
+     1522   01
+     1523   01
+     1524   01
+     1525   01
+     1526   01
+     1527   01
+     1528   01
+     1529   01
+     152A   01
+     152B   01
+     152C   01
+     152D   01
+     152E   02
+     152F   02
+     1530   02
+     1531   02
+     1532   02
+     1533   02
+     1534   02
+     1535   02
+     1536   02
+     1537   02
+     1538   03
+     1539   03
+     153A   03
+     153B   03
+     153C   03
+     153D   03
+     153E   03
+     153F   03
+     1540   04
+     1541   04
+     1542   04
+     1543   04
+     1544   04
+     1545   04
+     1546   04
+     1547   04
+     1548   05
+     1549   05
+     154A   05
+     154B   05
+     154C   05
+     154D   05
+     154E   05
+     154F   06
+     1550   06
+     1551   06
+     1552   06
+     1553   06
+     1554   06
+     1555   07
+     1556   07
+     1557   07
+     1558   07
+     1559   07
+     155A   07
+     155B   08
+     155C   08
+     155D   08
+     155E   08
+     155F   08
+     1560   09
+     1561   09
+     1562   09
+     1563   09
+     1564   09
+     1565   09
+     1566   0A
+     1567   0A
+     1568   0A
+     1569   0A
+     156A   0A
+     156B   0B
+     156C   0B
+     156D   0B
+     156E   0B
+     156F   0C
+     1570   0C
+     1571   0C
+     1572   0C
+     1573   0C
+     1574   0D
+     1575   0D
+     1576   0D
+     1577   0D
+     1578   0E
+     1579   0E
+     157A   0E
+     157B   0E
+     157C   0F
+     157D   0F
+     157E   0F
+     157F   0F
+     1580   10
+     1581   10
+     1582   10
+     1583   10
+     1584   11
+     1585   11
+     1586   11
+     1587   11
+     1588   12
+     1589   12
+     158A   12
+     158B   12
+     158C   13
+     158D   13
+     158E   13
+     158F   13
+     1590   14
+     1591   14
+     1592   14
+     1593   15
+     1594   15
+     1595   15
+     1596   15
+     1597   16
+     1598   16
+     1599   16
+     159A   17
+     159B   17
+     159C   17
+     159D   18
+     159E   18
+     159F   18
+     15A0   19
+     15A1   19
+     15A2   19
+     15A3   19
+     15A4   1A
+     15A5   1A
+     15A6   1A
+     15A7   1B
+     15A8   1B
+     15A9   1B
+     15AA   1C
+     15AB   1C
+     15AC   1C
+     15AD   1D
+     15AE   1D
+     15AF   1D
+     15B0   1E
+     15B1   1E
+     15B2   1E
+     15B3   1F
+     15B4   1F
+     15B5   1F
+     15B6   20
+     15B7   20
+     15B8   21
+     15B9   21
+     15BA   21
+     15BB   22
+     15BC   22
+     15BD   22
+     15BE   23
+     15BF   23
+     15C0   24
+     15C1   24
+     15C2   24
+     15C3   25
+     15C4   25
+     15C5   25
+     15C6   26
+     15C7   26
+     15C8   27
+     15C9   27
+     15CA   27
+     15CB   28
+     15CC   28
+     15CD   29
+     15CE   29
+     15CF   29
+     15D0   2A
+     15D1   2A
+     15D2   2B
+     15D3   2B
+     15D4   2B
+     15D5   2C
+     15D6   2C
+     15D7   2D
+     15D8   2D
+     15D9   2D
+     15DA   2E
+     15DB   2E
+     15DC   2F
+     15DD   2F
+     15DE   30
+     15DF   30
+     15E0   31
+     15E1   31
+     15E2   31
+     15E3   32
+     15E4   32
+     15E5   33
+     15E6   33
+     15E7   34
+     15E8   34
+     15E9   35
+     15EA   35
+     15EB   35
+     15EC   36
+     15ED   36
+     15EE   37
+     15EF   37
+     15F0   38
+     15F1   38
+     15F2   39
+     15F3   39
+     15F4   3A
+     15F5   3A
+     15F6   3B
+     15F7   3B
+     15F8   3C
+     15F9   3C
+     15FA   3D
+     15FB   3D
+     15FC   3E
+     15FD   3E
+     15FE   3F
+     15FF   3F
+.multtab2
+     1600   40
+     1601   40
+     1602   41
+     1603   41
+     1604   42
+     1605   42
+     1606   43
+     1607   43
+     1608   44
+     1609   44
+     160A   45
+     160B   45
+     160C   46
+     160D   46
+     160E   47
+     160F   47
+     1610   48
+     1611   48
+     1612   49
+     1613   49
+     1614   4A
+     1615   4A
+     1616   4B
+     1617   4C
+     1618   4C
+     1619   4D
+     161A   4D
+     161B   4E
+     161C   4E
+     161D   4F
+     161E   4F
+     161F   50
+     1620   51
+     1621   51
+     1622   52
+     1623   52
+     1624   53
+     1625   53
+     1626   54
+     1627   54
+     1628   55
+     1629   56
+     162A   56
+     162B   57
+     162C   57
+     162D   58
+     162E   59
+     162F   59
+     1630   5A
+     1631   5A
+     1632   5B
+     1633   5C
+     1634   5C
+     1635   5D
+     1636   5D
+     1637   5E
+     1638   5F
+     1639   5F
+     163A   60
+     163B   60
+     163C   61
+     163D   62
+     163E   62
+     163F   63
+     1640   64
+     1641   64
+     1642   65
+     1643   65
+     1644   66
+     1645   67
+     1646   67
+     1647   68
+     1648   69
+     1649   69
+     164A   6A
+     164B   6A
+     164C   6B
+     164D   6C
+     164E   6C
+     164F   6D
+     1650   6E
+     1651   6E
+     1652   6F
+     1653   70
+     1654   70
+     1655   71
+     1656   72
+     1657   72
+     1658   73
+     1659   74
+     165A   74
+     165B   75
+     165C   76
+     165D   76
+     165E   77
+     165F   78
+     1660   79
+     1661   79
+     1662   7A
+     1663   7B
+     1664   7B
+     1665   7C
+     1666   7D
+     1667   7D
+     1668   7E
+     1669   7F
+     166A   7F
+     166B   80
+     166C   81
+     166D   82
+     166E   82
+     166F   83
+     1670   84
+     1671   84
+     1672   85
+     1673   86
+     1674   87
+     1675   87
+     1676   88
+     1677   89
+     1678   8A
+     1679   8A
+     167A   8B
+     167B   8C
+     167C   8D
+     167D   8D
+     167E   8E
+     167F   8F
+     1680   90
+     1681   90
+     1682   91
+     1683   92
+     1684   93
+     1685   93
+     1686   94
+     1687   95
+     1688   96
+     1689   96
+     168A   97
+     168B   98
+     168C   99
+     168D   99
+     168E   9A
+     168F   9B
+     1690   9C
+     1691   9D
+     1692   9D
+     1693   9E
+     1694   9F
+     1695   A0
+     1696   A0
+     1697   A1
+     1698   A2
+     1699   A3
+     169A   A4
+     169B   A4
+     169C   A5
+     169D   A6
+     169E   A7
+     169F   A8
+     16A0   A9
+     16A1   A9
+     16A2   AA
+     16A3   AB
+     16A4   AC
+     16A5   AD
+     16A6   AD
+     16A7   AE
+     16A8   AF
+     16A9   B0
+     16AA   B1
+     16AB   B2
+     16AC   B2
+     16AD   B3
+     16AE   B4
+     16AF   B5
+     16B0   B6
+     16B1   B7
+     16B2   B7
+     16B3   B8
+     16B4   B9
+     16B5   BA
+     16B6   BB
+     16B7   BC
+     16B8   BD
+     16B9   BD
+     16BA   BE
+     16BB   BF
+     16BC   C0
+     16BD   C1
+     16BE   C2
+     16BF   C3
+     16C0   C4
+     16C1   C4
+     16C2   C5
+     16C3   C6
+     16C4   C7
+     16C5   C8
+     16C6   C9
+     16C7   CA
+     16C8   CB
+     16C9   CB
+     16CA   CC
+     16CB   CD
+     16CC   CE
+     16CD   CF
+     16CE   D0
+     16CF   D1
+     16D0   D2
+     16D1   D3
+     16D2   D4
+     16D3   D4
+     16D4   D5
+     16D5   D6
+     16D6   D7
+     16D7   D8
+     16D8   D9
+     16D9   DA
+     16DA   DB
+     16DB   DC
+     16DC   DD
+     16DD   DE
+     16DE   DF
+     16DF   E0
+     16E0   E1
+     16E1   E1
+     16E2   E2
+     16E3   E3
+     16E4   E4
+     16E5   E5
+     16E6   E6
+     16E7   E7
+     16E8   E8
+     16E9   E9
+     16EA   EA
+     16EB   EB
+     16EC   EC
+     16ED   ED
+     16EE   EE
+     16EF   EF
+     16F0   F0
+     16F1   F1
+     16F2   F2
+     16F3   F3
+     16F4   F4
+     16F5   F5
+     16F6   F6
+     16F7   F7
+     16F8   F8
+     16F9   F9
+     16FA   FA
+     16FB   FB
+     16FC   FC
+     16FD   FD
+     16FE   FE
+     16FF   FF
+.dotx
+     1700   F7
+     1701   A1
+     1702   B7
+     1703   0A
+     1704   3A
+     1705   C2
+     1706   89
+     1707   74
+     1708   00
+     1709   DC
+     170A   7D
+     170B   D1
+     170C   CB
+     170D   80
+     170E   99
+     170F   7A
+     1710   E4
+     1711   C7
+     1712   6D
+     1713   DD
+     1714   62
+     1715   EA
+     1716   09
+     1717   16
+     1718   59
+     1719   52
+     171A   6A
+     171B   F4
+     171C   A0
+     171D   9B
+     171E   2B
+     171F   F1
+     1720   DC
+     1721   E1
+     1722   EE
+     1723   99
+     1724   27
+     1725   2E
+     1726   7C
+     1727   AE
+     1728   75
+     1729   02
+     172A   0E
+     172B   64
+     172C   C6
+     172D   86
+     172E   9D
+     172F   E6
+     1730   52
+     1731   0D
+     1732   31
+     1733   6E
+     1734   4D
+     1735   2C
+     1736   AD
+     1737   3C
+     1738   E2
+     1739   56
+     173A   10
+     173B   24
+     173C   33
+     173D   68
+     173E   54
+     173F   8D
+     1740   91
+     1741   2C
+     1742   A1
+     1743   51
+     1744   50
+     1745   EC
+     1746   CD
+     1747   F9
+     1748   5E
+     1749   04
+     174A   F2
+     174B   42
+     174C   9D
+     174D   C5
+     174E   91
+     174F   22
+     1750   40
+     1751   CA
+     1752   AF
+     1753   56
+     1754   B5
+     1755   8E
+     1756   E8
+     1757   A8
+     1758   69
+     1759   50
+     175A   5C
+     175B   A5
+     175C   07
+     175D   38
+     175E   91
+     175F   40
+     1760   5A
+     1761   BB
+     1762   DA
+     1763   B4
+     1764   CA
+     1765   19
+     1766   DF
+     1767   59
+     1768   8D
+     1769   4E
+     176A   58
+     176B   A8
+     176C   00
+     176D   D4
+     176E   64
+     176F   25
+     1770   50
+     1771   3F
+     1772   EA
+     1773   BC
+     1774   4B
+     1775   5D
+     1776   90
+     1777   85
+     1778   A5
+     1779   AA
+     177A   A1
+     177B   16
+     177C   66
+     177D   CB
+     177E   5D
+     177F   C6
+     1780   32
+     1781   95
+     1782   4A
+     1783   00
+     1784   53
+     1785   E9
+     1786   5D
+     1787   06
+     1788   65
+     1789   6C
+     178A   6C
+     178B   F9
+     178C   6A
+     178D   42
+     178E   84
+     178F   94
+     1790   2C
+     1791   47
+     1792   05
+     1793   53
+     1794   44
+     1795   AC
+     1796   81
+     1797   55
+     1798   D6
+     1799   C7
+     179A   BF
+     179B   88
+     179C   5C
+     179D   E9
+     179E   AE
+     179F   53
+.doty
+     1800   1C
+     1801   1E
+     1802   20
+     1803   21
+     1804   23
+     1805   25
+     1806   26
+     1807   28
+     1808   29
+     1809   2B
+     180A   2D
+     180B   2E
+     180C   30
+     180D   31
+     180E   33
+     180F   35
+     1810   36
+     1811   38
+     1812   39
+     1813   3B
+     1814   3C
+     1815   3E
+     1816   3F
+     1817   41
+     1818   42
+     1819   44
+     181A   45
+     181B   47
+     181C   48
+     181D   4A
+     181E   4B
+     181F   4C
+     1820   4E
+     1821   4F
+     1822   50
+     1823   52
+     1824   53
+     1825   54
+     1826   56
+     1827   57
+     1828   58
+     1829   59
+     182A   5B
+     182B   5C
+     182C   5D
+     182D   5E
+     182E   5F
+     182F   60
+     1830   62
+     1831   63
+     1832   64
+     1833   65
+     1834   66
+     1835   67
+     1836   68
+     1837   69
+     1838   6A
+     1839   6B
+     183A   6C
+     183B   6D
+     183C   6E
+     183D   6F
+     183E   70
+     183F   71
+     1840   72
+     1841   73
+     1842   74
+     1843   75
+     1844   75
+     1845   76
+     1846   77
+     1847   78
+     1848   79
+     1849   7A
+     184A   7B
+     184B   7C
+     184C   7C
+     184D   7D
+     184E   7E
+     184F   7F
+     1850   80
+     1851   81
+     1852   82
+     1853   83
+     1854   83
+     1855   84
+     1856   85
+     1857   86
+     1858   87
+     1859   88
+     185A   89
+     185B   8A
+     185C   8A
+     185D   8B
+     185E   8C
+     185F   8D
+     1860   8E
+     1861   8F
+     1862   90
+     1863   91
+     1864   92
+     1865   93
+     1866   94
+     1867   95
+     1868   96
+     1869   97
+     186A   98
+     186B   99
+     186C   9A
+     186D   9B
+     186E   9C
+     186F   9D
+     1870   9F
+     1871   A0
+     1872   A1
+     1873   A2
+     1874   A3
+     1875   A4
+     1876   A6
+     1877   A7
+     1878   A8
+     1879   A9
+     187A   AB
+     187B   AC
+     187C   AD
+     187D   AF
+     187E   B0
+     187F   B1
+     1880   B3
+     1881   B4
+     1882   B5
+     1883   B7
+     1884   B8
+     1885   BA
+     1886   BB
+     1887   BD
+     1888   BE
+     1889   C0
+     188A   C1
+     188B   C3
+     188C   C4
+     188D   C6
+     188E   C7
+     188F   C9
+     1890   CA
+     1891   CC
+     1892   CE
+     1893   CF
+     1894   D1
+     1895   D2
+     1896   D4
+     1897   D6
+     1898   D7
+     1899   D9
+     189A   DA
+     189B   DC
+     189C   DE
+     189D   DF
+     189E   E1
+     189F   E3
+.dotr
+     1900   06
+     1901   0B
+     1902   0E
+     1903   10
+     1904   12
+     1905   14
+     1906   16
+     1907   18
+     1908   19
+     1909   1A
+     190A   1B
+     190B   1D
+     190C   1E
+     190D   1F
+     190E   20
+     190F   21
+     1910   21
+     1911   22
+     1912   23
+     1913   24
+     1914   25
+     1915   25
+     1916   26
+     1917   26
+     1918   27
+     1919   28
+     191A   28
+     191B   29
+     191C   29
+     191D   2A
+     191E   2A
+     191F   2A
+     1920   2B
+     1921   2B
+     1922   2C
+     1923   2C
+     1924   2C
+     1925   2D
+     1926   2D
+     1927   2D
+     1928   2D
+     1929   2E
+     192A   2E
+     192B   2E
+     192C   2E
+     192D   2F
+     192E   2F
+     192F   2F
+     1930   2F
+     1931   2F
+     1932   30
+     1933   30
+     1934   30
+     1935   30
+     1936   30
+     1937   30
+     1938   30
+     1939   30
+     193A   31
+     193B   31
+     193C   31
+     193D   31
+     193E   31
+     193F   31
+     1940   31
+     1941   31
+     1942   31
+     1943   31
+     1944   31
+     1945   31
+     1946   31
+     1947   31
+     1948   31
+     1949   31
+     194A   31
+     194B   31
+     194C   31
+     194D   31
+     194E   31
+     194F   31
+     1950   31
+     1951   31
+     1952   31
+     1953   31
+     1954   31
+     1955   31
+     1956   31
+     1957   31
+     1958   31
+     1959   31
+     195A   31
+     195B   31
+     195C   31
+     195D   31
+     195E   31
+     195F   31
+     1960   31
+     1961   31
+     1962   31
+     1963   31
+     1964   31
+     1965   31
+     1966   30
+     1967   30
+     1968   30
+     1969   30
+     196A   30
+     196B   30
+     196C   30
+     196D   30
+     196E   2F
+     196F   2F
+     1970   2F
+     1971   2F
+     1972   2F
+     1973   2E
+     1974   2E
+     1975   2E
+     1976   2E
+     1977   2D
+     1978   2D
+     1979   2D
+     197A   2D
+     197B   2C
+     197C   2C
+     197D   2C
+     197E   2B
+     197F   2B
+     1980   2A
+     1981   2A
+     1982   2A
+     1983   29
+     1984   29
+     1985   28
+     1986   28
+     1987   27
+     1988   26
+     1989   26
+     198A   25
+     198B   25
+     198C   24
+     198D   23
+     198E   22
+     198F   21
+     1990   21
+     1991   20
+     1992   1F
+     1993   1E
+     1994   1D
+     1995   1B
+     1996   1A
+     1997   19
+     1998   18
+     1999   16
+     199A   14
+     199B   12
+     199C   10
+     199D   0E
+     199E   0B
+     199F   06
+.end
+.olddotaddrlo
+     1A00
+.olddotaddrhi
+     1B00
+.olddotaddry
+     1C00
+Saving file 'Code'
+Processed file '../../demo.6502' ok
+Processed file 'demo.6502' ok
+Comparing output ssd to demo.gold.ssd succeeded
