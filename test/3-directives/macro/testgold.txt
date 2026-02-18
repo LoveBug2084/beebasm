@@ -1,4 +1,0 @@
-opcodemacro.fail.6502:2: error: Macro name cannot start with an assembler mnemonic.  Use the -w command-line option to allow this.
-
-MACRO DEC16 a
-      ^

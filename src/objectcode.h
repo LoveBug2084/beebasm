@@ -96,18 +96,6 @@ private:
 	unsigned char				m_aMapChar[ 96 ];
 
 	static ObjectCode*			m_gInstance;
-
-	// For simple pass-2 replacement strategy
-	bool                    m_bPass2Changed;
-	bool                    m_bRecording;
-	unsigned char           m_aMemoryRecord[ 0x10000 ];
-	unsigned char           m_aFlagsRecord[ 0x10000 ];
-
-public:
-	bool Pass2Changed() const { return m_bPass2Changed; }
-	void StartRecordingIfNeeded();
-	void ApplyRecordedAsBaseline();
-	void ClearRecorded();
 };
 
 

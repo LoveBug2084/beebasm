@@ -51,62 +51,6 @@ void ObjectCode::Create()
 }
 
 
-void ObjectCode::StartRecordingIfNeeded()
-{
-	if ( m_bRecording ) return;
-
-	// Initialise record buffers and copy any bytes already written this pass (USED)
-	memset( m_aMemoryRecord, 0, sizeof m_aMemoryRecord );
-	memset( m_aFlagsRecord, 0, sizeof m_aFlagsRecord );
-
-	for ( unsigned int i = 0; i < sizeof m_aFlags; ++i )
-	{
-		if ( m_aFlags[ i ] & USED )
-		{
-			m_aMemoryRecord[ i ] = m_aMemory[ i ];
-			m_aFlagsRecord[ i ] = m_aFlags[ i ];
-		}
-	}
-
-	m_bRecording = true;
-}
-
-
-void ObjectCode::ApplyRecordedAsBaseline()
-{
-	if ( !m_bPass2Changed ) return;
-
-	// Replace baseline memory/flags with recorded ones
-	memset( m_aMemory, 0, sizeof m_aMemory );
-	memset( m_aFlags, 0, sizeof m_aFlags );
-
-	for ( unsigned int i = 0; i < sizeof m_aFlags; ++i )
-	{
-		if ( m_aFlagsRecord[ i ] & USED )
-		{
-			m_aMemory[ i ] = m_aMemoryRecord[ i ];
-			// promote recorded flags and ensure CHECK is set so next pass verifies
-			m_aFlags[ i ] = m_aFlagsRecord[ i ] | CHECK;
-		}
-	}
-
-	// Clear recording state
-	m_bPass2Changed = false;
-	m_bRecording = false;
-	memset( m_aMemoryRecord, 0, sizeof m_aMemoryRecord );
-	memset( m_aFlagsRecord, 0, sizeof m_aFlagsRecord );
-}
-
-
-void ObjectCode::ClearRecorded()
-{
-	m_bPass2Changed = false;
-	m_bRecording = false;
-	memset( m_aMemoryRecord, 0, sizeof m_aMemoryRecord );
-	memset( m_aFlagsRecord, 0, sizeof m_aFlagsRecord );
-}
-
-
 
 /*************************************************************************************************/
 /**
@@ -138,10 +82,6 @@ ObjectCode::ObjectCode()
 {
 	memset( m_aMemory, 0, sizeof m_aMemory );
 	memset( m_aFlags, 0, sizeof m_aFlags );
-	m_bPass2Changed = false;
-	m_bRecording = false;
-	memset( m_aMemoryRecord, 0, sizeof m_aMemoryRecord );
-	memset( m_aFlagsRecord, 0, sizeof m_aFlagsRecord );
 	SymbolTable::Instance().AddBuiltInSymbol( "CPU", m_CPU );
 }
 
@@ -193,11 +133,6 @@ void ObjectCode::InitialisePass()
 	// Clear flags between passes
 
 	Clear( 0, 0x10000, false );
-	// Reset any recording state at the start of each pass
-	m_bPass2Changed = false;
-	m_bRecording = false;
-	memset( m_aMemoryRecord, 0, sizeof m_aMemoryRecord );
-	memset( m_aFlagsRecord, 0, sizeof m_aFlagsRecord );
 
 	// initialise ascii mapping table
 
@@ -225,21 +160,18 @@ void ObjectCode::PutByte( unsigned int byte )
 	assert( m_PC >= 0 && m_PC < 0x10000 );
 	assert( byte < 0x100 );
 
-	unsigned char* pFlags = m_bRecording ? m_aFlagsRecord : m_aFlags;
-	unsigned char* pMemory = m_bRecording ? m_aMemoryRecord : m_aMemory;
-
-	if ( pFlags[ m_PC ] & GUARD )
+	if ( m_aFlags[ m_PC ] & GUARD )
 	{
 		throw AsmException_AssembleError_GuardHit();
 	}
 
-	if ( pFlags[ m_PC ] & USED )
+	if ( m_aFlags[ m_PC ] & USED )
 	{
 		throw AsmException_AssembleError_Overlap();
 	}
 
-	pFlags[ m_PC ] |= USED;
-	pMemory[ m_PC++ ] = byte;
+	m_aFlags[ m_PC ] |= USED;
+	m_aMemory[ m_PC++ ] = byte;
 
 	SymbolTable::Instance().ChangeBuiltInSymbol( "P%", m_PC );
 }
@@ -263,33 +195,26 @@ void ObjectCode::Assemble1( unsigned int opcode )
 	assert( m_PC >= 0 && m_PC < 0x10000 );
 	assert( opcode < 0x100 );
 
-	unsigned char* pFlags = m_bRecording ? m_aFlagsRecord : m_aFlags;
-	unsigned char* pMemory = m_bRecording ? m_aMemoryRecord : m_aMemory;
-
 	if ( GlobalData::Instance().IsSecondPass() &&
 		 ( m_aFlags[ m_PC ] & CHECK ) &&
 		 !( m_aFlags[ m_PC ] & DONT_CHECK ) &&
 		 m_aMemory[ m_PC ] != opcode )
 	{
-		// Start recording replacement bytes for pass 2 if not already
-		StartRecordingIfNeeded();
-		m_bPass2Changed = true;
-		pFlags = m_aFlagsRecord;
-		pMemory = m_aMemoryRecord;
+		throw AsmException_AssembleError_InconsistentCode();
 	}
 
-	if ( pFlags[ m_PC ] & GUARD )
+	if ( m_aFlags[ m_PC ] & GUARD )
 	{
 		throw AsmException_AssembleError_GuardHit();
 	}
 
-	if ( pFlags[ m_PC ] & USED )
+	if ( m_aFlags[ m_PC ] & USED )
 	{
 		throw AsmException_AssembleError_Overlap();
 	}
 
-	pFlags[ m_PC ] |= ( USED | CHECK );
-	pMemory[ m_PC++ ] = opcode;
+	m_aFlags[ m_PC ] |= ( USED | CHECK );
+	m_aMemory[ m_PC++ ] = opcode;
 
 	SymbolTable::Instance().ChangeBuiltInSymbol( "P%", m_PC );
 }
@@ -314,36 +239,30 @@ void ObjectCode::Assemble2( unsigned int opcode, unsigned int val )
 	assert( opcode < 0x100 );
 	assert( val < 0x100 );
 
-	unsigned char* pFlags = m_bRecording ? m_aFlagsRecord : m_aFlags;
-	unsigned char* pMemory = m_bRecording ? m_aMemoryRecord : m_aMemory;
-
 	if ( GlobalData::Instance().IsSecondPass() &&
 		 ( m_aFlags[ m_PC ] & CHECK ) &&
 		 !( m_aFlags[ m_PC ] & DONT_CHECK ) &&
 		 m_aMemory[ m_PC ] != opcode )
 	{
-		StartRecordingIfNeeded();
-		m_bPass2Changed = true;
-		pFlags = m_aFlagsRecord;
-		pMemory = m_aMemoryRecord;
+		throw AsmException_AssembleError_InconsistentCode();
 	}
 
-	if ( ( pFlags[ m_PC ] & GUARD ) ||
-		 ( pFlags[ m_PC + 1 ] & GUARD ) )
+	if ( ( m_aFlags[ m_PC ] & GUARD ) ||
+		 ( m_aFlags[ m_PC + 1 ] & GUARD ) )
 	{
 		throw AsmException_AssembleError_GuardHit();
 	}
 
-	if ( ( pFlags[ m_PC ] & USED ) ||
-		 ( pFlags[ m_PC + 1 ] & USED ) )
+	if ( ( m_aFlags[ m_PC ] & USED ) ||
+		 ( m_aFlags[ m_PC + 1 ] & USED ) )
 	{
 		throw AsmException_AssembleError_Overlap();
 	}
 
-	pFlags[ m_PC ] |= ( USED | CHECK );
-	pMemory[ m_PC++ ] = opcode;
-	pFlags[ m_PC ] |= USED;
-	pMemory[ m_PC++ ] = val;
+	m_aFlags[ m_PC ] |= ( USED | CHECK );
+	m_aMemory[ m_PC++ ] = opcode;
+	m_aFlags[ m_PC ] |= USED;
+	m_aMemory[ m_PC++ ] = val;
 
 	SymbolTable::Instance().ChangeBuiltInSymbol( "P%", m_PC );
 }
@@ -368,40 +287,34 @@ void ObjectCode::Assemble3( unsigned int opcode, unsigned int addr )
 	assert( opcode < 0x100 );
 	assert( addr < 0x10000 );
 
-	unsigned char* pFlags = m_bRecording ? m_aFlagsRecord : m_aFlags;
-	unsigned char* pMemory = m_bRecording ? m_aMemoryRecord : m_aMemory;
-
 	if ( GlobalData::Instance().IsSecondPass() &&
 		 ( m_aFlags[ m_PC ] & CHECK ) &&
 		 !( m_aFlags[ m_PC ] & DONT_CHECK ) &&
 		 m_aMemory[ m_PC ] != opcode )
 	{
-		StartRecordingIfNeeded();
-		m_bPass2Changed = true;
-		pFlags = m_aFlagsRecord;
-		pMemory = m_aMemoryRecord;
+		throw AsmException_AssembleError_InconsistentCode();
 	}
 
-	if ( ( pFlags[ m_PC ] & GUARD ) ||
-		 ( pFlags[ m_PC + 1 ] & GUARD ) ||
-		 ( pFlags[ m_PC + 2 ] & GUARD ) )
+	if ( ( m_aFlags[ m_PC ] & GUARD ) ||
+		 ( m_aFlags[ m_PC + 1 ] & GUARD ) ||
+		 ( m_aFlags[ m_PC + 2 ] & GUARD ) )
 	{
 		throw AsmException_AssembleError_GuardHit();
 	}
 
-	if ( ( pFlags[ m_PC ] & USED ) ||
-		 ( pFlags[ m_PC + 1 ] & USED ) ||
-		 ( pFlags[ m_PC + 2 ] & USED ) )
+	if ( ( m_aFlags[ m_PC ] & USED ) ||
+		 ( m_aFlags[ m_PC + 1 ] & USED ) ||
+		 ( m_aFlags[ m_PC + 2 ] & USED ) )
 	{
 		throw AsmException_AssembleError_Overlap();
 	}
 
-	pFlags[ m_PC ] |= ( USED | CHECK );
-	pMemory[ m_PC++ ] = opcode;
-	pFlags[ m_PC ] |= USED;
-	pMemory[ m_PC++ ] = addr & 0xFF;
-	pFlags[ m_PC ] |= USED;
-	pMemory[ m_PC++ ] = ( addr & 0xFF00 ) >> 8;
+	m_aFlags[ m_PC ] |= ( USED | CHECK );
+	m_aMemory[ m_PC++ ] = opcode;
+	m_aFlags[ m_PC ] |= USED;
+	m_aMemory[ m_PC++ ] = addr & 0xFF;
+	m_aFlags[ m_PC ] |= USED;
+	m_aMemory[ m_PC++ ] = ( addr & 0xFF00 ) >> 8;
 
 	SymbolTable::Instance().ChangeBuiltInSymbol( "P%", m_PC );
 }

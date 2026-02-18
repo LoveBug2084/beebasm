@@ -26,7 +26,6 @@
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
-#include <sstream>
 
 #include "main.h"
 #include "sourcefile.h"
@@ -324,49 +323,14 @@ int main( int argc, char* argv[] )
 			GlobalData::Instance().SetDiscImage( pDiscIm );
 		}
 
-		// Run first pass (pass 0)
-		GlobalData::Instance().SetPass( 0 );
-		ObjectCode::Instance().InitialisePass();
-		GlobalData::Instance().ResetForId();
-		beebasm_srand( static_cast< unsigned long >( randomSeed ) );
+		for ( int pass = 0; pass < 2; pass++ )
 		{
-			SourceFile input( pInputFile, 0 );
-			input.Process();
-		}
-
-		// Run second pass (pass 1). Capture listing output so we can discard it
-		// if we later promote pass2 changes and re-run verification.
-		GlobalData::Instance().SetPass( 1 );
-		ObjectCode::Instance().InitialisePass();
-		GlobalData::Instance().ResetForId();
-		beebasm_srand( static_cast< unsigned long >( randomSeed ) );
-		std::ostringstream pass2ListingBuffer;
-		std::streambuf* oldCoutBuf = std::cout.rdbuf( pass2ListingBuffer.rdbuf() );
-		{
-			SourceFile input( pInputFile, 0 );
-			input.Process();
-		}
-		// Restore cout
-		std::cout.rdbuf( oldCoutBuf );
-
-		// If pass 2 caused differences, accept recorded code and run a verification pass (pass 1 again)
-		if ( ObjectCode::Instance().Pass2Changed() )
-		{
-			ObjectCode::Instance().ApplyRecordedAsBaseline();
-
-			GlobalData::Instance().SetPass( 1 );
+			GlobalData::Instance().SetPass( pass );
 			ObjectCode::Instance().InitialisePass();
 			GlobalData::Instance().ResetForId();
 			beebasm_srand( static_cast< unsigned long >( randomSeed ) );
-			{
-				SourceFile input( pInputFile, 0 );
-				input.Process();
-			}
-		}
-		else
-		{
-			// No changes promoted; flush the collected pass-2 listing to stdout now
-			std::cout << pass2ListingBuffer.str();
+			SourceFile input( pInputFile, 0 );
+			input.Process();
 		}
 	}
 	catch ( AsmException& e )

@@ -1,3 +1,0 @@
-     FFFF   00         BRK
-Processed file 'anyused.6502' ok
-warning: no SAVE command in source file.
