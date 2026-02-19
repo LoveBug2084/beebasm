@@ -32,6 +32,7 @@
 
 ObjectCode* ObjectCode::m_gInstance = NULL;
 
+bool g_CodeChanged = false;
 
 using namespace std;
 
@@ -200,7 +201,7 @@ void ObjectCode::Assemble1( unsigned int opcode )
 		 !( m_aFlags[ m_PC ] & DONT_CHECK ) &&
 		 m_aMemory[ m_PC ] != opcode )
 	{
-		throw AsmException_AssembleError_InconsistentCode();
+		g_CodeChanged = true;
 	}
 
 	if ( m_aFlags[ m_PC ] & GUARD )
@@ -244,7 +245,7 @@ void ObjectCode::Assemble2( unsigned int opcode, unsigned int val )
 		 !( m_aFlags[ m_PC ] & DONT_CHECK ) &&
 		 m_aMemory[ m_PC ] != opcode )
 	{
-		throw AsmException_AssembleError_InconsistentCode();
+		g_CodeChanged = true;
 	}
 
 	if ( ( m_aFlags[ m_PC ] & GUARD ) ||
@@ -292,7 +293,7 @@ void ObjectCode::Assemble3( unsigned int opcode, unsigned int addr )
 		 !( m_aFlags[ m_PC ] & DONT_CHECK ) &&
 		 m_aMemory[ m_PC ] != opcode )
 	{
-		throw AsmException_AssembleError_InconsistentCode();
+		g_CodeChanged = true;
 	}
 
 	if ( ( m_aFlags[ m_PC ] & GUARD ) ||

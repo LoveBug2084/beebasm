@@ -1,0 +1,47 @@
+code = &4000
+zeroPage = &0000
+
+;-------------------------------
+
+	org zeroPage
+
+.init
+
+	sta var1
+	sta var2
+	sta var3
+
+.initExit
+
+	rts
+
+var4 = P%
+
+;-------------------------------
+
+	org var4 + &f5
+
+.var1	skip 1
+.var2	skip 1
+.var3	skip 1
+
+;-------------------------------
+
+	org code
+.main
+	lda #0
+	sta counter + 0
+	sta counter + 1
+	jsr init
+
+.mainExit
+
+	rts
+
+;-------------------------------
+
+	org var4
+
+.counter skip 2
+
+;-------------------------------

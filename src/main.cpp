@@ -41,6 +41,7 @@
 
 using namespace std;
 
+extern bool g_CodeChanged;
 
 /*************************************************************************************************/
 /**
@@ -323,14 +324,26 @@ int main( int argc, char* argv[] )
 			GlobalData::Instance().SetDiscImage( pDiscIm );
 		}
 
-		for ( int pass = 0; pass < 2; pass++ )
+		int pass = 0;
+		int max_passes = 10;
+		bool stable = false;
+
+		while ( pass < max_passes && !stable )
 		{
-			GlobalData::Instance().SetPass( pass );
+			GlobalData::Instance().SetPass( pass > 0 ? 1 : 0 );
+			if ( pass > 0 ) g_CodeChanged = false;
+
 			ObjectCode::Instance().InitialisePass();
 			GlobalData::Instance().ResetForId();
 			beebasm_srand( static_cast< unsigned long >( randomSeed ) );
 			SourceFile input( pInputFile, 0 );
 			input.Process();
+
+			if ( pass > 0 && !g_CodeChanged )
+			{
+				stable = true;
+			}
+			pass++;
 		}
 	}
 	catch ( AsmException& e )
