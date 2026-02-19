@@ -45,6 +45,8 @@
 
 using namespace std;
 
+extern bool g_CodeChanged;
+
 // Expand a string into the string and its length
 #define N(n) n,sizeof(n)-1
 
@@ -526,7 +528,8 @@ void LineParser::HandleDefineLabel()
 			Value value = SymbolTable::Instance().GetSymbol( fullSymbolName );
 			if ((value.GetType() != Value::NumberValue) || (value.GetNumber() != ObjectCode::Instance().GetPC() ))
 			{
-				throw AsmException_SyntaxError_SecondPassProblem( m_line, oldColumn );
+				SymbolTable::Instance().ChangeSymbol( fullSymbolName, ObjectCode::Instance().GetPC() );
+				g_CodeChanged = true;
 			}
 
 			SymbolTable::Instance().AddLabel(symbolName);
