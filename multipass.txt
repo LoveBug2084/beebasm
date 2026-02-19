@@ -1,0 +1,73 @@
+BeebAsm Multi-Pass Assembler Summary
+====================================
+
+This document summarizes the transition of BeebAsm from a strict 2-pass assembler
+to a robust, iterative multi-pass assembler.
+
+1. The Problem with 2-Pass Assembly
+-----------------------------------
+In a traditional 2-pass assembler:
+- Pass 1: Scans source, calculates label addresses. Assumptions must be made about
+  instruction sizes (e.g., forward references are assumed to be Absolute/3-bytes).
+- Pass 2: Generates object code using addresses from Pass 1.
+
+The Crash: If Pass 2 discovers that a symbol is actually in Zero Page (address < &100),
+it might optimize an instruction from 3 bytes to 2 bytes. This changes all subsequent
+addresses. The assembler detects this mismatch against Pass 1's calculations and
+aborts with "Inconsistent Code" or "Second Pass Problem".
+
+2. The Multi-Pass Solution
+--------------------------
+The new assembler iterates until the code "stabilizes".
+
+- Pass 1: Discovery (same as before).
+- Pass 2: Refinement. If an instruction shrinks (e.g., Absolute -> ZP), the assembler
+  does NOT crash. Instead, it:
+  1. Updates the code in memory.
+  2. Sets a flag `g_CodeChanged = true`.
+  3. Updates label addresses in the symbol table if they shift.
+- Pass 3+: Stabilization. The assembler repeats the process until a full pass completes
+  with `g_CodeChanged == false`.
+- Final Pass: Output. Once stable, one final pass runs to generate the listing and
+  save files to disk.
+
+3. Comparison
+-------------
+| Feature                | Original 2-Pass             | New Multi-Pass              |
+|------------------------|-----------------------------|-----------------------------|
+| Forward ZP References  | Fails (or requires manual)  | Works automatically         |
+| Optimization           | Limited (must match Pass 1) | Dynamic (shrinks to fit)    |
+| Complex Expressions    | Fails if symbol undefined   | Resolves iteratively        |
+| Execution Time         | Fast (always 2 passes)      | Slightly longer (3-4 passes)|
+| Error Handling         | Immediate fatal error       | Retries until stable        |
+
+4. Changes Made
+---------------
+The following files were modified to implement this architecture:
+
+src/main.cpp:
+- Replaced fixed 2-pass loop with a `while` loop (max 10 passes).
+- Added `NullBuffer` to suppress console output during intermediate passes.
+- Added logic to run a final "display" pass only after stabilization.
+
+src/objectcode.cpp:
+- Added global `g_CodeChanged` flag.
+- Modified `Assemble` functions to set flag instead of throwing `InconsistentCode` exception.
+
+src/commands.cpp:
+- Modified `HandleDefineLabel` to update label addresses and set `g_CodeChanged` instead
+  of throwing `SecondPassProblem`.
+
+src/lineparser.cpp:
+- Updated expression parsing to handle undefined symbols in Pass 1 gracefully.
+- Added logic to detect if a symbol's value changes between passes.
+
+src/globaldata.h / .cpp:
+- Added `m_bStabilizing` flag to prevent `SAVE` commands from writing to disk
+  during intermediate passes.
+- Added `ResetPass()` to clear per-pass state.
+
+5. Safety
+---------
+A `max_passes` limit (default 10) prevents infinite loops, though the logic is designed
+to be monotonic (code only shrinks), guaranteeing convergence for valid code.
