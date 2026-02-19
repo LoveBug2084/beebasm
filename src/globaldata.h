@@ -45,6 +45,7 @@ public:
 	inline void SetUseDiscImage( bool b )		{ m_bUseDiscImage = b; }
 	inline void SetDiscImage( DiscImage* d )	{ m_pDiscImage = d; }
 	inline void ResetForId()					{ m_forId = 0; }
+	inline void ResetPass()						{ m_forId = 0; m_numAnonSaves = 0; m_bSaved = false; }
 	inline void SetSaved()						{ m_bSaved = true; }
 	inline void SetOutputFile( const char* p )	{ m_pOutputFile = p; }
 	inline void IncNumAnonSaves()				{ m_numAnonSaves++; }
@@ -56,6 +57,7 @@ public:
 												{ m_bRequireDistinctOpcodes = b; }
 	inline void SetUseVisualCppErrorFormat( bool b )
 												{ m_bUseVisualCppErrorFormat = b; }
+	inline void SetStabilizing( bool b )		{ m_bStabilizing = b; }
 
 	inline int GetPass() const					{ return m_pass; }
 	inline bool IsFirstPass() const				{ return ( m_pass == 0 ); }
@@ -76,6 +78,7 @@ public:
 	inline time_t GetAssemblyTime() const		{ return m_assemblyTime; }
 	inline bool RequireDistinctOpcodes() const  { return m_bRequireDistinctOpcodes; }
 	inline bool UseVisualCppErrorFormat() const { return m_bUseVisualCppErrorFormat; }
+	inline bool IsStabilizing() const			{ return m_bStabilizing; }
 
 private:
 
@@ -100,6 +103,7 @@ private:
 	time_t						m_assemblyTime;
 	bool						m_bRequireDistinctOpcodes;
 	bool						m_bUseVisualCppErrorFormat;
+	bool						m_bStabilizing;
 };
 
 

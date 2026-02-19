@@ -44,6 +44,12 @@ using namespace std;
 
 extern bool g_CodeChanged;
 
+class NullBuffer : public std::streambuf
+{
+public:
+	int overflow( int c ) { return c; }
+};
+
 /*************************************************************************************************/
 /**
 	main()
@@ -328,19 +334,21 @@ int main( int argc, char* argv[] )
 		int pass = 0;
 		int max_passes = 10;
 		bool stable = false;
+		NullBuffer nullBuffer;
 
 		while ( pass < max_passes && !stable )
 		{
-			std::stringstream buffer;
-			std::streambuf* oldCout = std::cout.rdbuf( buffer.rdbuf() );
+			std::streambuf* oldCout = std::cout.rdbuf( &nullBuffer );
+			std::streambuf* oldCerr = std::cerr.rdbuf( &nullBuffer );
 
 			try
 			{
 				GlobalData::Instance().SetPass( pass > 0 ? 1 : 0 );
+				GlobalData::Instance().SetStabilizing( true );
 				if ( pass > 0 ) g_CodeChanged = false;
 
 				ObjectCode::Instance().InitialisePass();
-				GlobalData::Instance().ResetForId();
+				GlobalData::Instance().ResetPass();
 				beebasm_srand( static_cast< unsigned long >( randomSeed ) );
 				SourceFile input( pInputFile, 0 );
 				input.Process();
@@ -353,12 +361,27 @@ int main( int argc, char* argv[] )
 			catch ( ... )
 			{
 				std::cout.rdbuf( oldCout );
+				std::cerr.rdbuf( oldCerr );
 				throw;
 			}
 
 			std::cout.rdbuf( oldCout );
-			if ( stable ) std::cout << buffer.str();
+			std::cerr.rdbuf( oldCerr );
 			pass++;
+		}
+
+		GlobalData::Instance().SetPass( 1 );
+		GlobalData::Instance().SetStabilizing( false );
+		ObjectCode::Instance().InitialisePass();
+		GlobalData::Instance().ResetPass();
+		beebasm_srand( static_cast< unsigned long >( randomSeed ) );
+		SourceFile input( pInputFile, 0 );
+		input.Process();
+
+		if ( !stable )
+		{
+			cerr << "Error: Assembly failed to stabilize after " << max_passes << " passes." << endl;
+			exitCode = EXIT_FAILURE;
 		}
 	}
 	catch ( AsmException& e )

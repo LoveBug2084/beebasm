@@ -33,6 +33,7 @@
 
 using namespace std;
 
+extern bool g_CodeChanged;
 
 
 /*************************************************************************************************/
@@ -186,22 +187,56 @@ void LineParser::Process( const string& line )
 				m_column++;
 			}
 
-			Value value = EvaluateExpression();
-
-			if ( GlobalData::Instance().IsFirstPass() )
+			Value value;
+			bool valueIsDefined = false;
+			try
 			{
-				// only add the symbol on the first pass
-
-				if ( SymbolTable::Instance().IsSymbolDefined( symbolName ) )
+				value = EvaluateExpression();
+				valueIsDefined = true;
+			}
+			catch ( AsmException_SyntaxError_SymbolNotDefined& )
+			{
+				if ( !GlobalData::Instance().IsFirstPass() )
 				{
-					if (!bIsConditionalAssignment)
+					// On later passes, this is a real error.
+					throw;
+				}
+				// On first pass, we just ignore it and try again on the next pass.
+			}
+
+			if (valueIsDefined)
+			{
+				if ( GlobalData::Instance().IsFirstPass() )
+				{
+					if ( SymbolTable::Instance().IsSymbolDefined( symbolName ) )
 					{
-						throw AsmException_SyntaxError_LabelAlreadyDefined( m_line, oldColumn );
+						if (!bIsConditionalAssignment)
+						{
+							throw AsmException_SyntaxError_LabelAlreadyDefined( m_line, oldColumn );
+						}
+					}
+					else
+					{
+						SymbolTable::Instance().AddSymbol( symbolName, value );
 					}
 				}
-				else
+				else // Second or later pass
 				{
-					SymbolTable::Instance().AddSymbol( symbolName, value );
+					if (SymbolTable::Instance().IsSymbolDefined(symbolName))
+					{
+						Value oldValue = SymbolTable::Instance().GetSymbol(symbolName);
+						if (Value::Compare(oldValue, value) != 0)
+						{
+							SymbolTable::Instance().ChangeSymbol(symbolName, value);
+							g_CodeChanged = true;
+						}
+					}
+					else
+					{
+						// Symbol wasn't defined on a previous pass, so add it now.
+						SymbolTable::Instance().AddSymbol(symbolName, value);
+						g_CodeChanged = true; // A new symbol was added, so things might change.
+					}
 				}
 			}
 

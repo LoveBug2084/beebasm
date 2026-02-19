@@ -1207,7 +1207,7 @@ void LineParser::HandleSave()
 		{
 			saveFile = GlobalData::Instance().GetOutputFile();
 
-			if ( GlobalData::Instance().IsSecondPass() )
+			if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() )
 			{
 				if ( GlobalData::Instance().GetNumAnonSaves() > 0 )
 				{
@@ -1232,7 +1232,7 @@ void LineParser::HandleSave()
 
 	// OK - do it
 
-	if ( GlobalData::Instance().IsSecondPass() )
+	if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() )
 	{
 		if ( GlobalData::Instance().UsesDiscImage() )
 		{
@@ -1566,7 +1566,7 @@ void LineParser::HandlePutFileCommon( bool bText )
 
 	args.CheckComplete();
 
-	if ( GlobalData::Instance().IsSecondPass() )
+	if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() )
 	{
 		ifstream inputFile;
 		inputFile.open( hostFilename.c_str(), ios_base::in | ios_base::binary );
@@ -1642,7 +1642,7 @@ void LineParser::HandlePutBasic()
 	string beebFilename = args.ParseString().Default(hostFilename);
 	args.CheckComplete();
 
-	if ( GlobalData::Instance().IsSecondPass() &&
+	if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() &&
 		 GlobalData::Instance().UsesDiscImage() )
 	{
 		FILE* basic_file = fopen(hostFilename.c_str(), "rb");
