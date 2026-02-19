@@ -26,6 +26,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
+#include <sstream>
 
 #include "main.h"
 #include "sourcefile.h"
@@ -330,19 +331,33 @@ int main( int argc, char* argv[] )
 
 		while ( pass < max_passes && !stable )
 		{
-			GlobalData::Instance().SetPass( pass > 0 ? 1 : 0 );
-			if ( pass > 0 ) g_CodeChanged = false;
+			std::stringstream buffer;
+			std::streambuf* oldCout = std::cout.rdbuf( buffer.rdbuf() );
 
-			ObjectCode::Instance().InitialisePass();
-			GlobalData::Instance().ResetForId();
-			beebasm_srand( static_cast< unsigned long >( randomSeed ) );
-			SourceFile input( pInputFile, 0 );
-			input.Process();
-
-			if ( pass > 0 && !g_CodeChanged )
+			try
 			{
-				stable = true;
+				GlobalData::Instance().SetPass( pass > 0 ? 1 : 0 );
+				if ( pass > 0 ) g_CodeChanged = false;
+
+				ObjectCode::Instance().InitialisePass();
+				GlobalData::Instance().ResetForId();
+				beebasm_srand( static_cast< unsigned long >( randomSeed ) );
+				SourceFile input( pInputFile, 0 );
+				input.Process();
+
+				if ( pass > 0 && !g_CodeChanged )
+				{
+					stable = true;
+				}
 			}
+			catch ( ... )
+			{
+				std::cout.rdbuf( oldCout );
+				throw;
+			}
+
+			std::cout.rdbuf( oldCout );
+			if ( stable ) std::cout << buffer.str();
 			pass++;
 		}
 	}
