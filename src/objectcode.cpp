@@ -130,6 +130,7 @@ void ObjectCode::InitialisePass()
 	SetCPU( CPU_6502 );
 	SetPC( 0 );
 	SymbolTable::Instance().ChangeBuiltInSymbol( "P%", m_PC );
+	SymbolTable::Instance().UnlinkSymbol();
 
 	// Clear flags between passes
 

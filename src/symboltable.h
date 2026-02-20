@@ -49,8 +49,11 @@ public:
 	void ChangeSymbol( const ScopedSymbolName& symbol, Value value );
 	Value GetSymbol( const ScopedSymbolName& symbol ) const;
 	bool IsSymbolDefined( const ScopedSymbolName& symbol ) const;
+	bool IsSymbolVolatile( const ScopedSymbolName& symbol ) const;
 	void RemoveSymbol( const ScopedSymbolName& symbol );
 
+	void LinkSymbol( const ScopedSymbolName& symbol );
+	void UnlinkSymbol();
 	void Dump(bool global, bool all, const char * labels_file) const; // labels_file == nullptr -> stdout
 
 	void PushBrace();
@@ -64,16 +67,19 @@ private:
 	{
 	public:
 
-		Symbol( Value value, bool isLabel ) : m_value( value ), m_isLabel( isLabel ) {}
+		Symbol( Value value, bool isLabel ) : m_value( value ), m_isLabel( isLabel ), m_isVolatile( false ) {}
 
 		void SetValue( Value value ) { m_value = value; }
 		Value GetValue() const { return m_value; }
 		bool IsLabel() const { return m_isLabel; }
+		void SetVolatile( bool v ) { m_isVolatile = v; }
+		bool IsVolatile() const { return m_isVolatile; }
 
 	private:
 
 		Value	m_value;
 		bool	m_isLabel;
+		bool	m_isVolatile;
 	};
 
 	SymbolTable();
@@ -81,6 +87,9 @@ private:
 
 	typedef std::unordered_map<ScopedSymbolName, Symbol> MapType;
 	MapType m_map;
+
+	ScopedSymbolName m_linkedSymbol;
+	bool m_hasLinkedSymbol;
 
 	static SymbolTable*				m_gInstance;
 

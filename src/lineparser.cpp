@@ -228,7 +228,10 @@ void LineParser::Process( const string& line )
 						if (Value::Compare(oldValue, value) != 0)
 						{
 							SymbolTable::Instance().ChangeSymbol(symbolName, value);
-							g_CodeChanged = true;
+							if (!SymbolTable::Instance().IsSymbolVolatile(symbolName))
+							{
+								g_CodeChanged = true;
+							}
 						}
 					}
 					else

@@ -530,7 +530,10 @@ void LineParser::HandleDefineLabel()
 			if ((value.GetType() != Value::NumberValue) || (value.GetNumber() != ObjectCode::Instance().GetPC() ))
 			{
 				SymbolTable::Instance().ChangeSymbol( fullSymbolName, ObjectCode::Instance().GetPC() );
-				g_CodeChanged = true;
+				if (!SymbolTable::Instance().IsSymbolVolatile(fullSymbolName))
+				{
+					g_CodeChanged = true;
+				}
 			}
 
 			SymbolTable::Instance().AddLabel(symbolName);
@@ -598,12 +601,62 @@ void LineParser::HandleDirective()
 /*************************************************************************************************/
 void LineParser::HandleXorg()
 {
+	// Check if the argument is a single symbol
+	size_t oldColumn = m_column;
+	std::string symbolArg;
+	bool isSymbol = false;
+
+	StringUtils::EatWhitespace(m_line, m_column);
+	if (m_column < m_line.length() && (Ascii::IsAlpha(m_line[m_column]) || m_line[m_column] == '_'))
+	{
+		symbolArg = GetSymbolName();
+		size_t nextCol = m_column;
+		StringUtils::EatWhitespace(m_line, nextCol);
+		// Check if we are at the end of the statement (valid separators)
+		if (nextCol >= m_line.length() || m_line[nextCol] == ':' || m_line[nextCol] == '\\' || m_line[nextCol] == ';')
+		{
+			isSymbol = true;
+		}
+	}
+	m_column = oldColumn;
+
 	ArgListParser args(*this);
 	int newPC = args.ParseInt().Range(0, 0xFFFF);
 	args.CheckComplete();
 
+	SymbolTable::Instance().UnlinkSymbol();
+
 	ObjectCode::Instance().SetPC( newPC );
 	SymbolTable::Instance().ChangeBuiltInSymbol( "P%", newPC );
+
+	if (isSymbol)
+	{
+		// Resolve the symbol to the correct scope
+		ScopedSymbolName scopedName;
+		bool found = false;
+		for (int level = m_sourceCode->GetForLevel(); level >= 0; --level)
+		{
+			scopedName = m_sourceCode->GetScopedSymbolName(symbolArg, level);
+			if (SymbolTable::Instance().IsSymbolDefined(scopedName))
+			{
+				found = true;
+				break;
+			}
+		}
+		// If not found (e.g. Pass 1 forward ref), default to current scope
+		if (!found)
+		{
+			scopedName = m_sourceCode->GetScopedSymbolName(symbolArg);
+			if (GlobalData::Instance().IsFirstPass())
+			{
+				if (!SymbolTable::Instance().IsSymbolDefined(scopedName))
+				{
+					SymbolTable::Instance().AddSymbol(scopedName, newPC);
+				}
+			}
+		}
+		SymbolTable::Instance().LinkSymbol(scopedName);
+	}
 }
 
 
@@ -618,6 +671,7 @@ void LineParser::HandleOrg()
 	int newPC = args.ParseInt().Range(0, 0xFFFF);
 	args.CheckComplete();
 
+	SymbolTable::Instance().UnlinkSymbol();
 	ObjectCode::Instance().SetPC( newPC );
 	SymbolTable::Instance().ChangeBuiltInSymbol( "P%", newPC );
 }

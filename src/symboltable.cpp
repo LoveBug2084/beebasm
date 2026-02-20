@@ -83,7 +83,8 @@ void SymbolTable::Destroy()
 */
 /*************************************************************************************************/
 SymbolTable::SymbolTable()
-	:	m_labelScopes( 0 )
+	:	m_hasLinkedSymbol( false ),
+		m_labelScopes( 0 )
 {
 	// Add any constant symbols here
 
@@ -123,6 +124,19 @@ bool SymbolTable::IsSymbolDefined( const ScopedSymbolName& symbol ) const
 	return m_map.find( symbol ) != m_map.cend();
 }
 
+
+
+/*************************************************************************************************/
+/**
+	SymbolTable::IsSymbolVolatile()
+
+	Returns whether or not the supplied symbol is marked as volatile (e.g. used in XORG)
+*/
+/*************************************************************************************************/
+bool SymbolTable::IsSymbolVolatile( const ScopedSymbolName& symbol ) const
+{
+	return IsSymbolDefined( symbol ) && m_map.find( symbol )->second.IsVolatile();
+}
 
 
 /*************************************************************************************************/
@@ -302,6 +316,10 @@ Value SymbolTable::GetSymbol( const ScopedSymbolName& symbol ) const
 void SymbolTable::ChangeBuiltInSymbol( const std::string& symbolName, double value )
 {
 	ChangeSymbol(ScopedSymbolName(symbolName), value);
+	if (m_hasLinkedSymbol && symbolName == "P%")
+	{
+		ChangeSymbol(m_linkedSymbol, value);
+	}
 }
 
 
@@ -339,6 +357,30 @@ void SymbolTable::RemoveSymbol( const ScopedSymbolName& symbol )
 	m_map.erase( symbol );
 }
 
+
+
+/*************************************************************************************************/
+/**
+	SymbolTable::LinkSymbol()
+
+	Links a symbol to P% so it updates automatically
+*/
+/*************************************************************************************************/
+void SymbolTable::LinkSymbol( const ScopedSymbolName& symbol )
+{
+	m_linkedSymbol = symbol;
+	m_hasLinkedSymbol = true;
+	if (IsSymbolDefined(symbol))
+	{
+		m_map.find(symbol)->second.SetVolatile(true);
+	}
+}
+
+
+void SymbolTable::UnlinkSymbol()
+{
+	m_hasLinkedSymbol = false;
+}
 
 
 /*************************************************************************************************/
