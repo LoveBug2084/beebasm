@@ -361,6 +361,21 @@ void SymbolTable::RemoveSymbol( const ScopedSymbolName& symbol )
 
 /*************************************************************************************************/
 /**
+	SymbolTable::SetSymbolVolatile()
+
+	Marks a symbol as volatile (value expected to change between passes)
+*/
+/*************************************************************************************************/
+void SymbolTable::SetSymbolVolatile( const ScopedSymbolName& symbol )
+{
+	if (IsSymbolDefined(symbol))
+	{
+		m_map.find(symbol)->second.SetVolatile(true);
+	}
+}
+
+/*************************************************************************************************/
+/**
 	SymbolTable::LinkSymbol()
 
 	Links a symbol to P% so it updates automatically

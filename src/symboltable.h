@@ -51,6 +51,7 @@ public:
 	bool IsSymbolDefined( const ScopedSymbolName& symbol ) const;
 	bool IsSymbolVolatile( const ScopedSymbolName& symbol ) const;
 	void RemoveSymbol( const ScopedSymbolName& symbol );
+	void SetSymbolVolatile( const ScopedSymbolName& symbol );
 
 	void LinkSymbol( const ScopedSymbolName& symbol );
 	void UnlinkSymbol();

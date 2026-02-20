@@ -112,6 +112,11 @@ void LineParser::Process( const string& line )
 						m_line[ m_column - 1 ] != '%' &&
 						m_line[ m_column - 1 ] != '$' );
 
+			if ( m_column < m_line.length() && m_line[ m_column ] == '@' )
+			{
+				m_column++;
+			}
+
 			if ( AdvanceAndCheckEndOfStatement() )
 			{
 				if ( m_line[ m_column ] == '=' )
@@ -166,8 +171,15 @@ void LineParser::Process( const string& line )
 		{
 			// Deal here with symbol assignment
 			bool bIsConditionalAssignment = false;
+			bool bIsVolatileAssignment = false;
 
 			ScopedSymbolName symbolName = m_sourceCode->GetScopedSymbolName( GetSymbolName() );
+
+			if ( m_column < m_line.length() && m_line[ m_column ] == '@' )
+			{
+				bIsVolatileAssignment = true;
+				m_column++;
+			}
 
 			if ( !AdvanceAndCheckEndOfStatement() )
 			{
@@ -210,14 +222,23 @@ void LineParser::Process( const string& line )
 				{
 					if ( SymbolTable::Instance().IsSymbolDefined( symbolName ) )
 					{
-						if (!bIsConditionalAssignment)
+						if (!bIsConditionalAssignment && !bIsVolatileAssignment)
 						{
 							throw AsmException_SyntaxError_LabelAlreadyDefined( m_line, oldColumn );
+						}
+						if (bIsVolatileAssignment)
+						{
+							SymbolTable::Instance().ChangeSymbol( symbolName, value );
+							SymbolTable::Instance().SetSymbolVolatile( symbolName );
 						}
 					}
 					else
 					{
 						SymbolTable::Instance().AddSymbol( symbolName, value );
+						if (bIsVolatileAssignment)
+						{
+							SymbolTable::Instance().SetSymbolVolatile( symbolName );
+						}
 					}
 				}
 				else // Second or later pass
@@ -228,7 +249,7 @@ void LineParser::Process( const string& line )
 						if (Value::Compare(oldValue, value) != 0)
 						{
 							SymbolTable::Instance().ChangeSymbol(symbolName, value);
-							if (!SymbolTable::Instance().IsSymbolVolatile(symbolName))
+							if (!SymbolTable::Instance().IsSymbolVolatile(symbolName) && !bIsVolatileAssignment)
 							{
 								g_CodeChanged = true;
 							}
@@ -238,6 +259,10 @@ void LineParser::Process( const string& line )
 					{
 						// Symbol wasn't defined on a previous pass, so add it now.
 						SymbolTable::Instance().AddSymbol(symbolName, value);
+						if (bIsVolatileAssignment)
+						{
+							SymbolTable::Instance().SetSymbolVolatile( symbolName );
+						}
 						g_CodeChanged = true; // A new symbol was added, so things might change.
 					}
 				}
