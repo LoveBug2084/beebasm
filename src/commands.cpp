@@ -59,6 +59,7 @@ const LineParser::Token	LineParser::m_gaTokenTable[] =
 	{ N("PRINT"),		&LineParser::HandlePrint,				0 },
 	{ N("CPU"),			&LineParser::HandleCpu,					0 },
 	{ N("ORG"),			&LineParser::HandleOrg,					0 },
+	{ N("XORG"),		&LineParser::HandleXorg,				0 },
 	{ N("INCLUDE"),		&LineParser::HandleInclude,				0 },
 	{ N("EQUB"),		&LineParser::HandleEqub,				0 },
 	{ N("EQUD"),		&LineParser::HandleEqud,				0 },
@@ -588,6 +589,22 @@ void LineParser::HandleDirective()
 	}
 }
 
+
+
+/*************************************************************************************************/
+/**
+	LineParser::HandleXorg()
+*/
+/*************************************************************************************************/
+void LineParser::HandleXorg()
+{
+	ArgListParser args(*this);
+	int newPC = args.ParseInt().Range(0, 0xFFFF);
+	args.CheckComplete();
+
+	ObjectCode::Instance().SetPC( newPC );
+	SymbolTable::Instance().ChangeBuiltInSymbol( "P%", newPC );
+}
 
 
 /*************************************************************************************************/

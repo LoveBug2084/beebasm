@@ -139,6 +139,7 @@ private:
 	void			HandlePrint();
 	void			HandleCpu();
 	void			HandleOrg();
+	void			HandleXorg();
 	void			HandleInclude();
 	void			HandleIncBin();
 	void			HandleEqub();
