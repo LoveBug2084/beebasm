@@ -91,7 +91,9 @@ const LineParser::Token	LineParser::m_gaTokenTable[] =
 	{ N("COPYBLOCK"),	&LineParser::HandleCopyBlock,			0 },
 	{ N("RANDOMIZE"),	&LineParser::HandleRandomize,			0 },
 	{ N("ASM"),			&LineParser::HandleAsm,					0 },
-	{ N("SOURCELINE"),  &LineParser::HandleSourceLine,          0 }
+	{ N("SOURCELINE"),  &LineParser::HandleSourceLine,          0 },
+	{ N("LABEL"),		&LineParser::HandleLabel,				0 },
+	{ N("LET"),			&LineParser::HandleLet,					0 }
 };
 
 #undef N
@@ -550,6 +552,180 @@ void LineParser::HandleDefineLabel()
 	}
 }
 
+
+
+/*************************************************************************************************/
+/**
+	LineParser::HandleLabel()
+*/
+/*************************************************************************************************/
+void LineParser::HandleLabel()
+{
+	int oldColumn = m_column;
+	std::string name = EvaluateExpressionAsString();
+
+	if ( AdvanceAndCheckEndOfStatement() )
+	{
+		throw AsmException_SyntaxError_InvalidCharacter( m_line, m_column );
+	}
+
+	size_t namePos = 0;
+	int target_level = m_sourceCode->GetForLevel();
+
+	if (namePos < name.length() && name[namePos] == '*')
+	{
+		namePos++;
+		target_level = 0;
+	}
+	else if (namePos < name.length() && name[namePos] == '^')
+	{
+		namePos++;
+		target_level = std::max( target_level - 1, 0 );
+	}
+
+	// '*' and '^' may not cause a label to be defined outside the current for loop
+	for ( int level = m_sourceCode->GetForLevel(); level > target_level; level-- )
+	{
+		if ( m_sourceCode->IsRealForLevel( level ) )
+		{
+			throw AsmException_SyntaxError_SymbolScopeOutsideFor( m_line, oldColumn );
+		}
+	}
+
+	std::string symbolName = name.substr(namePos);
+
+	if (symbolName.empty())
+	{
+		throw AsmException_SyntaxError_InvalidSymbolName( m_line, oldColumn );
+	}
+
+	if ( !Ascii::IsAlpha( symbolName[0] ) && symbolName[0] != '_' )
+	{
+		throw AsmException_SyntaxError_InvalidSymbolName( m_line, oldColumn );
+	}
+
+	for (size_t i = 1; i < symbolName.length(); ++i)
+	{
+		if ( !Ascii::IsAlpha( symbolName[i] ) && !Ascii::IsDigit( symbolName[i] ) && symbolName[i] != '_' )
+		{
+			throw AsmException_SyntaxError_InvalidSymbolName( m_line, oldColumn );
+		}
+	}
+
+	ScopedSymbolName fullSymbolName = m_sourceCode->GetScopedSymbolName( symbolName, target_level );
+
+	if ( GlobalData::Instance().IsFirstPass() )
+	{
+		if ( SymbolTable::Instance().IsSymbolDefined( fullSymbolName ) )
+		{
+			throw AsmException_SyntaxError_LabelAlreadyDefined( m_line, oldColumn );
+		}
+		else
+		{
+			SymbolTable::Instance().AddSymbol( fullSymbolName, ObjectCode::Instance().GetPC(), true );
+		}
+	}
+	else
+	{
+		Value value = SymbolTable::Instance().GetSymbol( fullSymbolName );
+		if ((value.GetType() != Value::NumberValue) || (value.GetNumber() != ObjectCode::Instance().GetPC() ))
+		{
+			SymbolTable::Instance().ChangeSymbol( fullSymbolName, ObjectCode::Instance().GetPC() );
+			if (!SymbolTable::Instance().IsSymbolVolatile(fullSymbolName))
+			{
+				g_CodeChanged = true;
+			}
+		}
+
+		SymbolTable::Instance().AddLabel(symbolName);
+	}
+
+	if ( m_sourceCode->ShouldOutputAsm() )
+	{
+		cout << "." << symbolName << endl;
+	}
+}
+
+
+/*************************************************************************************************/
+/**
+	LineParser::HandleLet()
+*/
+/*************************************************************************************************/
+void LineParser::HandleLet()
+{
+	int oldColumn = m_column;
+	std::string name = EvaluateExpressionAsString(false, true);
+
+	if ( m_column < m_line.length() && ( m_line[ m_column ] == ',' || m_line[ m_column ] == '=' ) )
+	{
+		m_column++;
+	}
+
+	Value value = EvaluateExpression();
+
+	if ( AdvanceAndCheckEndOfStatement() )
+	{
+		throw AsmException_SyntaxError_InvalidCharacter( m_line, m_column );
+	}
+
+	size_t namePos = 0;
+	int target_level = m_sourceCode->GetForLevel();
+	bool explicitScope = false;
+
+	if (namePos < name.length() && name[namePos] == '*')
+	{
+		namePos++;
+		target_level = 0;
+		explicitScope = true;
+	}
+	else if (namePos < name.length() && name[namePos] == '^')
+	{
+		namePos++;
+		target_level = std::max( target_level - 1, 0 );
+		explicitScope = true;
+	}
+
+	std::string symbolName = name.substr(namePos);
+
+	if (symbolName.empty() || (!Ascii::IsAlpha(symbolName[0]) && symbolName[0] != '_'))
+	{
+		throw AsmException_SyntaxError_InvalidSymbolName( m_line, oldColumn );
+	}
+
+	ScopedSymbolName fullSymbolName;
+	bool found = false;
+
+	if (!explicitScope)
+	{
+		for ( int level = m_sourceCode->GetForLevel(); level >= 0; level-- )
+		{
+			ScopedSymbolName tryName = m_sourceCode->GetScopedSymbolName( symbolName, level );
+			if ( SymbolTable::Instance().IsSymbolDefined( tryName ) )
+			{
+				fullSymbolName = tryName;
+				found = true;
+				break;
+			}
+		}
+	}
+
+	if (!found)
+	{
+		fullSymbolName = m_sourceCode->GetScopedSymbolName( symbolName, target_level );
+	}
+
+	if ( SymbolTable::Instance().IsSymbolDefined( fullSymbolName ) )
+	{
+		SymbolTable::Instance().ChangeSymbol( fullSymbolName, value );
+	}
+	else
+	{
+		SymbolTable::Instance().AddSymbol( fullSymbolName, value );
+		if ( !GlobalData::Instance().IsFirstPass() ) g_CodeChanged = true;
+	}
+	SymbolTable::Instance().SetSymbolVolatile( fullSymbolName );
+}
 
 
 /*************************************************************************************************/

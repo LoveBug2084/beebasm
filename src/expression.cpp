@@ -245,7 +245,7 @@ Value LineParser::GetValue()
 	Evaluates an expression, and returns its value, also advancing the string pointer
 */
 /*************************************************************************************************/
-Value LineParser::EvaluateExpression( bool bAllowOneMismatchedCloseBracket )
+Value LineParser::EvaluateExpression( bool bAllowOneMismatchedCloseBracket, bool bStopAtEquals )
 {
 	// Reset stacks
 
@@ -264,7 +264,7 @@ Value LineParser::EvaluateExpression( bool bAllowOneMismatchedCloseBracket )
 
 	// Iterate through the expression
 
-	while ( AdvanceAndCheckEndOfSubStatement(bracketCount == 0) )
+	while ( AdvanceAndCheckEndOfSubStatement(bracketCount == 0, bStopAtEquals && bracketCount == 0) )
 	{
 		if ( expected == VALUE_OR_UNARY )
 		{
@@ -611,9 +611,9 @@ unsigned int LineParser::EvaluateExpressionAsUnsignedInt( bool bAllowOneMismatch
 	Version of EvaluateExpression which returns its result as a String or throws a type mismatch
 */
 /*************************************************************************************************/
- string LineParser::EvaluateExpressionAsString( bool bAllowOneMismatchedCloseBracket )
+ string LineParser::EvaluateExpressionAsString( bool bAllowOneMismatchedCloseBracket, bool bStopAtEquals )
 {
-	Value value = EvaluateExpression( bAllowOneMismatchedCloseBracket );
+	Value value = EvaluateExpression( bAllowOneMismatchedCloseBracket, bStopAtEquals );
 	if (value.GetType() != Value::StringValue)
 	{
 		throw AsmException_SyntaxError_TypeMismatch( m_line, m_column );

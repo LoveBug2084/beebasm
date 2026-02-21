@@ -97,33 +97,41 @@ void LineParser::Process( const string& line )
 
 		bool bIsSymbolAssignment = false;
 
-		if ( Ascii::IsAlpha( m_line[ m_column ] ) || m_line[ m_column ] == '_' )
+		if ( Ascii::IsAlpha( m_line[ m_column ] ) || m_line[ m_column ] == '_' || m_line[ m_column ] == '*' || m_line[ m_column ] == '^' )
 		{
-			do
-			{
-				m_column++;
-
-			} while ( m_column < m_line.length() &&
-					  ( Ascii::IsAlpha( m_line[ m_column ] ) ||
-						Ascii::IsDigit( m_line[ m_column ] ) ||
-						m_line[ m_column ] == '_' ||
-						m_line[ m_column ] == '%' ||
-						m_line[ m_column ] == '$' ) &&
-						m_line[ m_column - 1 ] != '%' &&
-						m_line[ m_column - 1 ] != '$' );
-
-			if ( m_column < m_line.length() && m_line[ m_column ] == '@' )
+			if ( m_line[ m_column ] == '*' || m_line[ m_column ] == '^' )
 			{
 				m_column++;
 			}
 
-			if ( AdvanceAndCheckEndOfStatement() )
+			if ( m_column < m_line.length() && ( Ascii::IsAlpha( m_line[ m_column ] ) || m_line[ m_column ] == '_' ) )
 			{
-				if ( m_line[ m_column ] == '=' )
+				do
 				{
-					// if we have a valid symbol name, followed by an '=', it is definitely
-					// a symbol assignment.
-					bIsSymbolAssignment = true;
+					m_column++;
+
+				} while ( m_column < m_line.length() &&
+						  ( Ascii::IsAlpha( m_line[ m_column ] ) ||
+							Ascii::IsDigit( m_line[ m_column ] ) ||
+							m_line[ m_column ] == '_' ||
+							m_line[ m_column ] == '%' ||
+							m_line[ m_column ] == '$' ) &&
+							m_line[ m_column - 1 ] != '%' &&
+							m_line[ m_column - 1 ] != '$' );
+
+				if ( m_column < m_line.length() && m_line[ m_column ] == '@' )
+				{
+					m_column++;
+				}
+
+				if ( AdvanceAndCheckEndOfStatement() )
+				{
+					if ( m_line[ m_column ] == '=' )
+					{
+						// if we have a valid symbol name, followed by an '=', it is definitely
+						// a symbol assignment.
+						bIsSymbolAssignment = true;
+					}
 				}
 			}
 		}
@@ -173,12 +181,43 @@ void LineParser::Process( const string& line )
 			bool bIsConditionalAssignment = false;
 			bool bIsVolatileAssignment = false;
 
-			ScopedSymbolName symbolName = m_sourceCode->GetScopedSymbolName( GetSymbolName() );
+			int target_level = m_sourceCode->GetForLevel();
+			bool hasScopePrefix = false;
+
+			if ( m_line[ m_column ] == '*' )
+			{
+				target_level = 0;
+				hasScopePrefix = true;
+				m_column++;
+			}
+			else if ( m_line[ m_column ] == '^' )
+			{
+				target_level = std::max( target_level - 1, 0 );
+				hasScopePrefix = true;
+				m_column++;
+			}
+
+			string name = GetSymbolName();
+			ScopedSymbolName symbolName = m_sourceCode->GetScopedSymbolName( name, target_level );
 
 			if ( m_column < m_line.length() && m_line[ m_column ] == '@' )
 			{
 				bIsVolatileAssignment = true;
 				m_column++;
+
+				// If using @ assignment, look for existing symbol in parent scopes (unless explicit scope given)
+				if ( !hasScopePrefix )
+				{
+					for ( int level = m_sourceCode->GetForLevel(); level >= 0; level-- )
+					{
+						ScopedSymbolName tryName = m_sourceCode->GetScopedSymbolName( name, level );
+						if ( SymbolTable::Instance().IsSymbolDefined( tryName ) )
+						{
+							symbolName = tryName;
+							break;
+						}
+					}
+				}
 			}
 
 			if ( !AdvanceAndCheckEndOfStatement() )
@@ -598,15 +637,15 @@ bool LineParser::AdvanceAndCheckEndOfStatement()
 	@return		bool		true if we are not yet at the end of the substatement
 */
 /*************************************************************************************************/
-bool LineParser::AdvanceAndCheckEndOfSubStatement(bool includeComma)
+bool LineParser::AdvanceAndCheckEndOfSubStatement(bool includeComma, bool includeEquals)
 {
 	if (includeComma)
 	{
-		return MoveToNextAtom( ";:\\,{}" );
+		return MoveToNextAtom( includeEquals ? ";:\\{},=" : ";:\\,{}" );
 	}
 	else
 	{
-		return MoveToNextAtom( ";:\\{}" );
+		return MoveToNextAtom( includeEquals ? ";:\\{}=" : ";:\\{}" );
 	}
 }
 

@@ -116,7 +116,7 @@ private:
 	bool			MoveToNextAtom( const char* pTerminators = NULL );
 	bool			AdvanceAndCheckEndOfLine();
 	bool			AdvanceAndCheckEndOfStatement();
-	bool			AdvanceAndCheckEndOfSubStatement(bool includeComma);
+	bool			AdvanceAndCheckEndOfSubStatement(bool includeComma, bool includeEquals = false);
 	void			SkipStatement();
 	void			SkipExpression( int bracketCount, bool bAllowOneMismatchedCloseBracket );
 	std::string		GetSymbolName();
@@ -139,7 +139,9 @@ private:
 	void			HandlePrint();
 	void			HandleCpu();
 	void			HandleOrg();
+	void			HandleLabel();
 	void			HandleXorg();
+	void			HandleLet();
 	void			HandleInclude();
 	void			HandleIncBin();
 	void			HandleEqub();
@@ -173,11 +175,11 @@ private:
 
 	// expression evaluating methods
 
-	Value			EvaluateExpression( bool bAllowOneMismatchedCloseBracket = false );
+	Value			EvaluateExpression( bool bAllowOneMismatchedCloseBracket = false, bool bStopAtEquals = false );
 	double			EvaluateExpressionAsDouble( bool bAllowOneMismatchedCloseBracket = false );
 	int				EvaluateExpressionAsInt( bool bAllowOneMismatchedCloseBracket = false );
 	unsigned int	EvaluateExpressionAsUnsignedInt( bool bAllowOneMismatchedCloseBracket = false );
-	std::string		EvaluateExpressionAsString( bool bAllowOneMismatchedCloseBracket = false );
+	std::string		EvaluateExpressionAsString( bool bAllowOneMismatchedCloseBracket = false, bool bStopAtEquals = false );
 	Value			GetValue();
 
 	// convenience functions for getting operator parameters from the stack
