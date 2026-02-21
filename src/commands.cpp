@@ -93,7 +93,8 @@ const LineParser::Token	LineParser::m_gaTokenTable[] =
 	{ N("ASM"),			&LineParser::HandleAsm,					0 },
 	{ N("SOURCELINE"),  &LineParser::HandleSourceLine,          0 },
 	{ N("LABEL"),		&LineParser::HandleLabel,				0 },
-	{ N("LET"),			&LineParser::HandleLet,					0 }
+	{ N("LET"),			&LineParser::HandleLet,					0 },
+	{ N("LOCKFILE"),	&LineParser::HandleLockFile,			0 }
 };
 
 #undef N
@@ -2173,5 +2174,32 @@ void LineParser::HandleSourceLine()
 	if (fileParam.Found())
 	{
 		m_sourceCode->SetFileName(static_cast<string>(fileParam));
+	}
+}
+
+
+/*************************************************************************************************/
+/**
+	LineParser::HandleLockFile()
+*/
+/*************************************************************************************************/
+void LineParser::HandleLockFile()
+{
+	string filename = EvaluateExpressionAsString();
+
+	if ( AdvanceAndCheckEndOfStatement() )
+	{
+		throw AsmException_SyntaxError_InvalidCharacter( m_line, m_column );
+	}
+
+	if ( m_sourceCode->ShouldOutputAsm() )
+	{
+		cout << "Locking file '" << filename << "'" << endl;
+	}
+
+	if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() &&
+		 GlobalData::Instance().UsesDiscImage() )
+	{
+		GlobalData::Instance().GetDiscImage()->LockFile( filename.c_str() );
 	}
 }

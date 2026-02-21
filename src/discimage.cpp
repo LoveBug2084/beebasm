@@ -396,3 +396,53 @@ void DiscImage::AddFile( const char* pName, const unsigned char* pAddr, int load
 		}
 	}
 }
+
+
+/*************************************************************************************************/
+/**
+	DiscImage::LockFile()
+*/
+/*************************************************************************************************/
+void DiscImage::LockFile( const char* pName )
+{
+	char dirName = '$';
+
+	if ( strlen( pName ) > 2 && pName[ 1 ] == '.' )
+	{
+		dirName = pName[ 0 ];
+		pName += 2;
+	}
+
+	if ( strlen( pName ) > 7 )
+	{
+		// Bad name
+		throw AsmException_FileError_BadName( m_outputFilename );
+	}
+
+	char pPaddedName[ 7 ];
+	memset( pPaddedName, ' ', 7 );
+	memcpy( pPaddedName, pName, strlen( pName ) );
+
+	// Search for file
+	for ( int i = m_aCatalog[ 0x105 ]; i > 0; i -= 8 )
+	{
+		bool bTheSame = true;
+		for ( size_t j = 0; j < 7; j++ )
+		{
+			if ( Ascii::ToUpper( pPaddedName[ j ] ) != Ascii::ToUpper( m_aCatalog[ i + j ] ) )
+			{
+				bTheSame = false;
+				break;
+			}
+		}
+
+		if ( bTheSame && ( Ascii::ToUpper( m_aCatalog[ i + 7 ] & 0x7F ) ) == Ascii::ToUpper( dirName ) )
+		{
+			// Found it - set bit 7 of the directory byte to lock the file
+			m_aCatalog[ i + 7 ] |= 0x80;
+			return;
+		}
+	}
+
+	throw AsmException_FileError_FileNotFound( m_outputFilename );
+}

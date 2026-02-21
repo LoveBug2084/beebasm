@@ -124,6 +124,7 @@ DEFINE_FILE_EXCEPTION( DiscFull, "No room on DFS disc image full." );
 DEFINE_FILE_EXCEPTION( BadName, "Bad DFS filename." );
 DEFINE_FILE_EXCEPTION( TooManyFiles, "Too many files on DFS disc image (max 31)." );
 DEFINE_FILE_EXCEPTION( FileExists, "File already exists on DFS disc image." );
+DEFINE_FILE_EXCEPTION( FileNotFound, "File not found on DFS disc image." );
 
 
 /*************************************************************************************************/

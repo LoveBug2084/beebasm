@@ -142,6 +142,7 @@ private:
 	void			HandleLabel();
 	void			HandleXorg();
 	void			HandleLet();
+	void			HandleLockFile();
 	void			HandleInclude();
 	void			HandleIncBin();
 	void			HandleEqub();

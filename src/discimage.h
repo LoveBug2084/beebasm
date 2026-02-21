@@ -34,6 +34,7 @@ public:
 	~DiscImage();
 
 	void AddFile( const char* pName, const unsigned char* pAddr, int load, int exec, int len );
+	void LockFile( const char* pName );
 
 
 private:
