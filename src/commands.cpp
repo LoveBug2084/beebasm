@@ -658,7 +658,7 @@ void LineParser::HandleLet()
 	int oldColumn = m_column;
 	std::string name = EvaluateExpressionAsString(false, true);
 
-	if ( m_column < m_line.length() && ( m_line[ m_column ] == ',' || m_line[ m_column ] == '=' ) )
+	if ( m_column < m_line.length() && m_line[ m_column ] == '=' )
 	{
 		m_column++;
 	}
@@ -802,7 +802,6 @@ void LineParser::HandleXorg()
 	args.CheckComplete();
 
 	SymbolTable::Instance().UnlinkSymbol();
-
 	ObjectCode::Instance().SetPC( newPC );
 	SymbolTable::Instance().ChangeBuiltInSymbol( "P%", newPC );
 

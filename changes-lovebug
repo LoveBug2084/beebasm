@@ -354,7 +354,6 @@ Syntax:
 
 beebasm
 LET <string_expression> = <value>
-(Note: A comma , can be used instead of =)
 
 Key Behaviors:
 
