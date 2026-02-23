@@ -61,7 +61,7 @@ public:
 
 	inline int GetPass() const					{ return m_pass; }
 	inline bool IsFirstPass() const				{ return ( m_pass == 0 ); }
-	inline bool IsSecondPass() const			{ return ( m_pass == 1 ); }
+	inline bool IsAfterFirstPass() const			{ return ( m_pass == 1 ); }
 	inline bool IsVerboseSet() const			{ return m_bVerboseSet; }
 	inline bool IsVerbose() const				{ return m_bVerbose; }
 	inline const char* GetBootFile() const		{ return m_pBootFile; }

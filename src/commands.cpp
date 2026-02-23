@@ -1455,7 +1455,7 @@ void LineParser::HandleSave()
 		{
 			saveFile = GlobalData::Instance().GetOutputFile();
 
-			if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() )
+			if ( GlobalData::Instance().IsAfterFirstPass() && !GlobalData::Instance().IsStabilizing() )
 			{
 				if ( GlobalData::Instance().GetNumAnonSaves() > 0 )
 				{
@@ -1480,7 +1480,7 @@ void LineParser::HandleSave()
 
 	// OK - do it
 
-	if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() )
+	if ( GlobalData::Instance().IsAfterFirstPass() && !GlobalData::Instance().IsStabilizing() )
 	{
 		if ( GlobalData::Instance().UsesDiscImage() )
 		{
@@ -1690,7 +1690,7 @@ void LineParser::HandlePrint()
 				}
 			}
 
-			if ( GlobalData::Instance().IsSecondPass() )
+			if ( GlobalData::Instance().IsAfterFirstPass() )
 			{
 				cout << hex << uppercase << "&" << value << dec << nouppercase << " ";
 			}
@@ -1735,13 +1735,13 @@ void LineParser::HandlePrint()
 				}
 				catch ( AsmException_SyntaxError_SymbolNotDefined& )
 				{
-					if ( GlobalData::Instance().IsSecondPass() )
+					if ( GlobalData::Instance().IsAfterFirstPass() )
 					{
 						throw;
 					}
 				}
 
-				if ( GlobalData::Instance().IsSecondPass() )
+				if ( GlobalData::Instance().IsAfterFirstPass() )
 				{
 					if (value.GetType() == Value::NumberValue)
 					{
@@ -1763,7 +1763,7 @@ void LineParser::HandlePrint()
 		}
 	}
 
-	if ( GlobalData::Instance().IsSecondPass() )
+	if ( GlobalData::Instance().IsAfterFirstPass() )
 	{
 		cout << endl;
 	}
@@ -1814,7 +1814,7 @@ void LineParser::HandlePutFileCommon( bool bText )
 
 	args.CheckComplete();
 
-	if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() )
+	if ( GlobalData::Instance().IsAfterFirstPass() && !GlobalData::Instance().IsStabilizing() )
 	{
 		ifstream inputFile;
 		inputFile.open( hostFilename.c_str(), ios_base::in | ios_base::binary );
@@ -1890,7 +1890,7 @@ void LineParser::HandlePutBasic()
 	string beebFilename = args.ParseString().Default(hostFilename);
 	args.CheckComplete();
 
-	if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() &&
+	if ( GlobalData::Instance().IsAfterFirstPass() && !GlobalData::Instance().IsStabilizing() &&
 		 GlobalData::Instance().UsesDiscImage() )
 	{
 		FILE* basic_file = fopen(hostFilename.c_str(), "rb");
@@ -2197,7 +2197,7 @@ void LineParser::HandleLockFile()
 		cout << "Locking file '" << filename << "'" << endl;
 	}
 
-	if ( GlobalData::Instance().IsSecondPass() && !GlobalData::Instance().IsStabilizing() &&
+	if ( GlobalData::Instance().IsAfterFirstPass() && !GlobalData::Instance().IsStabilizing() &&
 		 GlobalData::Instance().UsesDiscImage() )
 	{
 		GlobalData::Instance().GetDiscImage()->LockFile( filename.c_str() );

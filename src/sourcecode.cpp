@@ -616,7 +616,7 @@ bool SourceCode::GetSymbolValue(const std::string& name, Value& value)
 /*************************************************************************************************/
 bool SourceCode::ShouldOutputAsm()
 {
-	if (!GlobalData::Instance().IsSecondPass())
+	if (!GlobalData::Instance().IsAfterFirstPass())
 		return false;
 
 	if (GlobalData::Instance().IsVerboseSet())

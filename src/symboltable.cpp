@@ -467,7 +467,7 @@ void SymbolTable::Dump(bool global, bool all, const char * labels_file) const
 
 void SymbolTable::PushBrace()
 {
-	if (GlobalData::Instance().IsSecondPass())
+	if (GlobalData::Instance().IsAfterFirstPass())
 	{
 		int addr = ObjectCode::Instance().GetPC();
 		if (m_lastLabel.m_addr != addr)
@@ -483,7 +483,7 @@ void SymbolTable::PushBrace()
 
 void SymbolTable::PushFor(const ScopedSymbolName& symbol, double value)
 {
-	if (GlobalData::Instance().IsSecondPass())
+	if (GlobalData::Instance().IsAfterFirstPass())
 	{
 		int addr = ObjectCode::Instance().GetPC();
 		std::ostringstream label; label << "._" << symbol.Name() << "_" << value;
@@ -496,7 +496,7 @@ void SymbolTable::PushFor(const ScopedSymbolName& symbol, double value)
 
 void SymbolTable::AddLabel(const std::string& symbol)
 {
-	if (GlobalData::Instance().IsSecondPass())
+	if (GlobalData::Instance().IsAfterFirstPass())
 	{
 		int addr = ObjectCode::Instance().GetPC();
 		m_lastLabel.m_identifier = (m_labelStack.empty() ? "" : m_labelStack.back().m_identifier) + "." + symbol;
@@ -507,7 +507,7 @@ void SymbolTable::AddLabel(const std::string& symbol)
 
 void SymbolTable::PopScope()
 {
-	if (GlobalData::Instance().IsSecondPass())
+	if (GlobalData::Instance().IsAfterFirstPass())
 	{
 		m_labelStack.pop_back();
 		m_lastLabel = m_labelStack.empty() ? Label() : m_labelStack.back();

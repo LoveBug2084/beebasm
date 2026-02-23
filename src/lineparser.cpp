@@ -344,7 +344,7 @@ void LineParser::Process( const string& line )
 					}
 					catch ( AsmException_SyntaxError_SymbolNotDefined& )
 					{
-						if ( GlobalData::Instance().IsSecondPass() )
+						if ( GlobalData::Instance().IsAfterFirstPass() )
 						{
 							throw;
 						}

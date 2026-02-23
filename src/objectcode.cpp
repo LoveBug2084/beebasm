@@ -197,7 +197,7 @@ void ObjectCode::Assemble1( unsigned int opcode )
 	assert( m_PC >= 0 && m_PC < 0x10000 );
 	assert( opcode < 0x100 );
 
-	if ( GlobalData::Instance().IsSecondPass() &&
+	if ( GlobalData::Instance().IsAfterFirstPass() &&
 		 ( m_aFlags[ m_PC ] & CHECK ) &&
 		 !( m_aFlags[ m_PC ] & DONT_CHECK ) &&
 		 m_aMemory[ m_PC ] != opcode )
@@ -241,7 +241,7 @@ void ObjectCode::Assemble2( unsigned int opcode, unsigned int val )
 	assert( opcode < 0x100 );
 	assert( val < 0x100 );
 
-	if ( GlobalData::Instance().IsSecondPass() &&
+	if ( GlobalData::Instance().IsAfterFirstPass() &&
 		 ( m_aFlags[ m_PC ] & CHECK ) &&
 		 !( m_aFlags[ m_PC ] & DONT_CHECK ) &&
 		 m_aMemory[ m_PC ] != opcode )
@@ -289,7 +289,7 @@ void ObjectCode::Assemble3( unsigned int opcode, unsigned int addr )
 	assert( opcode < 0x100 );
 	assert( addr < 0x10000 );
 
-	if ( GlobalData::Instance().IsSecondPass() &&
+	if ( GlobalData::Instance().IsAfterFirstPass() &&
 		 ( m_aFlags[ m_PC ] & CHECK ) &&
 		 !( m_aFlags[ m_PC ] & DONT_CHECK ) &&
 		 m_aMemory[ m_PC ] != opcode )
