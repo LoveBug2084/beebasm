@@ -24,6 +24,7 @@
 #define LINEPARSER_H_
 
 #include <string>
+#include <vector>
 #include "objectcode.h"
 #include "value.h"
 
@@ -168,6 +169,9 @@ private:
 	void			HandlePutBasic();
 	void			HandleMacro();
 	void			HandleEndMacro();
+	void			HandleFunction();
+	void			HandleEndFunction();
+	void			HandleReturn();
 	void			HandleError();
 	void			HandleCopyBlock();
 	void			HandleRandomize();
@@ -248,6 +252,10 @@ private:
 	void			EvalLower();
 
 	Value			FormatAssemblyTime(const char* formatString);
+
+	// Function call execution
+	Value			ExecuteFunctionCall(const std::string& functionName, const std::vector<Value>& args);
+	std::vector<Value>	ParseFunctionArguments();
 
 	SourceCode*				m_sourceCode;
 	std::string				m_line;

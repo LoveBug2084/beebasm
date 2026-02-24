@@ -1,4 +1,4 @@
-/*************************************************************************************************/
+ /*************************************************************************************************/
 /**
 	expression.cpp
 
@@ -40,6 +40,7 @@
 #include "constants.h"
 #include "stringutils.h"
 #include "literals.h"
+#include "function.h"
 
 using namespace std;
 
@@ -218,12 +219,28 @@ Value LineParser::GetValue()
 		}
 		else
 		{
-			// Regular symbol
-
-			if ( !m_sourceCode->GetSymbolValue(symbolName, value) )
+		// Check if this is a function call (symbol followed by opening parenthesis)
+			StringUtils::EatWhitespace(m_line, m_column);
+			
+			if (m_column < m_line.length() && m_line[m_column] == '(')
 			{
-				// symbol not known
-				throw AsmException_SyntaxError_SymbolNotDefined( m_line, oldColumn );
+				// This is a function call!
+				m_column++;  // skip the '('
+				
+				// Parse arguments using specialized method that doesn't treat commas as binary operators
+				std::vector<Value> args = ParseFunctionArguments();
+				
+				// Execute the function
+				value = ExecuteFunctionCall(symbolName, args);
+			}
+			else
+			{
+				// Regular symbol
+				if ( !m_sourceCode->GetSymbolValue(symbolName, value) )
+				{
+					// symbol not known
+					throw AsmException_SyntaxError_SymbolNotDefined( m_line, oldColumn );
+				}
 			}
 		}
 	}
@@ -1702,4 +1719,287 @@ void LineParser::EvalUpper()
 void LineParser::EvalLower()
 {
 	m_valueStack[ m_valueStackPtr - 1 ] = StackTopString().Lower();
+}
+
+
+/*************************************************************************************************/
+/**
+	LineParser::ExecuteFunctionCall()
+
+	Executes a function call with the given arguments and returns the result
+*/
+/*************************************************************************************************/
+Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std::vector<Value>& args)
+{
+	// Look up the function in the function table
+	Function* func = FunctionTable::Instance().Get(functionName);
+	
+	if (func == NULL)
+	{
+		throw AsmException_SyntaxError_SymbolNotDefined(m_line, m_column);
+	}
+	
+	// Verify parameter count
+	int paramCount = func->GetNumberOfParameters();
+	if (static_cast<int>(args.size()) != paramCount)
+	{
+		throw AsmException_SyntaxError_ParameterCount(m_line, m_column);
+	}
+	
+	// Save current state
+	std::string savedLine = m_line;
+	size_t savedColumn = m_column;
+	Function* savedFunction = m_sourceCode->GetCurrentFunction();
+	bool savedIfCondition = m_sourceCode->IsIfConditionTrue();
+	
+	// Set IF condition to true for function body execution
+	m_sourceCode->SetCurrentIfCondition(true);
+	
+	// Set up parameter bindings in the symbol table
+	for (int i = 0; i < paramCount; i++)
+	{
+		const std::string& paramName = func->GetParameter(i);
+		ScopedSymbolName fullParamName = m_sourceCode->GetScopedSymbolName(paramName);
+		SymbolTable::Instance().AddSymbol(fullParamName, args[i]);
+		SymbolTable::Instance().SetSymbolVolatile(fullParamName);
+	}
+	
+// Execute the function body
+	const std::vector<std::string>& body = func->GetBody();
+	Value returnValue;
+	bool hasReturn = false;
+	
+	for (size_t i = 0; i < body.size(); i++)
+	{
+		m_line = body[i];
+		m_column = 0;
+		
+		// Skip empty lines
+		StringUtils::EatWhitespace(m_line, m_column);
+		if (m_column >= m_line.length())
+		{
+			continue;
+		}
+		
+		// Check if this is a RETURN statement
+		std::string token;
+		size_t tokenStart = m_column;
+		while (m_column < m_line.length() && 
+			   (Ascii::IsAlpha(m_line[m_column]) || Ascii::IsDigit(m_line[m_column]) || m_line[m_column] == '_'))
+		{
+			m_column++;
+		}
+		token = m_line.substr(tokenStart, m_column - tokenStart);
+		
+		// Convert to uppercase for comparison
+		for (size_t j = 0; j < token.length(); j++)
+		{
+			token[j] = Ascii::ToUpper(token[j]);
+		}
+		
+		if (token == "RETURN")
+		{
+			// Skip past RETURN and whitespace
+			StringUtils::EatWhitespace(m_line, m_column);
+			
+			// Parse the return value expression
+			try
+			{
+				returnValue = EvaluateExpression();
+				hasReturn = true;
+			}
+			catch (AsmException_SyntaxError&)
+			{
+				// If RETURN has no value, that's okay - it's like RETURN 0
+				returnValue = Value(0.0);
+				hasReturn = true;
+			}
+			break;
+		}
+		else
+		{
+			// Process this statement (e.g., "result = a + b + c")
+			// Reset column to start and process the whole line
+			m_column = 0;
+			StringUtils::EatWhitespace(m_line, m_column);
+			
+			if (m_column < m_line.length())
+			{
+				// Use Process() to handle the statement
+				Process(m_line);
+			}
+		}
+	}
+	
+	// Clean up parameter bindings from symbol table
+	for (int i = 0; i < paramCount; i++)
+	{
+		const std::string& paramName = func->GetParameter(i);
+		ScopedSymbolName fullParamName = m_sourceCode->GetScopedSymbolName(paramName);
+		SymbolTable::Instance().RemoveSymbol(fullParamName);
+	}
+	
+	// Restore state
+	m_line = savedLine;
+	m_column = savedColumn;
+	m_sourceCode->SetCurrentFunction(savedFunction);
+	m_sourceCode->SetCurrentIfCondition(savedIfCondition);
+	
+	// If no return was executed, return 0
+	if (!hasReturn)
+	{
+		return Value(0.0);
+	}
+	
+	return returnValue;
+}
+
+
+/*************************************************************************************************/
+/**
+	LineParser::ParseFunctionArguments()
+
+	Parses function arguments separated by commas, without treating commas as binary operators.
+	This is used specifically for parsing function call arguments.
+
+	@return		std::vector<Value> - list of parsed argument values
+*/
+/*************************************************************************************************/
+std::vector<Value> LineParser::ParseFunctionArguments()
+{
+	std::vector<Value> args;
+	
+	StringUtils::EatWhitespace(m_line, m_column);
+	
+	if (m_column < m_line.length() && m_line[m_column] != ')')
+	{
+		// There are arguments - parse each one individually
+		while (true)
+		{
+			// Parse a single argument value
+			// We use a simple approach: parse until we hit a comma or closing paren
+			// This avoids the issue where EvaluateExpression treats comma as binary operator
+			
+			Value arg;
+			double double_value;
+			
+			// Check for numeric literal
+			if (Literals::ParseNumeric(m_line, m_column, double_value))
+			{
+				arg = double_value;
+			}
+			// Check for string literal
+			else if (m_column < m_line.length() && m_line[m_column] == '\"')
+			{
+				std::vector<char> text;
+				m_column++;
+				bool done = false;
+				while (!done && (m_column < m_line.length()))
+				{
+					char c = m_line[m_column];
+					m_column++;
+					if (c == '\"')
+					{
+						if ((m_column < m_line.length()) && (m_line[m_column] == '\"'))
+						{
+							// Quote quoted by doubling
+							text.push_back(c);
+							m_column++;
+						}
+						else
+						{
+							done = true;
+						}
+					}
+					else
+					{
+						text.push_back(c);
+					}
+				}
+				if (!done)
+				{
+					throw AsmException_SyntaxError_MissingQuote(m_line, m_line.length());
+				}
+				arg = String(text.data(), text.size());
+			}
+			// Check for symbol/function call
+			else if (m_column < m_line.length() && (Ascii::IsAlpha(m_line[m_column]) || m_line[m_column] == '_'))
+			{
+				int oldColumn = m_column;
+				std::string symbolName = GetSymbolName();
+				
+				StringUtils::EatWhitespace(m_line, m_column);
+				
+				// Check if this is a nested function call
+				if (m_column < m_line.length() && m_line[m_column] == '(')
+				{
+					m_column++;  // skip the '('
+					std::vector<Value> nestedArgs = ParseFunctionArguments();
+					arg = ExecuteFunctionCall(symbolName, nestedArgs);
+				}
+				else
+				{
+					// Regular symbol - look up its value
+					if (!m_sourceCode->GetSymbolValue(symbolName, arg))
+					{
+						throw AsmException_SyntaxError_SymbolNotDefined(m_line, oldColumn);
+					}
+				}
+			}
+			// Check for negative sign
+			else if (m_column < m_line.length() && m_line[m_column] == '-')
+			{
+				m_column++;
+				StringUtils::EatWhitespace(m_line, m_column);
+				
+				// Parse the value after the negative sign
+				double negValue;
+				if (Literals::ParseNumeric(m_line, m_column, negValue))
+				{
+					arg = -negValue;
+				}
+				else
+				{
+					throw AsmException_SyntaxError_InvalidCharacter(m_line, m_column);
+				}
+			}
+			else
+			{
+				// Expected value
+				throw AsmException_SyntaxError_InvalidCharacter(m_line, m_column);
+			}
+			
+			args.push_back(arg);
+			
+			StringUtils::EatWhitespace(m_line, m_column);
+			
+			if (m_column >= m_line.length())
+			{
+				throw AsmException_SyntaxError_MismatchedParentheses(m_line, m_column - 1);
+			}
+			
+			if (m_line[m_column] == ',')
+			{
+				m_column++;  // skip comma
+				StringUtils::EatWhitespace(m_line, m_column);
+			}
+			else if (m_line[m_column] == ')')
+			{
+				break;
+			}
+			else
+			{
+				throw AsmException_SyntaxError_InvalidCharacter(m_line, m_column);
+			}
+		}
+	}
+	
+	// Expect closing parenthesis
+	if (m_column >= m_line.length() || m_line[m_column] != ')')
+	{
+		throw AsmException_SyntaxError_MismatchedParentheses(m_line, m_column - 1);
+	}
+	m_column++;  // skip ')'
+	
+	return args;
 }

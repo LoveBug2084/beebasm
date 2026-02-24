@@ -41,6 +41,7 @@
 #include "discimage.h"
 #include "basic_tokenize.h"
 #include "random.h"
+#include "function.h"
 
 
 using namespace std;
@@ -87,6 +88,9 @@ const LineParser::Token	LineParser::m_gaTokenTable[] =
 	{ N("PUTBASIC"),	&LineParser::HandlePutBasic,			0 },
 	{ N("MACRO"),		&LineParser::HandleMacro,				&SourceFile::StartMacro },
 	{ N("ENDMACRO"),	&LineParser::HandleEndMacro,			&SourceFile::EndMacro },
+	{ N("FUNCTION"),	&LineParser::HandleFunction,			&SourceFile::StartFunction },
+	{ N("ENDFUNCTION"),	&LineParser::HandleEndFunction,		&SourceFile::EndFunction },
+	{ N("RETURN"),		&LineParser::HandleReturn,				0 },
 	{ N("ERROR"),		&LineParser::HandleError,				0 },
 	{ N("COPYBLOCK"),	&LineParser::HandleCopyBlock,			0 },
 	{ N("RANDOMIZE"),	&LineParser::HandleRandomize,			0 },
@@ -2200,5 +2204,150 @@ void LineParser::HandleLockFile()
 		 GlobalData::Instance().UsesDiscImage() )
 	{
 		GlobalData::Instance().GetDiscImage()->LockFile( filename.c_str() );
+	}
+}
+
+
+/*************************************************************************************************/
+/**
+	LineParser::HandleFunction()
+*/
+/*************************************************************************************************/
+void LineParser::HandleFunction()
+{
+	if ( !AdvanceAndCheckEndOfStatement() )
+	{
+		throw AsmException_SyntaxError_EmptyExpression( m_line, m_column );
+	}
+
+	string functionName;
+
+	if ( Ascii::IsAlpha( m_line[ m_column ] ) || m_line[ m_column ] == '_' )
+	{
+		if ( !GlobalData::Instance().RequireDistinctOpcodes() )
+		{
+			// If opcodes are not distinct (i.e. no -w option) then the function name should not start with an instruction
+			int opcode = GetInstructionAndAdvanceColumn( false, CPU_65C02 );
+			if ( opcode != -1 )
+			{
+				m_column -= m_gaOpcodeTable[ opcode ].m_nameLength;
+				throw AsmException_SyntaxError_InvalidMacroNameMnemonic( m_line, m_column );
+			}
+		}
+
+		functionName = GetSymbolName();
+
+		if ( GlobalData::Instance().IsFirstPass() )
+		{
+			if ( FunctionTable::Instance().Exists( functionName ) )
+			{
+				throw AsmException_SyntaxError_DuplicateMacroName( m_line, m_column );  // Reusing error
+			}
+
+			m_sourceCode->GetCurrentFunction()->SetName( functionName );
+		}
+	}
+	else
+	{
+		throw AsmException_SyntaxError_InvalidSymbolName( m_line, m_column );
+	}
+
+	bool bExpectComma = false;
+	bool bHasParameters = false;
+
+	while ( AdvanceAndCheckEndOfStatement() )
+	{
+		if ( bExpectComma )
+		{
+			if ( m_line[ m_column ] == ',' )
+			{
+				m_column++;
+				bExpectComma = false;
+			}
+			else
+			{
+				throw AsmException_SyntaxError_MissingComma( m_line, m_column );
+			}
+		}
+		else if ( Ascii::IsAlpha( m_line[ m_column ] ) || m_line[ m_column ] == '_' )
+		{
+			string param = GetSymbolName();
+
+			if ( GlobalData::Instance().IsFirstPass() )
+			{
+				m_sourceCode->GetCurrentFunction()->AddParameter( param );
+			}
+			bExpectComma = true;
+			bHasParameters = true;
+		}
+		else
+		{
+			throw AsmException_SyntaxError_InvalidSymbolName( m_line, m_column );
+		}
+	}
+
+	if ( bHasParameters && !bExpectComma )
+	{
+		throw AsmException_SyntaxError_UnexpectedComma( m_line, m_column - 1 );
+	}
+
+	// If there is nothing else on the line following the FUNCTION command, put a newline at the
+	// beginning of the function definition, so any errors are reported on the correct line
+
+	if ( m_column == m_line.length() &&
+		 GlobalData::Instance().IsFirstPass() )
+	{
+		m_sourceCode->GetCurrentFunction()->AddLine("\n");
+	}
+
+	// Set the IF condition to false - this is a cheaty way of ensuring that the function body
+	// is not assembled as it is parsed
+
+	m_sourceCode->SetCurrentIfCondition(false);
+}
+
+
+/*************************************************************************************************/
+/**
+	LineParser::HandleEndFunction()
+*/
+/*************************************************************************************************/
+void LineParser::HandleEndFunction()
+{
+	if ( AdvanceAndCheckEndOfStatement() )
+	{
+		// found something
+		throw AsmException_SyntaxError_InvalidCharacter( m_line, m_column );
+	}
+}
+
+
+/*************************************************************************************************/
+/**
+	LineParser::HandleReturn()
+*/
+/*************************************************************************************************/
+void LineParser::HandleReturn()
+{
+	// Inside a function, RETURN sets the return value
+	// Outside a function, this is an error
+	
+	if ( m_sourceCode->GetCurrentFunction() == NULL )
+	{
+		throw AsmException_SyntaxError_InvalidCharacter( m_line, m_column );  // Need a better error
+	}
+
+	// Evaluate the return expression
+	Value returnValue = EvaluateExpression();
+
+	if ( AdvanceAndCheckEndOfStatement() )
+	{
+		throw AsmException_SyntaxError_InvalidCharacter( m_line, m_column );
+	}
+
+	if ( GlobalData::Instance().IsFirstPass() )
+	{
+		m_sourceCode->GetCurrentFunction()->SetReturnValue( returnValue );
+		m_sourceCode->GetCurrentFunction()->SetHasReturnValue( true );
 	}
 }

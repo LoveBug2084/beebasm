@@ -35,6 +35,7 @@
 #include "symboltable.h"
 #include "discimage.h"
 #include "macro.h"
+#include "function.h"
 #include "random.h"
 #include "version.h"
 
@@ -317,6 +318,7 @@ int main( int argc, char* argv[] )
 
 	ObjectCode::Create();
 	MacroTable::Create();
+	FunctionTable::Create();
 
 	time_t randomSeed = time( NULL );
 
@@ -402,6 +404,7 @@ int main( int argc, char* argv[] )
 	}
 
 	MacroTable::Destroy();
+	FunctionTable::Destroy();
 	ObjectCode::Destroy();
 	SymbolTable::Destroy();
 	GlobalData::Destroy();

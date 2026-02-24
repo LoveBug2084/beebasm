@@ -29,6 +29,7 @@
 #include "value.h"
 
 class Macro;
+class Function;
 
 class SourceCode
 {
@@ -98,6 +99,8 @@ protected:
 	If						m_ifStack[ MAX_IF_LEVELS ];
 
 	Macro*					m_currentMacro;
+	Function*				m_currentFunction;
+	int						m_functionDepth;
 
 
 public:
@@ -120,6 +123,9 @@ public:
 	inline int 				GetForLevel() const { return m_forStackPtr; }
 	inline int 				GetInitialForStackPtr() const { return m_initialForStackPtr; }
 	inline Macro*			GetCurrentMacro() { return m_currentMacro; }
+	inline Function*		GetCurrentFunction() { return m_currentFunction; }
+	inline void				SetCurrentFunction(Function* func) { m_currentFunction = func; }
+	inline int				GetFunctionDepth() const { return m_functionDepth; }
 
 	bool					GetSymbolValue(const std::string& name, Value& value);
 	ScopedSymbolName		GetScopedSymbolName( const std::string& symbolName, int level = -1 ) const;
@@ -136,6 +142,8 @@ public:
 	void					RemoveIfLevel( const std::string& line, int column );
 	void					StartMacro( const std::string& line, int column );
 	void					EndMacro( const std::string& line, int column );
+	void					StartFunction( const std::string& line, int column );
+	void					EndFunction( const std::string& line, int column );
 	bool					IsRealForLevel( int level ) const;
 	// For SOURCELINE
 	void					SetLineNumber(int line) { m_lineNumber = line; }

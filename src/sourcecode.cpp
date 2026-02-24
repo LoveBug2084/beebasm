@@ -29,6 +29,7 @@
 #include "lineparser.h"
 #include "symboltable.h"
 #include "macro.h"
+#include "function.h"
 
 using namespace std;
 
@@ -53,6 +54,8 @@ SourceCode::SourceCode( const string& filename, int lineNumber, const std::strin
 		m_ifStackPtr( 0 ),
 		m_initialIfStackPtr( 0 ),
 		m_currentMacro( NULL ),
+		m_currentFunction( NULL ),
+		m_functionDepth( 0 ),
 		m_filename( filename ),
 		m_lineNumber( lineNumber ),
 		m_parent( parent ),
@@ -561,6 +564,71 @@ void SourceCode::EndMacro( const string& line, int column )
 			MacroTable::Instance().Add( m_currentMacro );
 		}
 		m_currentMacro = NULL;
+	}
+}
+
+
+
+/*************************************************************************************************/
+/**
+	SourceCode::StartFunction()
+*/
+/*************************************************************************************************/
+void SourceCode::StartFunction( const string& line, int column )
+{
+	if ( GlobalData::Instance().IsFirstPass() )
+	{
+		if ( m_currentFunction == NULL )
+		{
+			m_currentFunction = new Function( m_filename, m_lineNumber );
+		}
+		else
+		{
+			// Nested function definition - increase depth
+			m_functionDepth++;
+		}
+	}
+
+	AddIfLevel( line, column );
+	// Mark as function definition (similar to macro)
+	m_ifStack[ m_ifStackPtr - 1 ].m_isMacroDefinition = true;
+}
+
+
+
+/*************************************************************************************************/
+/**
+	SourceCode::EndFunction()
+*/
+/*************************************************************************************************/
+void SourceCode::EndFunction( const string& line, int column )
+{
+	if ( GlobalData::Instance().IsFirstPass() &&
+		 m_currentFunction == NULL )
+	{
+		throw AsmException_SyntaxError_EndMacroUnexpected( line, column - 11 );  // Reusing error message
+	}
+
+	RemoveIfLevel( line, column );
+
+	if ( GlobalData::Instance().IsFirstPass() )
+	{
+		if ( m_functionDepth > 0 )
+		{
+			// Nested function - just decrease depth
+			m_functionDepth--;
+		}
+		else if ( m_currentFunction->GetName().empty() )
+		{
+			// This is a placeholder used to skip a function definition in an IF FALSE block
+			delete m_currentFunction;
+			m_currentFunction = NULL;
+		}
+		else
+		{
+			FunctionTable::Instance().Add( m_currentFunction );
+			m_currentFunction = NULL;
+		}
 	}
 }
 

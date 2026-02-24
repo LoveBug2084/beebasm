@@ -1,0 +1,35 @@
+#!/bin/bash
+# runme - script to execute commands for beebasm development
+# Usage: ./runme <command>
+
+cd /home/lovebug/Desktop/projects/beebasm/src
+
+case "$1" in
+    build)
+        make -j4
+        ;;
+    clean)
+        make clean
+        ;;
+    test)
+        cd /home/lovebug/Desktop/projects/beebasm
+        if [ -f "beebasm" ]; then
+            ./beebasm -i test/
+        else
+            echo "beebasm not built yet"
+        fi
+        ;;
+    grep)
+        shift
+        grep -n "$@"
+        ;;
+    cat)
+        shift
+        cat "$@"
+        ;;
+    *)
+        echo "Usage: $0 {build|clean|test|grep|cat}"
+        exit 1
+        ;;
+esac
+
