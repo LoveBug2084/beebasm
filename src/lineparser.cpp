@@ -183,18 +183,15 @@ void LineParser::Process( const string& line )
 			bool bIsVolatileAssignment = false;
 
 			int target_level = m_sourceCode->GetForLevel();
-			bool hasScopePrefix = false;
 
 			if ( m_line[ m_column ] == '*' )
 			{
 				target_level = 0;
-				hasScopePrefix = true;
 				m_column++;
 			}
 			else if ( m_line[ m_column ] == '^' )
 			{
 				target_level = std::max( target_level - 1, 0 );
-				hasScopePrefix = true;
 				m_column++;
 			}
 
@@ -205,20 +202,6 @@ void LineParser::Process( const string& line )
 			{
 				bIsVolatileAssignment = true;
 				m_column++;
-
-				// If using @ assignment, look for existing symbol in parent scopes (unless explicit scope given)
-				if ( !hasScopePrefix )
-				{
-					for ( int level = m_sourceCode->GetForLevel(); level >= 0; level-- )
-					{
-						ScopedSymbolName tryName = m_sourceCode->GetScopedSymbolName( name, level );
-						if ( SymbolTable::Instance().IsSymbolDefined( tryName ) )
-						{
-							symbolName = tryName;
-							break;
-						}
-					}
-				}
 			}
 
 			if ( !AdvanceAndCheckEndOfStatement() )

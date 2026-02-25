@@ -740,6 +740,16 @@ void SourceCode::EndFunction( const string& line, int column )
 
 	RemoveIfLevel( line, column );
 
+	// Check that function has a RETURN statement (parse time check)
+	if ( GlobalData::Instance().IsFirstPass() && 
+	     m_functionDepth == 0 && 
+	     m_currentFunction != NULL &&
+	     !m_currentFunction->GetName().empty() &&
+	     !m_currentFunction->HasReturnStatement() )
+	{
+		throw AsmException_SyntaxError_FunctionNoReturn( line, column );
+	}
+
 	if ( GlobalData::Instance().IsFirstPass() )
 	{
 		if ( m_functionDepth > 0 )

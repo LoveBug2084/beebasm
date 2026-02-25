@@ -676,19 +676,16 @@ void LineParser::HandleLet()
 
 	size_t namePos = 0;
 	int target_level = m_sourceCode->GetForLevel();
-	bool explicitScope = false;
 
 	if (namePos < name.length() && name[namePos] == '*')
 	{
 		namePos++;
 		target_level = 0;
-		explicitScope = true;
 	}
 	else if (namePos < name.length() && name[namePos] == '^')
 	{
 		namePos++;
 		target_level = std::max( target_level - 1, 0 );
-		explicitScope = true;
 	}
 
 	std::string symbolName = name.substr(namePos);
@@ -698,27 +695,8 @@ void LineParser::HandleLet()
 		throw AsmException_SyntaxError_InvalidSymbolName( m_line, oldColumn );
 	}
 
-	ScopedSymbolName fullSymbolName;
-	bool found = false;
-
-	if (!explicitScope)
-	{
-		for ( int level = m_sourceCode->GetForLevel(); level >= 0; level-- )
-		{
-			ScopedSymbolName tryName = m_sourceCode->GetScopedSymbolName( symbolName, level );
-			if ( SymbolTable::Instance().IsSymbolDefined( tryName ) )
-			{
-				fullSymbolName = tryName;
-				found = true;
-				break;
-			}
-		}
-	}
-
-	if (!found)
-	{
-		fullSymbolName = m_sourceCode->GetScopedSymbolName( symbolName, target_level );
-	}
+	// If no explicit scope, use current scope
+	ScopedSymbolName fullSymbolName = m_sourceCode->GetScopedSymbolName( symbolName, target_level );
 
 	if ( SymbolTable::Instance().IsSymbolDefined( fullSymbolName ) )
 	{

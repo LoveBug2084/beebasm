@@ -248,6 +248,7 @@ DEFINE_SYNTAX_EXCEPTION( LabelAlreadyDefined, "Symbol already defined." );
 DEFINE_SYNTAX_EXCEPTION( InvalidSymbolName, "Invalid symbol name; must start with a letter and contain only letters, numbers and underscore." );
 DEFINE_SYNTAX_EXCEPTION( SymbolScopeOutsideMacro, "Symbol scope cannot promote outside current macro." );
 DEFINE_SYNTAX_EXCEPTION( SymbolScopeOutsideFor, "Symbol scope cannot promote outside current FOR loop." );
+DEFINE_SYNTAX_EXCEPTION( AtRequiresExplicitScope, "\"@\" modifier requires explicit scope prefix (^, *, or ^^^)." );
 DEFINE_SYNTAX_EXCEPTION( SecondPassProblem, "Fatal error: the second assembler pass has generated different code to the first." );
 DEFINE_SYNTAX_EXCEPTION( InvalidMacroName, "Invalid macro name; must start with a letter and contain only letters, numbers and underscore." );
 DEFINE_SYNTAX_EXCEPTION( InvalidMacroNameMnemonic, "Macro name cannot start with an assembler mnemonic.  Use the -w command-line option to allow this." );
@@ -276,6 +277,7 @@ DEFINE_SYNTAX_EXCEPTION( NoAnonSave, "Cannot specify SAVE without a filename if 
 DEFINE_SYNTAX_EXCEPTION( OnlyOneAnonSave, "Can only use SAVE without a filename once per project." );
 DEFINE_SYNTAX_EXCEPTION( TypeMismatch, "Type mismatch." );
 DEFINE_SYNTAX_EXCEPTION( OutOfIntegerRange, "Number out of range for a 32-bit integer." );
+DEFINE_SYNTAX_EXCEPTION( FunctionNoReturn, "Function has no RETURN statement." );
 DEFINE_SYNTAX_EXCEPTION( SourceLineNotLast, "SOURCELINE must be the final statement on a line." );
 
 

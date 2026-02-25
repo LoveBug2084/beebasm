@@ -1,0 +1,306 @@
+# BeebAsm Extensions Summary
+
+This document summarizes the custom extensions added to BeebAsm by LoveBug.
+
+---
+
+## 1. MULTIPASS
+
+BeebAsm now uses an iterative multi-pass approach instead of strict 2-pass assembly.
+
+### Problem with 2-Pass
+- Pass 1 calculates label addresses assuming forward references are 3-byte (Absolute)
+- Pass 2 might discover a Zero Page reference and optimize to 2-byte
+- This changes all subsequent addresses → "Inconsistent Code" crash
+
+### Multi-Pass Solution
+- Pass 1: Discovery (same as before)
+- Pass 2+: Refinement - if code shrinks, update and continue
+- Repeats until `g_CodeChanged == false` (stabilizes)
+- Final pass generates output
+
+### Safety
+- Max 10 passes prevents infinite loops
+- Code only shrinks (monotonic), guaranteeing convergence
+
+---
+
+## 2. XORG Directive
+
+Extended ORG for interleaved assembly across multiple memory areas.
+
+### Syntax
+```
+XORG <expression>    ; Static origin
+XORG <symbol>        ; Tracking origin (symbol linked to P%)
+```
+
+### Static Origin
+```
+XORG &2000           ; Same as ORG &2000
+```
+
+### Tracking Origin
+```
+main = &1000
+swr  = &8000
+
+mainPc = main        ; Cursor for main RAM
+xorg mainPc          ; P% = mainPc, link mainPc to P%
+
+... assemble code ...
+
+swrPc = swr          ; Cursor for sideways RAM
+xorg swrPc           ; P% = swrPc, link swrPc to P%
+
+... assemble code ...
+
+xorg mainPc          ; Resume where we left off in main ram
+```
+
+### Behavior
+- Links a symbol to the Program Counter (P%)
+- As code is assembled, the linked symbol auto-updates
+- Unlinks previous symbol when switching to new XORG or using ORG
+
+---
+
+## 3. @ Modifier (Volatile Symbols)
+
+Allows symbols to act as mutable variables that update across passes.
+
+### Syntax
+```
+counter@ = counter + 1
+```
+
+### Behavior
+- Symbol is marked "volatile"
+- Value updates during every pass
+- Does NOT cause stabilization failure (ignored in stability check)
+
+### Example
+```
+    org &1000
+count = 0
+    lda #count
+count@ = count+1
+    lda #count
+count@ = count+1
+    lda #count
+```
+
+### Output
+```
+     1000   A9 00      LDA #&00
+     1002   A9 01      LDA #&01
+     1004   A9 02      LDA #&02
+```
+
+---
+
+## 4. LABEL Directive
+
+Defines a label with a dynamically computed name.
+
+### Syntax
+```
+LABEL <string_expression>
+```
+
+### Behavior
+- Evaluates string expression to get label name
+- Creates label at current P%
+
+### Example
+```
+FOR n, 1, 3
+    LABEL "sys_" + STR$(n)
+    nop
+NEXT
+```
+Creates labels: `.sys_1`, `.sys_2`, `.sys_3`
+
+---
+
+## 5. LET Directive
+
+Dynamic variable assignment with volatile semantics.
+
+### Syntax
+```
+LET <string_expression> = <value>
+```
+
+### Behavior
+- Name is evaluated from string expression
+- Created/modified symbols are volatile
+- Scope lookup: updates existing or creates new
+
+### Example
+```
+FOR i, 1, 3
+    LET "player_" + STR$(i) = i * 10
+NEXT
+
+PRINT player_2    ; Outputs: 20
+```
+
+### Difference from LABEL
+- LABEL: creates label at current P% (address)
+- LET: assigns specific numeric/string value
+
+---
+
+## 6. LOCKFILE Command
+
+Locks a file on a disc image to prevent modification.
+Directory is optional and defaults to $. if omitted.
+
+### Syntax
+```
+LOCKFILE "Filename"
+```
+
+### Example
+```
+.start
+    EQUS "Data"
+.end
+
+SAVE "Locked", start, end
+LOCKFILE "Locked"
+```
+
+---
+
+## 7. FUNCTION Feature
+
+User-defined functions with parameters and return values.
+
+### Syntax
+```
+FUNCTION name param1, param2, ...
+    ; code
+    RETURN value
+ENDFUNCTION
+```
+
+### Features
+- Parameters passed by value
+- Local variables (scoped to function)
+- IF/ELIF/ELSE/ENDIF support
+- Nested function calls
+- **Parse-time RETURN detection**: Error if function has no RETURN statement
+
+### Example
+```
+FUNCTION sum a, b, c
+    result = a + b + c
+    RETURN result
+ENDFUNCTION
+
+total = sum(1, 2, 3)    ; total = 6
+
+FUNCTION max a, b
+    IF a > b
+        RETURN a
+    ELSE
+        RETURN b
+    ENDIF
+ENDFUNCTION
+```
+
+### Implementation
+- Independent function scope (not tied to FOR stack)
+- Automatic cleanup of local variables on return
+- Symbols use function scope IDs
+
+---
+
+## 8. Scope Prefixes (* and ^)
+
+All directives and @ modifier support scope prefixes to control where symbols are defined or modified.
+
+### Prefix: * (Global)
+Forces symbol to global scope, bypassing all FOR loop/macro scopes.
+
+```
+*myvar = 123     ; Define at global scope
+```
+
+### Prefix: ^ (Parent)
+Moves to parent scope (one level up from current).
+
+```
+^myvar = 456     ; Define at parent scope
+```
+
+### Prefix: ^^^ (Stacked)
+Multiple ^ can be stacked to traverse multiple scope levels.
+
+```
+^^^myvar = 789   ; Go up 3 scope levels
+```
+
+### Usage with @ Modifier
+**Optional scope prefix** - defaults to current scope if not specified:
+
+```
+counter@ = 0          ; OK - uses current scope
+^counter@ = 0         ; Explicit parent scope
+*counter@ = 0         ; Explicit global scope
+^^^counter@ = 0       ; Go up 3 levels
+```
+
+### Usage with LET
+**Optional scope prefix** - defaults to current scope if not specified:
+
+```
+LET "name" = val       ; Uses current scope
+LET "*global" = 1     ; Explicit global scope
+LET "^parent" = 2     ; Explicit parent scope
+LET "^^^grandparent" = 3  ; Go up 3 levels
+```
+
+### Usage with LABEL
+```
+LABEL "global_label"    ; OK - searches parent scopes automatically
+LABEL "*global_label"   ; Explicit global scope
+LABEL "^parent_label"   ; Explicit parent scope
+```
+
+### Scope Search Behavior
+- **@ modifier**: Optional scope prefix - defaults to current scope if not specified
+- **LET**: Optional scope prefix - defaults to current scope if not specified
+- **LABEL**: Optional scope prefix - defaults to current scope if not specified
+
+When reading symbols in expressions, parent scopes are searched automatically.
+
+---
+
+## Summary Table
+
+| Feature | Syntax | Purpose |
+|---------|--------|---------|
+| MULTIPASS | (automatic) | Iterative assembly until stable |
+| XORG | XORG symbol | Track P% with symbol |
+| @ | var@ = val | Volatile/mutable symbol |
+| LABEL | LABEL "name" | Dynamic label |
+| LET | LET "name" = val | Dynamic variable |
+| LOCKFILE | LOCKFILE "file" | Lock disc file |
+| FUNCTION | FUNCTION name... | User-defined functions |
+| Scope Prefixes | * ^ ^^^ | Control symbol scope |
+
+---
+
+## Files Modified
+
+- `src/main.cpp` - Multi-pass loop, output suppression
+- `src/objectcode.cpp` - g_CodeChanged flag
+- `src/commands.cpp` - XORG, LABEL, LET, LOCKFILE
+- `src/lineparser.cpp` - @ modifier, scope prefixes
+- `src/function.cpp/h` - FUNCTION feature (new)
+- `src/sourcecode.cpp/h` - FunctionScope (new)
+- `src/expression.cpp` - ExecuteFunctionCall
+- `src/symboltable.cpp/h` - Volatile symbols

@@ -1,58 +1,51 @@
 # Beebasm FUNCTION Feature - Progress Report
 
-## MANDATORY TASK FILE MAINTENANCE
-**ALWAYS read this task file at the START of every work session to stay in sync.**
-**ALWAYS read this task file BEFORE every individual step/action.**
-**ALWAYS reference this task file before starting any work.**
-**ALWAYS update this task file with any new discoveries, changes, or progress.**
-**Keep this file in sync with the current state at all times - nothing should be out of date.**
-**ALWAYS update this task file AFTER every step/action is completed.**
+## MANDATORY FILE MAINTENANCE
+**Task File:**
+- ALWAYS read this task file at the START of every work session to stay in sync.
+- ALWAYS read this task file BEFORE every individual step/action.
+- ALWAYS reference this task file before starting any work.
+- ALWAYS update this task file with any new discoveries, changes, or progress.
+- Keep this file in sync with the current state at all times - nothing should be out of date.
+- ALWAYS update this task file AFTER every step/action is completed.
+
+**Transcript File:**
+- ALWAYS update the transcript file using the edit tool with every user prompt AND with your output for every step that you take.
+- Both the user's question AND your response must be recorded.
+- IMPORTANT: Never write meta-commentary about what you will write - just write it directly to avoid infinite loops.
+
+**Todo Tool Usage (CRITICAL):**
+- ALWAYS use todo_write to create a todo list at the START of any work session
+- ALWAYS include file maintenance tasks (summary, transcript, task) as explicit todo items
+- ALWAYS mark todos as in_progress when starting work and completed when done
+- NEVER consider a task complete until ALL todos including file updates are marked completed
+
 
 ---
 
 ## Current Status (February 25, 2026)
-- FUNCTION feature is **WORKING**
-- All tests PASS including nested function calls
-- Stabilization error is FIXED
+- FUNCTION feature **WORKING**
+- All tests **PASS**
+- Parse-time RETURN detection **COMPLETE**
+- @ modifier scope: optional prefix, defaults to current scope
+- LET scope: optional prefix, defaults to current scope (no auto-search)
+- Summary **UPDATED**
 
-## Latest Progress (TODAY)
-- **FIXED: Independent Function Scope**
-  - Modified GetScopedSymbolName() to use function scope when inside a function
-  - When m_functionScopePtr > 0, it now calls GetFunctionScopedSymbolName() instead of FOR stack
-  - This ensures local variables in functions are properly scoped
-- **FIXED: Stabilization error** - No more "Assembly failed to stabilize"
+## Current Task: None - all complete
 
-## Test Results (All Pass)
-- function.6502: sum(1,2,3)=6, max(20,15)=20, nested=10028 ✓
-- func_localvar.6502: PASS ✓
-- func_nested2.6502: PASS ✓
-- elif.6502: PASS ✓
+**Status: COMPLETE**
 
-## Files Modified
-- sourcecode.cpp: Modified GetScopedSymbolName() to use function scope when inside function
-
-## Backup Files Updated
-- sourcecode.cpp → sourcecode.cpp_functionScope
-
-## TODO
-- [ ] Remove debug output from expression.cpp
-- [ ] Remove debug output from sourcecode.cpp
-- [ ] Test more edge cases
-
-## BACKUP FILES RULE
-**IMPORTANT:** When modifying source files, ALWAYS backup to _functionScope versions:
-- expression.cpp → expression.cpp_functionScope
-- sourcecode.cpp → sourcecode.cpp_functionScope
-- sourcecode.h → sourcecode.h_functionScope
-- symboltable.cpp → symboltable.cpp_functionScope
-- symboltable.h → symboltable.h_functionScope
-
-Do this BEFORE making changes to the main files!
+- Function without RETURN: Gives error at parse time: "Function has no RETURN statement"
+- Function with RETURN: Works correctly, returns value
+- Tests verified:
+  - test_noret.6502: Error thrown at line 5 (ENDFUNCTION)
+  - test_call.6502: Returns 42 correctly
 
 ---
 
 ## Compile Command
-From within the src directory use: `make code`
+From within the /media/storage/projects/beebasm/src directory use: `make code`
+From within the /media/storage/projects/beebasm/src directory if you need to make a clean build use: `make clean && make code`
 
 ## Assemble Command
-From within the directory containing the 6502 file: `beebasm -v -i filename.6502`
+From within the /media/storage/projects/beebasm directory containing the 6502 file: `./beebasm -v -i filename.6502`

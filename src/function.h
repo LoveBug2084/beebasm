@@ -75,6 +75,23 @@ public:
 		return m_body;
 	}
 
+	bool HasReturnStatement() const
+	{
+		// Scan body for RETURN statement
+		for (size_t i = 0; i < m_body.size(); i++)
+		{
+			std::string line = m_body[i];
+			// Find first non-whitespace
+			size_t pos = 0;
+			while (pos < line.length() && (line[pos] == ' ' || line[pos] == '\t'))
+				pos++;
+			// Check if line starts with RETURN
+			if (pos < line.length() && line.substr(pos, 6) == "RETURN")
+				return true;
+		}
+		return false;
+	}
+
 	const std::string& GetFilename() const
 	{
 		return m_filename;
