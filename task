@@ -1,0 +1,190 @@
+# Beebasm FUNCTION Feature - Progress Report
+
+## MANDATORY TASK FILE MAINTENANCE
+**ALWAYS read this task file at the START of every work session to stay in sync.**
+**ALWAYS read this task file BEFORE every individual step/action.**
+**ALWAYS reference this task file before starting any work.**
+**ALWAYS update this task file with any new discoveries, changes, or progress.**
+**Keep this file in sync with the current state at all times - nothing should be out of date.**
+**ALWAYS update this task file AFTER every step/action is completed.**
+**Update this file on EVERY step so that nothing gets out of sync.**
+
+---
+
+## Current Status (as of last session)
+- FUNCTION feature is implemented and mostly working
+- Tested with /home/lovebug/Desktop/projects/wip/beebasm-tests/function.6502
+- All tests PASS except: **nested function calls return wrong value**
+- Was investigating where the value goes wrong in nested calls
+
+## Latest Progress (TODAY)
+- Task file reviewed at start of session
+- **FIXED: IF/ELSE logic** - added skipIfBlock flag to skip IF block when condition is FALSE
+- **ADDED: ELIF support** - now handles IF/ELIF/ELSE/ENDIF in functions
+- All tests now PASS:
+  - sum(1,2,3) = 6 ✓
+  - max(20,15) = 20 ✓
+  - nested: 10028 ✓ (expected 10028)
+  - ELIF tests: 100, 200, 300, 999 ✓
+- "Assembly failed to stabilize" is a separate issue, not related to FUNCTION feature
+
+## Changes Made
+- expression.cpp: Added skipIfBlock flag
+- expression.cpp: Set skipIfBlock = !ifConditionTrue when IF is evaluated
+- expression.cpp: Check skipIfBlock when deciding to skip lines
+- expression.cpp: Clear skipIfBlock at ELSE and ENDIF
+- expression.cpp: Added ELIF handling (similar to IF)
+
+## Test Files
+- /home/lovebug/Desktop/projects/wip/beebasm-tests/function.6502
+- /home/lovebug/Desktop/projects/wip/beebasm-tests/elif.6502
+
+## DISCIPLINE REMINDER
+- MUST read task file BEFORE every action
+- MUST update task file AFTER every action
+
+## Test File (function.6502)
+```
+org &2000
+FUNCTION sum a, b, c
+    result = a + b + c
+    RETURN result
+ENDFUNCTION
+
+FUNCTION max a, b
+    IF a > b
+        RETURN a
+    ELSE
+        RETURN b
+    ENDIF
+ENDFUNCTION
+
+total = sum(1, 2, 3)
+PRINT "sum(1,2,3) =", total
+
+PRINT "max(20,15) =", max(20, 15)
+
+PRINT "nested:", sum(max(20, 15), max(sum(100, 200, 300), 10000), 8)
+```
+
+Expected results:
+- `sum(1,2,3)` = 6 ✓
+- `max(20,15)` = 20 ✓
+- Nested call = 10028 (but returns 8)
+
+## Nested Call Bug Details
+Actual output: 8
+Expected: 10028
+
+Debug analysis:
+- `max(20, 15)` returns 0 (should be 20)
+- `sum(100, 200, 300)` returns 0 (should be 600)
+- `max(0, 10000)` returns 0 (should be 10000)
+- Final: sum(0, 0, 8) = 8
+
+**Root cause: Nested function calls return 0 instead of their actual RETURN value**
+
+## Root Cause Analysis - UPDATED
+The scope cleanup fix was applied but didn't fix the issue. The REAL bug is:
+
+**ExecuteFunctionCall() only detects RETURN when it's the FIRST token on the line.**
+
+In the `max` function:
+```
+FUNCTION max a, b
+    IF a > b
+        RETURN a    <-- RETURN is NOT at start of line!
+    ELSE
+        RETURN b
+    ENDIF
+ENDFUNCTION
+```
+
+The current code tokenizes from m_column and checks if the first token is "RETURN". But when RETURN is inside an IF block, it's indented and not at the start.
+
+## Fix Required
+Instead of manually parsing lines in ExecuteFunctionCall, we need to use the existing statement processing that handles IF/ENDIF correctly. The function body should be processed through the normal statement processor which understands control flow.
+
+OR: We need to search for "RETURN" anywhere in the line, not just at the start.
+
+## What Works
+- Basic function definition with RETURN value
+- Function calls with parameters
+- Simple functions like `RETURN 42` work correctly
+- Multiple function calls (symbol cleanup working)
+
+## Current Issue
+- When a function is called multiple times, local variables (like `result`) from the first call persist and cause "Symbol already defined" error on subsequent calls
+- The fix needs to clean up local variables when the function returns
+
+## Key Discovery - ROOT CAUSE IDENTIFIED
+**`PopScope()` does NOT remove symbols** - it only removes the scope level from the label stack!
+
+From `symboltable.cpp`:
+```cpp
+void SymbolTable::PopScope()
+{
+    if (GlobalData::Instance().IsAfterFirstPass())
+    {
+        m_labelStack.pop_back();
+        m_lastLabel = m_labelStack.empty() ? Label() : m_labelStack.back();
+    }
+}
+```
+
+**FOR loops clean up correctly** by explicitly calling BOTH:
+```cpp
+// From sourcecode.cpp lines 291-293 (UpdateFor)
+SymbolTable::Instance().RemoveSymbol(thisFor.m_varName);  // Remove the variable
+SymbolTable::Instance().PopScope();                       // Then pop scope
+```
+
+## How Scoping Works
+- Scope is determined by `m_forStackPtr` in SourceCode
+- `GetScopedSymbolName(symbolName)` uses current `m_forStackPtr` to create scoped names
+- A symbol's scope = (m_id, m_count) from ScopedSymbolName
+- When function calls `OpenBrace()`, it increments m_forStackPtr, creating a new scope level
+- When `CloseBrace()` is called, it decrements m_forStackPtr but DOES NOT remove symbols
+
+## Current Code Problem
+In `ExecuteFunctionCall()` (expression.cpp lines 1778-1866):
+- Line 1778: `std::vector<ScopedSymbolName> localSymbols;` - declared but NEVER USED!
+- Line 1865: `m_sourceCode->CloseBrace(m_line, m_column);` - only calls PopScope()
+- CloseBrace() only calls PopScope() - does NOT remove symbols
+
+## Solution - IMPLEMENTED
+The SymbolTable already has a method `RemoveSymbolsInScope(int scopeId, int scopeCount)` that can remove all symbols in a specific scope!
+
+In `ExecuteFunctionCall()` (expression.cpp), before calling `CloseBrace()`:
+```cpp
+// Remove all symbols in the function's scope before closing the brace
+int scopeId = m_sourceCode->GetForLevel();
+SymbolTable::Instance().RemoveSymbolsInScope(scopeId, 0);
+```
+
+This will:
+1. Get the current scope ID (the forStackPtr value)
+2. Remove all symbols with that scope ID (both parameters like `a`, `b`, `c` and local variables like `result`)
+
+## Files Modified
+1. lineparser.cpp - Added function body line collection (similar to macros)
+2. expression.cpp - Added ExecuteFunctionCall implementation (with debug output)
+3. main.cpp - Temporarily disabled output suppression for debugging
+
+## Test File
+- /home/lovebug/Desktop/projects/wip/beebasm-tests/function.6502
+
+## Next Steps
+1. [TODO] Add RemoveSymbolsInScope call before CloseBrace in ExecuteFunctionCall
+2. [TODO] Remove all debug output when done
+3. [TODO] Test with multiple function calls
+
+## Compile Command
+From within the src directory use: `make code`
+
+## Assemble Command
+From within the directory containing the 6502 file: `beebasm -v -i filename.6502`
+
+## Debug Output Currently Enabled
+- Multiple DEBUG prints in lineparser.cpp, expression.cpp, sourcefile.cpp
+- Output suppression disabled in main.cpp

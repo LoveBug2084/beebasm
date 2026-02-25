@@ -29,6 +29,7 @@
 #include "symboltable.h"
 #include "globaldata.h"
 #include "sourcefile.h"
+#include "function.h"
 
 
 using namespace std;
@@ -483,6 +484,19 @@ void LineParser::SkipStatement()
 		}
 
 		m_sourceCode->GetCurrentMacro()->AddLine( command );
+	}
+
+	// Also collect function body lines
+	if ( m_sourceCode->GetCurrentFunction() != NULL )
+	{
+		string command = m_line.substr( oldColumn, m_column - oldColumn );
+
+		if ( m_column == m_line.length() )
+		{
+			command += '\n';
+		}
+
+		m_sourceCode->GetCurrentFunction()->AddLine( command );
 	}
 }
 

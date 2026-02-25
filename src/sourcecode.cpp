@@ -384,6 +384,33 @@ ScopedSymbolName SourceCode::GetScopedSymbolName( const string& symbolName, int 
 }
 
 
+/*************************************************************************************************/
+/**
+	SourceCode::GetCurrentScopeIds()
+
+	Gets the scope IDs (m_id and m_count) for the current scope level.
+	Used for cleaning up symbols when a function returns.
+
+	@param	scopeId		Output: the current scope's m_id
+	@param	scopeCount	Output: the current scope's m_count
+*/
+/*************************************************************************************************/
+void SourceCode::GetCurrentScopeIds(int& scopeId, int& scopeCount) const
+{
+	int level = m_forStackPtr - 1;
+	if (level >= 0)
+	{
+		scopeId = m_forStack[level].m_id;
+		scopeCount = m_forStack[level].m_count;
+	}
+	else
+	{
+		scopeId = -1;
+		scopeCount = -1;
+	}
+}
+
+
 
 /*************************************************************************************************/
 /**

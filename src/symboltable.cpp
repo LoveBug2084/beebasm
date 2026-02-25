@@ -358,6 +358,43 @@ void SymbolTable::RemoveSymbol( const ScopedSymbolName& symbol )
 }
 
 
+/*************************************************************************************************/
+/**
+	SymbolTable::RemoveSymbolsInScope()
+
+	Removes all symbols belonging to a specific scope (identified by scopeId and scopeCount)
+
+	@param	scopeId		The scope ID to match
+	@param	scopeCount	The scope count to match
+*/
+/*************************************************************************************************/
+void SymbolTable::RemoveSymbolsInScope( int scopeId, int scopeCount )
+{
+	// Suppress unused parameter warning
+	(void)scopeCount;
+	
+	// Create a list of symbols to remove (can't modify map while iterating)
+	std::vector<ScopedSymbolName> toRemove;
+
+	for (auto& pair : m_map)
+	{
+		const ScopedSymbolName& symbol = pair.first;
+		// Check if this symbol belongs to the specified scope
+		// For functions, scopeId is the m_id from the for stack, and we use a special count
+		// We match symbols whose m_id matches and aren't top-level (m_id != -1)
+		if (symbol.GetScopeId() == scopeId && !symbol.TopLevel())
+		{
+			toRemove.push_back(symbol);
+		}
+	}
+
+	// Now remove them
+	for (const auto& symbol : toRemove)
+	{
+		m_map.erase(symbol);
+	}
+}
+
 
 /*************************************************************************************************/
 /**

@@ -54,6 +54,10 @@ public:
 		return m_id == -1;
 	}
 
+	// Get scope ID for iteration/cleanup
+	int GetScopeId() const { return m_id; }
+	int GetScopeCount() const { return m_count; }
+
 	bool operator== (const ScopedSymbolName& that) const
 	{
 		return m_name == that.m_name && m_id == that.m_id && m_count == that.m_count;

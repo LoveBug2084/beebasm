@@ -122,6 +122,7 @@ public:
 
 	inline int 				GetForLevel() const { return m_forStackPtr; }
 	inline int 				GetInitialForStackPtr() const { return m_initialForStackPtr; }
+	void					GetCurrentScopeIds(int& scopeId, int& scopeCount) const;
 	inline Macro*			GetCurrentMacro() { return m_currentMacro; }
 	inline Function*		GetCurrentFunction() { return m_currentFunction; }
 	inline void				SetCurrentFunction(Function* func) { m_currentFunction = func; }
@@ -133,6 +134,8 @@ public:
 	bool					ShouldOutputAsm();
 
 	bool					IsIfConditionTrue() const;
+	int						GetIfStackPtr() const { return m_ifStackPtr; }
+	void					SetIfStackPtr(int ptr) { m_ifStackPtr = ptr; }
 	void					AddIfLevel( const std::string& line, int column );
 	void					SetCurrentIfAsMacroDefinition();
 	void					SetCurrentIfCondition( bool b );

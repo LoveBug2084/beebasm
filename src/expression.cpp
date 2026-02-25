@@ -1751,37 +1751,70 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 	size_t savedColumn = m_column;
 	Function* savedFunction = m_sourceCode->GetCurrentFunction();
 	bool savedIfCondition = m_sourceCode->IsIfConditionTrue();
+	int savedIfStackPtr = m_sourceCode->GetIfStackPtr();
+	int savedForStackPtr = m_sourceCode->GetForLevel();
+	
+	// Capture the scope ID for this function call (needed for cleanup)
+	// After OpenBrace, the scope will be at savedForStackPtr
+	int functionScopeId = -1;
+	int functionScopeCount = -1;
+	
+	// Push a new scope (like braces do for macros)
+	m_sourceCode->OpenBrace(m_line, m_column);
+	
+	// Get the scope IDs for cleanup later
+	m_sourceCode->GetCurrentScopeIds(functionScopeId, functionScopeCount);
 	
 	// Set IF condition to true for function body execution
 	m_sourceCode->SetCurrentIfCondition(true);
 	
-	// Set up parameter bindings in the symbol table
+	// Set up parameter bindings in the symbol table at current scope level
 	for (int i = 0; i < paramCount; i++)
 	{
 		const std::string& paramName = func->GetParameter(i);
 		ScopedSymbolName fullParamName = m_sourceCode->GetScopedSymbolName(paramName);
+		cerr << "DEBUG: Setting param " << paramName << " = " << args[i].GetNumber() << " at scope " << m_sourceCode->GetForLevel() << endl;
 		SymbolTable::Instance().AddSymbol(fullParamName, args[i]);
 		SymbolTable::Instance().SetSymbolVolatile(fullParamName);
 	}
 	
-// Execute the function body
+	// Execute the function body
 	const std::vector<std::string>& body = func->GetBody();
 	Value returnValue;
 	bool hasReturn = false;
+	
+	// Track locally created symbols for cleanup
+	std::vector<ScopedSymbolName> localSymbols;
+	
+	// Track if we're in an IF block and whether the condition was true
+	bool inIfBlock = false;
+	bool ifConditionTrue = false;
+	bool skipIfBlock = false;   // Skip IF block when condition is FALSE
+	bool skipElseBlock = false; // Skip ELSE block when condition is TRUE
 	
 	for (size_t i = 0; i < body.size(); i++)
 	{
 		m_line = body[i];
 		m_column = 0;
 		
+		// Strip trailing newline
+		if (!m_line.empty() && (m_line[m_line.length()-1] == '\n' || m_line[m_line.length()-1] == '\r'))
+		{
+			m_line = m_line.substr(0, m_line.length()-1);
+		}
+		
 		// Skip empty lines
-		StringUtils::EatWhitespace(m_line, m_column);
+		while (m_column < m_line.length() && 
+		       (m_line[m_column] == ' ' || m_line[m_column] == '\t'))
+		{
+			m_column++;
+		}
 		if (m_column >= m_line.length())
 		{
 			continue;
 		}
 		
-		// Check if this is a RETURN statement
+		// Check for IF/ELSE/ENDIF keywords
 		std::string token;
 		size_t tokenStart = m_column;
 		while (m_column < m_line.length() && 
@@ -1797,19 +1830,135 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 			token[j] = Ascii::ToUpper(token[j]);
 		}
 		
+		// Handle IF statement
+		if (token == "IF")
+		{
+			// Extract the condition (everything after IF)
+			std::string condition = m_line.substr(m_column);
+			// Skip leading whitespace in condition
+			size_t condStart = 0;
+			while (condStart < condition.length() && (condition[condStart] == ' ' || condition[condStart] == '\t'))
+				condStart++;
+			condition = condition.substr(condStart);
+			
+			cerr << "DEBUG: IF condition: '" << condition << "'" << endl;
+			
+			// Evaluate the condition - save/restore m_line and m_column
+			std::string savedLineIf = m_line;
+			size_t savedColumnIf = m_column;
+			try
+			{
+				m_column = 0;
+				m_line = condition;
+				ifConditionTrue = EvaluateExpression().GetNumber() != 0;
+				cerr << "DEBUG: IF condition result: " << ifConditionTrue << endl;
+			}
+			catch (...)
+			{
+				ifConditionTrue = false;
+			}
+			// Restore m_line and m_column
+			m_line = savedLineIf;
+			m_column = savedColumnIf;
+			
+			inIfBlock = true;
+			skipIfBlock = !ifConditionTrue;  // Skip IF block if condition is FALSE
+			skipElseBlock = false;
+			continue;
+		}
+		
+		// Handle ELSE statement
+		if (token == "ELSE")
+		{
+			if (inIfBlock && ifConditionTrue)
+			{
+				// We were in the IF branch and it's true, skip everything until ENDIF
+				skipElseBlock = true;
+			}
+			else if (inIfBlock && !ifConditionTrue)
+			{
+				// We were in the IF branch and it's false, now we should execute ELSE
+				skipIfBlock = false;
+				skipElseBlock = false;
+			}
+			continue;
+		}
+		
+		// Handle ELIF statement
+		if (token == "ELIF")
+		{
+			// Extract the condition (everything after ELIF)
+			std::string condition = m_line.substr(m_column);
+			// Skip leading whitespace in condition
+			size_t condStart = 0;
+			while (condStart < condition.length() && (condition[condStart] == ' ' || condition[condStart] == '\t'))
+				condStart++;
+			condition = condition.substr(condStart);
+			
+			cerr << "DEBUG: ELIF condition: '" << condition << "'" << endl;
+			
+			// Evaluate the condition - save/restore m_line and m_column
+			std::string savedLineElif = m_line;
+			size_t savedColumnElif = m_column;
+			try
+			{
+				m_column = 0;
+				m_line = condition;
+				ifConditionTrue = EvaluateExpression().GetNumber() != 0;
+				cerr << "DEBUG: ELIF condition result: " << ifConditionTrue << endl;
+			}
+			catch (...)
+			{
+				ifConditionTrue = false;
+			}
+			// Restore m_line and m_column
+			m_line = savedLineElif;
+			m_column = savedColumnElif;
+			
+			// If ELIF condition is true, execute this block; otherwise skip it
+			skipIfBlock = !ifConditionTrue;
+			continue;
+		}
+		
+		// Handle ENDIF statement
+		if (token == "ENDIF")
+		{
+			inIfBlock = false;
+			ifConditionTrue = false;
+			skipIfBlock = false;
+			skipElseBlock = false;
+			continue;
+		}
+		
+		// Skip lines in skipped blocks
+		if (skipElseBlock || skipIfBlock)
+		{
+			continue;
+		}
+		
+		// Check if this is a RETURN statement
 		if (token == "RETURN")
 		{
+			cerr << "DEBUG: Found RETURN statement, line: '" << m_line << "'" << endl;
 			// Skip past RETURN and whitespace
-			StringUtils::EatWhitespace(m_line, m_column);
+			while (m_column < m_line.length() && 
+			       (m_line[m_column] == ' ' || m_line[m_column] == '\t'))
+			{
+				m_column++;
+			}
+			
+			cerr << "DEBUG: About to parse expression from: '" << m_line.substr(m_column) << "'" << endl;
 			
 			// Parse the return value expression
 			try
 			{
 				returnValue = EvaluateExpression();
+				cerr << "DEBUG: RETURN value = " << returnValue.GetNumber() << endl;
 				hasReturn = true;
 			}
-			catch (AsmException_SyntaxError&)
+			catch (AsmException_SyntaxError& e)
 			{
+				cerr << "DEBUG: RETURN caught exception: " << e.Message() << endl;
 				// If RETURN has no value, that's okay - it's like RETURN 0
 				returnValue = Value(0.0);
 				hasReturn = true;
@@ -1819,31 +1968,45 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 		else
 		{
 			// Process this statement (e.g., "result = a + b + c")
-			// Reset column to start and process the whole line
 			m_column = 0;
-			StringUtils::EatWhitespace(m_line, m_column);
+			while (m_column < m_line.length() && 
+			       (m_line[m_column] == ' ' || m_line[m_column] == '\n' || m_line[m_column] == '\r' || m_line[m_column] == '\t'))
+			{
+				m_column++;
+			}
+			
+			// Strip trailing newline for processing
+			if (!m_line.empty() && m_line[m_line.length()-1] == '\n')
+			{
+				m_line = m_line.substr(0, m_line.length()-1);
+			}
 			
 			if (m_column < m_line.length())
 			{
-				// Use Process() to handle the statement
 				Process(m_line);
 			}
 		}
 	}
+
+	// Remove all symbols in the function's scope before closing the brace
+	// Use the captured scope ID from when we opened the scope, not GetForLevel()
+	// which may have changed due to nested function calls
+	SymbolTable::Instance().RemoveSymbolsInScope(functionScopeId, functionScopeCount);
 	
-	// Clean up parameter bindings from symbol table
-	for (int i = 0; i < paramCount; i++)
-	{
-		const std::string& paramName = func->GetParameter(i);
-		ScopedSymbolName fullParamName = m_sourceCode->GetScopedSymbolName(paramName);
-		SymbolTable::Instance().RemoveSymbol(fullParamName);
-	}
+	// Pop the scope
+	m_sourceCode->CloseBrace(m_line, m_column);
 	
 	// Restore state
 	m_line = savedLine;
 	m_column = savedColumn;
 	m_sourceCode->SetCurrentFunction(savedFunction);
 	m_sourceCode->SetCurrentIfCondition(savedIfCondition);
+	m_sourceCode->SetIfStackPtr(savedIfStackPtr);
+	// Restore for stack level (CloseBrace decrements it, but we need to restore outer scope)
+	while (m_sourceCode->GetForLevel() > savedForStackPtr)
+	{
+		m_sourceCode->OpenBrace(m_line, m_column);
+	}
 	
 	// If no return was executed, return 0
 	if (!hasReturn)
@@ -1935,7 +2098,9 @@ std::vector<Value> LineParser::ParseFunctionArguments()
 				{
 					m_column++;  // skip the '('
 					std::vector<Value> nestedArgs = ParseFunctionArguments();
+					cerr << "DEBUG: Nested function " << symbolName << " args parsed, executing..." << endl;
 					arg = ExecuteFunctionCall(symbolName, nestedArgs);
+					cerr << "DEBUG: Nested function " << symbolName << " returned " << arg.GetNumber() << endl;
 				}
 				else
 				{
