@@ -1752,32 +1752,29 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 	Function* savedFunction = m_sourceCode->GetCurrentFunction();
 	bool savedIfCondition = m_sourceCode->IsIfConditionTrue();
 	int savedIfStackPtr = m_sourceCode->GetIfStackPtr();
+	int savedForStackPtr = m_sourceCode->GetForLevel();
 	
 	// Capture the scope ID for this function call (needed for cleanup)
-	// Using separate function scope system
+	// After OpenBrace, the scope will be at savedForStackPtr
 	int functionScopeId = -1;
 	int functionScopeCount = -1;
 	
-	// Push a new function scope (independent of FOR stack)
-	m_sourceCode->OpenFunctionScope(m_line, m_column);
-	
-	// Also open a brace to align FOR stack so that local variables work correctly
-	// This is needed because Process() uses GetScopedSymbolName which relies on FOR stack
+	// Push a new scope (like braces do for macros)
 	m_sourceCode->OpenBrace(m_line, m_column);
 	
-	// Get the scope IDs for cleanup later (use FOR stack for symbol scoping)
+	// Get the scope IDs for cleanup later
 	m_sourceCode->GetCurrentScopeIds(functionScopeId, functionScopeCount);
 	cerr << "DEBUG: After OpenBrace, GetForLevel=" << m_sourceCode->GetForLevel() << ", captured scopeId=" << functionScopeId << endl;
 	
 	// Set IF condition to true for function body execution
 	m_sourceCode->SetCurrentIfCondition(true);
 	
-	// Set up parameter bindings in the symbol table at current function scope level
+	// Set up parameter bindings in the symbol table at current scope level
 	for (int i = 0; i < paramCount; i++)
 	{
 		const std::string& paramName = func->GetParameter(i);
-		ScopedSymbolName fullParamName = m_sourceCode->GetFunctionScopedSymbolName(paramName);
-		cerr << "DEBUG: Setting param " << paramName << " = " << args[i].GetNumber() << " at function scope " << m_sourceCode->GetFunctionScopeLevel() << endl;
+		ScopedSymbolName fullParamName = m_sourceCode->GetScopedSymbolName(paramName);
+		cerr << "DEBUG: Setting param " << paramName << " = " << args[i].GetNumber() << " at scope " << m_sourceCode->GetForLevel() << endl;
 		SymbolTable::Instance().AddSymbol(fullParamName, args[i]);
 		SymbolTable::Instance().SetSymbolVolatile(fullParamName);
 	}
@@ -1996,15 +1993,10 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 	// Use the captured scope ID from when we opened the scope, not GetForLevel()
 	// which may have changed due to nested function calls
 	cerr << "DEBUG: RemoveSymbolsInScope(" << functionScopeId << ", " << functionScopeCount << ")" << endl;
-	// Remove all symbols in the function's scope before closing
-	cerr << "DEBUG: RemoveSymbolsInScope(" << functionScopeId << ", " << functionScopeCount << ")" << endl;
 	SymbolTable::Instance().RemoveSymbolsInScope(functionScopeId, functionScopeCount);
 	
-	// Close the brace (FOR stack)
+	// Pop the scope
 	m_sourceCode->CloseBrace(m_line, m_column);
-	
-	// Close the function scope
-	m_sourceCode->CloseFunctionScope(m_line, m_column);
 	
 	// Restore state
 	m_line = savedLine;
@@ -2012,6 +2004,11 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 	m_sourceCode->SetCurrentFunction(savedFunction);
 	m_sourceCode->SetCurrentIfCondition(savedIfCondition);
 	m_sourceCode->SetIfStackPtr(savedIfStackPtr);
+	// Restore for stack level (CloseBrace decrements it, but we need to restore outer scope)
+	while (m_sourceCode->GetForLevel() > savedForStackPtr)
+	{
+		m_sourceCode->OpenBrace(m_line, m_column);
+	}
 	
 	// If no return was executed, return 0
 	if (!hasReturn)

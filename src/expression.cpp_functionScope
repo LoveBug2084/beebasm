@@ -1752,6 +1752,7 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 	Function* savedFunction = m_sourceCode->GetCurrentFunction();
 	bool savedIfCondition = m_sourceCode->IsIfConditionTrue();
 	int savedIfStackPtr = m_sourceCode->GetIfStackPtr();
+	int savedForStackPtr = m_sourceCode->GetForLevel();
 	
 	// Capture the scope ID for this function call (needed for cleanup)
 	// Using separate function scope system

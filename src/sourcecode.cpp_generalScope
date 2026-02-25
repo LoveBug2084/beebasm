@@ -56,8 +56,6 @@ SourceCode::SourceCode( const string& filename, int lineNumber, const std::strin
 		m_currentMacro( NULL ),
 		m_currentFunction( NULL ),
 		m_functionDepth( 0 ),
-		m_functionScopePtr( 0 ),
-		m_initialFunctionScopePtr( 0 ),
 		m_filename( filename ),
 		m_lineNumber( lineNumber ),
 		m_parent( parent ),
@@ -358,99 +356,6 @@ void SourceCode::CopyForStack( const SourceCode* copyFrom )
 	{
 		m_forStack[ i ] = copyFrom->m_forStack[ i ];
 	}
-
-	// Also copy function scope stack
-	m_functionScopePtr = copyFrom->m_functionScopePtr;
-	for ( int i = 0; i < m_functionScopePtr; i++ )
-	{
-		m_functionScopeStack[ i ] = copyFrom->m_functionScopeStack[ i ];
-	}
-}
-
-
-
-/*************************************************************************************************/
-/**
-	SourceCode::OpenFunctionScope()
-
-	Opens a new function scope (independent of FOR stack)
-*/
-/*************************************************************************************************/
-void SourceCode::OpenFunctionScope( const string& line, int column )
-{
-	if ( m_functionScopePtr == MAX_FUNCTION_LEVELS )
-	{
-		throw AsmException_SyntaxError_TooManyFORs( line, column );  // Reuse same error
-	}
-
-	m_functionScopeStack[ m_functionScopePtr ].m_id = GlobalData::Instance().GetNextForId();
-	m_functionScopeStack[ m_functionScopePtr ].m_count = 0;
-	m_functionScopePtr++;
-}
-
-
-
-/*************************************************************************************************/
-/**
-	SourceCode::CloseFunctionScope()
-
-	Closes the current function scope
-*/
-/*************************************************************************************************/
-void SourceCode::CloseFunctionScope( const string& line, int column )
-{
-	if ( m_functionScopePtr == m_initialFunctionScopePtr )
-	{
-		throw AsmException_SyntaxError_MismatchedBraces( line, column );
-	}
-
-	m_functionScopePtr--;
-}
-
-
-
-/*************************************************************************************************/
-/**
-	SourceCode::GetFunctionScopeIds()
-
-	Gets the scope IDs for the current function scope
-*/
-/*************************************************************************************************/
-void SourceCode::GetFunctionScopeIds( int& scopeId, int& scopeCount ) const
-{
-	int level = m_functionScopePtr - 1;
-	if ( level >= 0 )
-	{
-		scopeId = m_functionScopeStack[ level ].m_id;
-		scopeCount = m_functionScopeStack[ level ].m_count;
-	}
-	else
-	{
-		scopeId = -1;
-		scopeCount = -1;
-	}
-}
-
-
-
-/*************************************************************************************************/
-/**
-	SourceCode::GetFunctionScopedSymbolName()
-
-	Gets a symbol name scoped to the current function scope
-*/
-/*************************************************************************************************/
-ScopedSymbolName SourceCode::GetFunctionScopedSymbolName( const string& symbolName ) const
-{
-	int level = m_functionScopePtr - 1;
-	if ( level >= 0 )
-	{
-		return ScopedSymbolName( symbolName, m_functionScopeStack[ level ].m_id, m_functionScopeStack[ level ].m_count );
-	}
-	else
-	{
-		return ScopedSymbolName( symbolName );
-	}
 }
 
 
@@ -462,13 +367,6 @@ ScopedSymbolName SourceCode::GetFunctionScopedSymbolName( const string& symbolNa
 /*************************************************************************************************/
 ScopedSymbolName SourceCode::GetScopedSymbolName( const string& symbolName, int level ) const
 {
-	// If we're inside a function, use function scope instead of FOR stack
-	// This ensures local variables in functions are properly scoped
-	if (m_functionScopePtr > 0)
-	{
-		return GetFunctionScopedSymbolName(symbolName);
-	}
-	
 	if ( level == -1 )
 	{
 		level = m_forStackPtr;

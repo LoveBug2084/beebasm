@@ -102,17 +102,6 @@ protected:
 	Function*				m_currentFunction;
 	int						m_functionDepth;
 
-	// Separate function scope tracking (independent of FOR stack)
-	static const int MAX_FUNCTION_LEVELS = 64;
-	struct FunctionScope
-	{
-		int					m_id;
-		int					m_count;
-	};
-	FunctionScope			m_functionScopeStack[MAX_FUNCTION_LEVELS];
-	int						m_functionScopePtr;
-	int						m_initialFunctionScopePtr;
-
 
 public:
 
@@ -138,14 +127,6 @@ public:
 	inline Function*		GetCurrentFunction() { return m_currentFunction; }
 	inline void				SetCurrentFunction(Function* func) { m_currentFunction = func; }
 	inline int				GetFunctionDepth() const { return m_functionDepth; }
-
-	// Function scope methods (separate from FOR stack)
-	void					OpenFunctionScope(const std::string& line, int column);
-	void					CloseFunctionScope(const std::string& line, int column);
-	inline int				GetFunctionScopeLevel() const { return m_functionScopePtr; }
-	inline int				GetInitialFunctionScopePtr() const { return m_initialFunctionScopePtr; }
-	void					GetFunctionScopeIds(int& scopeId, int& scopeCount) const;
-	ScopedSymbolName		GetFunctionScopedSymbolName(const std::string& symbolName) const;
 
 	bool					GetSymbolValue(const std::string& name, Value& value);
 	ScopedSymbolName		GetScopedSymbolName( const std::string& symbolName, int level = -1 ) const;
