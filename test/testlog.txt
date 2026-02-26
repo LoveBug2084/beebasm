@@ -1,0 +1,316 @@
+======================================================================
+TEST: ./1-values/badbin1.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'badbin1.fail.6502']
+badbin1.fail.6502:2: error: Bad binary expression.
+
+A=%
+   ^
+======================================================================
+TEST: ./1-values/badbin2.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'badbin2.fail.6502']
+badbin2.fail.6502:2: error: Bad binary expression.
+
+assert(%100000000000000000000000000000000=4294967296)
+                                         ^
+======================================================================
+TEST: ./1-values/baddec1.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'baddec1.fail.6502']
+baddec1.fail.6502:2: error: Bad expression.
+
+A=.label
+   ^
+======================================================================
+TEST: ./1-values/badhex1.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'badhex1.fail.6502']
+badhex1.fail.6502:2: error: Bad hex.
+
+A=&
+   ^
+======================================================================
+TEST: ./1-values/badhex2.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'badhex2.fail.6502']
+badhex2.fail.6502:2: error: Bad hex.
+
+assert(&100000000=4294967296)
+                 ^
+======================================================================
+TEST: ./1-values/cmdlinedefinebin.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V=%1_1011', '-i', 'cmdlinedefinebin.6502']
+Processed file 'cmdlinedefinebin.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinedec.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V=1_2.3_4', '-i', 'cmdlinedefinedec.6502']
+Processed file 'cmdlinedefinedec.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinedec.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V=1_2.3_', '-i', 'cmdlinedefinedec.fail.6502']
+Invalid -D expression: V=1_2.3_
+======================================================================
+TEST: ./1-values/cmdlinedefinedefault.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V', '-i', 'cmdlinedefinedefault.6502']
+Processed file 'cmdlinedefinedefault.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinehex1.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V=&1_b', '-i', 'cmdlinedefinehex1.6502']
+Processed file 'cmdlinedefinehex1.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinehex2.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V=$1_b', '-i', 'cmdlinedefinehex2.6502']
+Processed file 'cmdlinedefinehex2.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinehex3.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V=0x1_b', '-i', 'cmdlinedefinehex3.6502']
+Processed file 'cmdlinedefinehex3.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinehex4.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V=0X1_b', '-i', 'cmdlinedefinehex4.6502']
+Processed file 'cmdlinedefinehex4.6502' ok
+======================================================================
+TEST: ./1-values/cmdlinedefinemissing.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V=', '-i', 'cmdlinedefinemissing.fail.6502']
+Invalid -D expression: V=
+======================================================================
+TEST: ./1-values/cmdlinedefinenegative.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-D', 'V=-1_2.3_4', '-i', 'cmdlinedefinenegative.6502']
+Processed file 'cmdlinedefinenegative.6502' ok
+======================================================================
+TEST: ./1-values/underscorebin1.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'underscorebin1.fail.6502']
+underscorebin1.fail.6502:2: error: Bad binary expression.
+
+A=%_1
+   ^
+======================================================================
+TEST: ./1-values/underscorebin2.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'underscorebin2.fail.6502']
+underscorebin2.fail.6502:2: error: Bad binary expression.
+
+A=%1__1
+     ^
+======================================================================
+TEST: ./1-values/underscorebin3.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'underscorebin3.fail.6502']
+underscorebin3.fail.6502:2: error: Bad binary expression.
+
+A=%1_
+     ^
+======================================================================
+TEST: ./1-values/underscoredec1.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'underscoredec1.fail.6502']
+underscoredec1.fail.6502:2: error: Bad expression.
+
+A=1._1
+    ^
+======================================================================
+TEST: ./1-values/underscoredec2.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'underscoredec2.fail.6502']
+underscoredec2.fail.6502:2: error: Bad expression.
+
+A=1__1
+    ^
+======================================================================
+TEST: ./1-values/underscoredec3.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'underscoredec3.fail.6502']
+underscoredec3.fail.6502:2: error: Bad expression.
+
+A=1_
+    ^
+======================================================================
+TEST: ./1-values/underscorehex1.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'underscorehex1.fail.6502']
+underscorehex1.fail.6502:2: error: Bad hex.
+
+A=&_1
+   ^
+======================================================================
+TEST: ./1-values/underscorehex2.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'underscorehex2.fail.6502']
+underscorehex2.fail.6502:2: error: Bad hex.
+
+A=&a__b
+     ^
+======================================================================
+TEST: ./1-values/underscorehex3.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'underscorehex3.fail.6502']
+underscorehex3.fail.6502:2: error: Bad hex.
+
+A=&1_
+     ^
+======================================================================
+TEST: ./1-values/values.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'values.6502']
+Processed file 'values.6502' ok
+======================================================================
+TEST: ./2-expressions/brackets.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'brackets.6502']
+Processed file 'brackets.6502' ok
+======================================================================
+TEST: ./2-expressions/intrangehi.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'intrangehi.fail.6502']
+intrangehi.fail.6502:2: error: Number out of range for a 32-bit integer.
+
+print int(4294967296)
+                     ^
+======================================================================
+TEST: ./2-expressions/intrangelo.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'intrangelo.fail.6502']
+intrangelo.fail.6502:2: error: Number out of range for a 32-bit integer.
+
+print int(-2147483649)
+                      ^
+======================================================================
+TEST: ./2-expressions/issue36.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'issue36.6502']
+     0000   80
+Processed file 'issue36.6502' ok
+warning: no SAVE command in source file.
+======================================================================
+TEST: ./2-expressions/macroParamEval.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'macroParamEval.6502']
+Macro SHOW:
+5 5 
+End macro SHOW
+Processed file 'macroParamEval.6502' ok
+======================================================================
+TEST: ./2-expressions/macroUndefined.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'macroUndefined.6502']
+Macro LOAD:
+     2000   AD 04 20   LDA &2004
+End macro LOAD
+     2003   60         RTS
+.data
+     2004   02
+Processed file 'macroUndefined.6502' ok
+warning: no SAVE command in source file.
+======================================================================
+TEST: ./2-expressions/notexponent.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'notexponent.6502']
+Processed file 'notexponent.6502' ok
+======================================================================
+TEST: ./2-expressions/operators.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'operators.6502']
+Processed file 'operators.6502' ok
+======================================================================
+TEST: ./2-expressions/operators1.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'operators1.fail.6502']
+operators1.fail.6502:2: error: Assertion failed.
+
+assert(2>2)
+      ^
+======================================================================
+TEST: ./2-expressions/operators2.fail.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'operators2.fail.6502']
+operators2.fail.6502:2: error: Assertion failed.
+
+assert(2<2)
+      ^
+======================================================================
+TEST: ./2-expressions/stringfunctions.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-i', 'stringfunctions.6502']
+.start
+     2000   60         RTS
+.end
+Saving file 'test'
+Processed file 'stringfunctions.6502' ok
+======================================================================
+TEST: ./2-expressions/symbolsglobal.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-d', '-i', 'symbolsglobal.6502']
+Including file symbols.inc.6502
+.start
+     0064   01
+.forloop
+     0065   02
+Macro LOOP:
+.macro
+     0066   03
+.macrofor
+     0067   06
+End macro LOOP
+     0068   01
+.forloop
+     0069   02
+Macro LOOP:
+.macro
+     006A   03
+.macrofor
+     006B   0B
+.macrofor
+     006C   0C
+End macro LOOP
+.end
+.endreally
+Processed file 'symbols.inc.6502' ok
+Processed file 'symbolsglobal.6502' ok
+[{'start':100L,'endreally':109L}]
+warning: no SAVE command in source file.
+Comparing beebasm output to symbolsglobal.gold.txt succeeded
+======================================================================
+TEST: ./2-expressions/symbolslocal.6502
+======================================================================
+['/media/storage/projects/beebasm/beebasm', '-v', '-dd', '-i', 'symbolslocal.6502']
+Including file symbols.inc.6502
+.start
+     0064   01
+.forloop
+     0065   02
+Macro LOOP:
+.macro
+     0066   03
+.macrofor
+     0067   06
+End macro LOOP
+     0068   01
+.forloop
+     0069   02
+Macro LOOP:
+.macro
+     006A   03
+.macrofor
+     006B   0B
+.macrofor
+     006C   0C
+End macro LOOP
+.end
+.endreally
+Processed file 'symbols.inc.6502' ok
+Processed file 'symbolslocal.6502' ok
+[{'.start':100L,'.start._I_1.forloop':101L,'.start._I_1._1.macro':102L,'.start._I_1._1.macro._J_1.macrofor':103L,'.start._I_2.forloop':105L,'.start._I_2._1.macro':106L,'.start._I_2._1.macro._J_1.macrofor':107L,'.start._I_2._1._J_2.macrofor':108L,'.start.end':109L,'.endreally':109L,'.start':100L,'.start._I_1.forloop':101L,'.start._I_1._1.macro':102L,'.start._I_1._1.macro._J_1.macrofor':103L,'.start._I_2.forloop':105L,'.start._I_2._1.macro':106L,'.start._I_2._1.macro._J_1.macrofor':107L,'.start._I_2._1._J_2.macrofor':108L,'.start.end':109L,'.endreally':109L}]
+warning: no SAVE command in source file.
+Comparing beebasm output to symbolslocal.gold.txt failed

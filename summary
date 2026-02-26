@@ -69,6 +69,8 @@ xorg mainPc          ; Resume where we left off in main ram
 
 Allows symbols to act as mutable variables that update across passes.
 
+**Note:** The @ modifier is write-only - you cannot read back the value of a volatile symbol in expressions.
+
 ### Syntax
 ```
 counter@ = counter + 1
@@ -136,6 +138,7 @@ LET <string_expression> = <value>
 - Name is evaluated from string expression
 - Created/modified symbols are volatile
 - Scope lookup: updates existing or creates new
+- Inside FOR loops, use `*` prefix to make the variable readable outside the loop
 
 ### Example
 ```

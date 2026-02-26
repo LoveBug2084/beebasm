@@ -1767,7 +1767,6 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 	
 	// Get the scope IDs for cleanup later (use FOR stack for symbol scoping)
 	m_sourceCode->GetCurrentScopeIds(functionScopeId, functionScopeCount);
-	cerr << "DEBUG: After OpenBrace, GetForLevel=" << m_sourceCode->GetForLevel() << ", captured scopeId=" << functionScopeId << endl;
 	
 	// Set IF condition to true for function body execution
 	m_sourceCode->SetCurrentIfCondition(true);
@@ -1777,7 +1776,6 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 	{
 		const std::string& paramName = func->GetParameter(i);
 		ScopedSymbolName fullParamName = m_sourceCode->GetFunctionScopedSymbolName(paramName);
-		cerr << "DEBUG: Setting param " << paramName << " = " << args[i].GetNumber() << " at function scope " << m_sourceCode->GetFunctionScopeLevel() << endl;
 		SymbolTable::Instance().AddSymbol(fullParamName, args[i]);
 		SymbolTable::Instance().SetSymbolVolatile(fullParamName);
 	}
@@ -1845,8 +1843,6 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 				condStart++;
 			condition = condition.substr(condStart);
 			
-			cerr << "DEBUG: IF condition: '" << condition << "'" << endl;
-			
 			// Evaluate the condition - save/restore m_line and m_column
 			std::string savedLineIf = m_line;
 			size_t savedColumnIf = m_column;
@@ -1855,7 +1851,6 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 				m_column = 0;
 				m_line = condition;
 				ifConditionTrue = EvaluateExpression().GetNumber() != 0;
-				cerr << "DEBUG: IF condition result: " << ifConditionTrue << endl;
 			}
 			catch (...)
 			{
@@ -1899,7 +1894,6 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 				condStart++;
 			condition = condition.substr(condStart);
 			
-			cerr << "DEBUG: ELIF condition: '" << condition << "'" << endl;
 			
 			// Evaluate the condition - save/restore m_line and m_column
 			std::string savedLineElif = m_line;
@@ -1909,7 +1903,6 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 				m_column = 0;
 				m_line = condition;
 				ifConditionTrue = EvaluateExpression().GetNumber() != 0;
-				cerr << "DEBUG: ELIF condition result: " << ifConditionTrue << endl;
 			}
 			catch (...)
 			{
@@ -1943,7 +1936,6 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 		// Check if this is a RETURN statement
 		if (token == "RETURN")
 		{
-			cerr << "DEBUG: Found RETURN statement, line: '" << m_line << "'" << endl;
 			// Skip past RETURN and whitespace
 			while (m_column < m_line.length() && 
 			       (m_line[m_column] == ' ' || m_line[m_column] == '\t'))
@@ -1951,18 +1943,15 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 				m_column++;
 			}
 			
-			cerr << "DEBUG: About to parse expression from: '" << m_line.substr(m_column) << "'" << endl;
 			
 			// Parse the return value expression
 			try
 			{
 				returnValue = EvaluateExpression();
-				cerr << "DEBUG: RETURN value = " << returnValue.GetNumber() << endl;
 				hasReturn = true;
 			}
 			catch (AsmException_SyntaxError& e)
 			{
-				cerr << "DEBUG: RETURN caught exception: " << e.Message() << endl;
 				// If RETURN has no value, that's okay - it's like RETURN 0
 				returnValue = Value(0.0);
 				hasReturn = true;
@@ -1995,9 +1984,6 @@ Value LineParser::ExecuteFunctionCall(const std::string& functionName, const std
 	// Remove all symbols in the function's scope before closing the brace
 	// Use the captured scope ID from when we opened the scope, not GetForLevel()
 	// which may have changed due to nested function calls
-	cerr << "DEBUG: RemoveSymbolsInScope(" << functionScopeId << ", " << functionScopeCount << ")" << endl;
-	// Remove all symbols in the function's scope before closing
-	cerr << "DEBUG: RemoveSymbolsInScope(" << functionScopeId << ", " << functionScopeCount << ")" << endl;
 	SymbolTable::Instance().RemoveSymbolsInScope(functionScopeId, functionScopeCount);
 	
 	// Close the brace (FOR stack)
@@ -2103,9 +2089,7 @@ std::vector<Value> LineParser::ParseFunctionArguments()
 				{
 					m_column++;  // skip the '('
 					std::vector<Value> nestedArgs = ParseFunctionArguments();
-					cerr << "DEBUG: Nested function " << symbolName << " args parsed, executing..." << endl;
 					arg = ExecuteFunctionCall(symbolName, nestedArgs);
-					cerr << "DEBUG: Nested function " << symbolName << " returned " << arg.GetNumber() << endl;
 				}
 				else
 				{
