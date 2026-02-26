@@ -482,8 +482,15 @@ void LineParser::HandleDefineLabel()
         }
         else if (first_char == '^')
         {
-                m_column++;
-                target_level = std::max( target_level - 1, 0 );
+                while (first_char == '^')
+                {
+                        m_column++;
+                        target_level = std::max( target_level - 1, 0 );
+                        if (m_column < m_line.length())
+                                first_char = m_line[m_column];
+                        else
+                                break;
+                }
         }
 
         // '*' and '^' may not cause a label to be defined outside the current macro expansion.
@@ -584,8 +591,11 @@ void LineParser::HandleLabel()
 	}
 	else if (namePos < name.length() && name[namePos] == '^')
 	{
-		namePos++;
-		target_level = std::max( target_level - 1, 0 );
+		while (namePos < name.length() && name[namePos] == '^')
+		{
+			namePos++;
+			target_level = std::max( target_level - 1, 0 );
+		}
 	}
 
 	// '*' and '^' may not cause a label to be defined outside the current for loop
@@ -684,8 +694,11 @@ void LineParser::HandleLet()
 	}
 	else if (namePos < name.length() && name[namePos] == '^')
 	{
-		namePos++;
-		target_level = std::max( target_level - 1, 0 );
+		while (namePos < name.length() && name[namePos] == '^')
+		{
+			namePos++;
+			target_level = std::max( target_level - 1, 0 );
+		}
 	}
 
 	std::string symbolName = name.substr(namePos);

@@ -281,16 +281,16 @@ When reading symbols in expressions, parent scopes are searched automatically.
 
 ## Summary Table
 
-| Feature | Syntax | Purpose |
-|---------|--------|---------|
-| MULTIPASS | (automatic) | Iterative assembly until stable |
-| XORG | XORG symbol | Track P% with symbol |
-| @ | var@ = val | Volatile/mutable symbol |
-| LABEL | LABEL "name" | Dynamic label |
-| LET | LET "name" = val | Dynamic variable |
-| LOCKFILE | LOCKFILE "file" | Lock disc file |
-| FUNCTION | FUNCTION name... | User-defined functions |
-| Scope Prefixes | * ^ ^^^ | Control symbol scope |
+| Feature        | Syntax           | Purpose                         |
+|----------------|------------------|---------------------------------|
+| MULTIPASS      | (automatic)      | Iterative assembly until stable |
+| XORG           | XORG symbol      | Track P% with symbol            |
+| @              | var@ = val       | Volatile/mutable symbol         |
+| LABEL          | LABEL "name"     | Dynamic label                   |
+| LET            | LET "name" = val | Dynamic variable                |
+| LOCKFILE       | LOCKFILE "file"  | Lock disc file                  |
+| FUNCTION       | FUNCTION name... | User-defined functions          |
+| Scope Prefixes | * ^ ^^^          | Control symbol scope            |
 
 ---
 

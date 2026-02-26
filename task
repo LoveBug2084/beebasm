@@ -1,6 +1,11 @@
 # Beebasm FUNCTION Feature - Progress Report
 
 ## MANDATORY FILE MAINTENANCE
+**Git Prohibition (CRITICAL):**
+- NEVER use git commands (git status, git log, git show, git checkout, etc.)
+- NEVER run git or use git-related tools
+- This rule is absolute - do not under any circumstances use git
+
 **Task File:**
 - ALWAYS read this task file at the START of every work session to stay in sync.
 - ALWAYS read this task file BEFORE every individual step/action.

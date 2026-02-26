@@ -102,7 +102,10 @@ void LineParser::Process( const string& line )
 		{
 			if ( m_line[ m_column ] == '*' || m_line[ m_column ] == '^' )
 			{
-				m_column++;
+				while ( m_line[ m_column ] == '*' || m_line[ m_column ] == '^' )
+				{
+					m_column++;
+				}
 			}
 
 			if ( m_column < m_line.length() && ( Ascii::IsAlpha( m_line[ m_column ] ) || m_line[ m_column ] == '_' ) )
@@ -191,8 +194,11 @@ void LineParser::Process( const string& line )
 			}
 			else if ( m_line[ m_column ] == '^' )
 			{
-				target_level = std::max( target_level - 1, 0 );
-				m_column++;
+				while ( m_line[ m_column ] == '^' )
+				{
+					target_level = std::max( target_level - 1, 0 );
+					m_column++;
+				}
 			}
 
 			string name = GetSymbolName();
